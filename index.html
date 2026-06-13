@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>szekipapa77 — Game Dev & Unity Asset Creator</title>
+  <meta name="description" content="Hey! I'm szekipapa77, an indie game developer making handy tools and assets for the Unity Asset Store. Grab my stuff, build cool games." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f1020;
+      --bg2: #16172e;
+      --card: #1d1e3a;
+      --accent: #7c5cff;
+      --accent2: #ff6ec7;
+      --accent3: #36e0c0;
+      --text: #eef0ff;
+      --muted: #a7abce;
+      --ring: rgba(124, 92, 255, 0.35);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Nunito', system-ui, sans-serif;
+      background: radial-gradient(1200px 600px at 80% -10%, #2a1d52 0%, transparent 60%),
+                  radial-gradient(1000px 500px at 0% 10%, #1a2a52 0%, transparent 55%),
+                  var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* floating blobs */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(70px);
+      opacity: 0.5;
+      z-index: 0;
+      animation: float 14s ease-in-out infinite;
+      pointer-events: none;
+    }
+    .blob.b1 { width: 340px; height: 340px; background: var(--accent); top: -80px; right: -60px; }
+    .blob.b2 { width: 280px; height: 280px; background: var(--accent2); bottom: 10%; left: -90px; animation-delay: -5s; }
+    .blob.b3 { width: 220px; height: 220px; background: var(--accent3); top: 50%; right: 10%; animation-delay: -9s; opacity: 0.3; }
+
+    @keyframes float {
+      0%,100% { transform: translateY(0) translateX(0); }
+      50% { transform: translateY(-30px) translateX(20px); }
+    }
+
+    .wrap { position: relative; z-index: 1; max-width: 980px; margin: 0 auto; padding: 0 24px; }
+
+    /* nav */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 26px 0;
+    }
+    .logo {
+      font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 1.3rem;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .logo .dot {
+      width: 34px; height: 34px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: grid; place-items: center; font-size: 1.1rem;
+      box-shadow: 0 6px 20px var(--ring);
+    }
+    nav .links { display: flex; gap: 22px; }
+    nav .links a {
+      color: var(--muted); text-decoration: none; font-weight: 700; font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+    nav .links a:hover { color: var(--text); }
+
+    /* hero */
+    header { padding: 60px 0 50px; text-align: center; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(124,92,255,0.12); border: 1px solid var(--ring);
+      color: var(--accent3); padding: 7px 16px; border-radius: 999px;
+      font-weight: 700; font-size: 0.85rem; margin-bottom: 26px;
+    }
+    .badge .pulse {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--accent3);
+      box-shadow: 0 0 0 0 rgba(54,224,192,0.6); animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(54,224,192,0.5); }
+      70% { box-shadow: 0 0 0 10px rgba(54,224,192,0); }
+      100% { box-shadow: 0 0 0 0 rgba(54,224,192,0); }
+    }
+    h1 {
+      font-family: 'Fredoka', sans-serif; font-weight: 700;
+      font-size: clamp(2.4rem, 6vw, 4rem); line-height: 1.1; letter-spacing: -1px;
+    }
+    h1 .grad {
+      background: linear-gradient(120deg, var(--accent2), var(--accent), var(--accent3));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .lead {
+      color: var(--muted); font-size: 1.2rem; max-width: 620px; margin: 22px auto 0;
+    }
+    .cta {
+      display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 34px;
+    }
+    .btn {
+      font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 1rem;
+      padding: 14px 28px; border-radius: 14px; text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.2s; display: inline-flex; align-items: center; gap: 9px;
+    }
+    .btn.primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff; box-shadow: 0 10px 30px var(--ring);
+    }
+    .btn.primary:hover { transform: translateY(-3px); box-shadow: 0 14px 38px var(--ring); }
+    .btn.ghost {
+      background: rgba(255,255,255,0.05); color: var(--text);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .btn.ghost:hover { transform: translateY(-3px); background: rgba(255,255,255,0.09); }
+
+    /* sections */
+    section { padding: 40px 0; }
+    .section-title {
+      font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 1.9rem;
+      text-align: center; margin-bottom: 8px;
+    }
+    .section-sub { text-align: center; color: var(--muted); margin-bottom: 36px; }
+
+    .grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px;
+    }
+    .card {
+      background: linear-gradient(180deg, var(--card), var(--bg2));
+      border: 1px solid rgba(255,255,255,0.07); border-radius: 20px;
+      padding: 28px 24px; transition: transform 0.2s, border-color 0.2s;
+    }
+    .card:hover { transform: translateY(-6px); border-color: var(--ring); }
+    .card .emoji { font-size: 2rem; margin-bottom: 14px; display: block; }
+    .card h3 { font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 1.2rem; margin-bottom: 8px; }
+    .card p { color: var(--muted); font-size: 0.98rem; }
+
+    /* about */
+    .about {
+      background: linear-gradient(135deg, rgba(124,92,255,0.1), rgba(255,110,199,0.08));
+      border: 1px solid rgba(255,255,255,0.08); border-radius: 26px;
+      padding: 44px 38px; text-align: center;
+    }
+    .about p { color: var(--text); font-size: 1.12rem; max-width: 680px; margin: 0 auto 16px; }
+    .about p:last-child { margin-bottom: 0; color: var(--muted); }
+
+    /* support / contact */
+    .contact {
+      text-align: center;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 26px; padding: 50px 38px; margin-top: 10px;
+    }
+    .contact h2 { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 2rem; color: #fff; }
+    .contact p { color: rgba(255,255,255,0.9); margin: 12px auto 26px; max-width: 520px; }
+    .mailbtn {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: #fff; color: #2a1d52; font-family: 'Fredoka', sans-serif; font-weight: 600;
+      padding: 16px 32px; border-radius: 14px; text-decoration: none; font-size: 1.1rem;
+      transition: transform 0.15s, box-shadow 0.2s; box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    }
+    .mailbtn:hover { transform: translateY(-3px) scale(1.02); }
+
+    footer {
+      text-align: center; color: var(--muted); padding: 50px 0 40px; font-size: 0.92rem;
+    }
+    footer a { color: var(--accent3); text-decoration: none; }
+    footer .heart { color: var(--accent2); }
+
+    @media (max-width: 560px) {
+      nav .links { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+
+  <div class="wrap">
+    <nav>
+      <div class="logo"><span class="dot">🎮</span> szekipapa77</div>
+      <div class="links">
+        <a href="#assets">Assets</a>
+        <a href="#about">About</a>
+        <a href="#support">Support</a>
+      </div>
+    </nav>
+
+    <header>
+      <div class="badge"><span class="pulse"></span> Unity Asset Store Publisher</div>
+      <h1>Tools &amp; assets to make<br /><span class="grad">your game dev life easier</span> 🚀</h1>
+      <p class="lead">
+        Hey, I'm <strong>szekipapa77</strong> — an indie game developer who loves building
+        clean, plug-and-play assets for Unity. Less fighting the engine, more making games.
+      </p>
+      <div class="cta">
+        <a class="btn primary" href="https://assetstore.unity.com/" target="_blank" rel="noopener">Browse my assets ✨</a>
+        <a class="btn ghost" href="#support">Get support 💬</a>
+      </div>
+    </header>
+
+    <section id="assets">
+      <h2 class="section-title">What I make 🛠️</h2>
+      <p class="section-sub">Handy, no-fuss tools built by a dev, for devs.</p>
+      <div class="grid">
+        <div class="card">
+          <span class="emoji">⚡</span>
+          <h3>Drop-in Tools</h3>
+          <p>Import, hit play, done. My assets are built to just work without a 40-page setup guide.</p>
+        </div>
+        <div class="card">
+          <span class="emoji">🎨</span>
+          <h3>Clean &amp; Tweakable</h3>
+          <p>Readable code and friendly inspectors so you can bend everything to fit your own project.</p>
+        </div>
+        <div class="card">
+          <span class="emoji">🧩</span>
+          <h3>Game-Ready</h3>
+          <p>Made while actually building games, so they solve the annoying problems you really hit.</p>
+        </div>
+        <div class="card">
+          <span class="emoji">💜</span>
+          <h3>Friendly Support</h3>
+          <p>Got stuck or have an idea? Shoot me an email — I read every message and love feedback.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="about">
+        <h2 class="section-title">A little about me 👋</h2>
+        <p>
+          I'm a passionate indie game developer who's spent way too many late nights wrestling with
+          Unity — and loving every minute of it. Somewhere along the way I started packaging up the
+          tools I kept rebuilding and sharing them on the Asset Store.
+        </p>
+        <p>
+          My goal is simple: make small, polished, genuinely useful assets that save you time so you
+          can focus on the fun part — making your game. New stuff is always in the works! 🎮
+        </p>
+      </div>
+    </section>
+
+    <section id="support">
+      <div class="contact">
+        <h2>Need a hand? 💬</h2>
+        <p>
+          Questions, bug reports, feature requests, or just want to say hi? I'm happy to help —
+          drop me a message and I'll get back to you as soon as I can.
+        </p>
+        <a class="mailbtn" href="mailto:szekipapa77@gmail.com">✉️ szekipapa77@gmail.com</a>
+      </div>
+    </section>
+
+    <footer>
+      <p>Made with <span class="heart">♥</span> by szekipapa77 · Indie Game Developer &amp; Unity Asset Creator</p>
+      <p style="margin-top:8px;">Support: <a href="mailto:szekipapa77@gmail.com">szekipapa77@gmail.com</a></p>
+    </footer>
+  </div>
+</body>
+</html>
