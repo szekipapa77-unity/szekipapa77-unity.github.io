@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dominator - Documentation</title>
+<style>
+:root {
+  --bg: #0D0B1A;
+  --bg-card: #161230;
+  --bg-card-hover: #1E1840;
+  --bg-code: #1A1535;
+  --bg-sidebar: #100D20;
+  --text: #e2e2ea;
+  --text-dim: #9088b0;
+  --text-code: #c8c8d8;
+  --accent: #9333EA;
+  --accent-light: #A855F7;
+  --accent-glow: rgba(147,51,234,0.15);
+  --green: #00cec9;
+  --green-dim: rgba(0,206,201,0.12);
+  --yellow: #fdcb6e;
+  --yellow-dim: rgba(253,203,110,0.12);
+  --pink: #EC4899;
+  --pink-dim: rgba(236,72,153,0.12);
+  --orange: #e17055;
+  --orange-dim: rgba(225,112,85,0.12);
+  --blue: #818cf8;
+  --blue-dim: rgba(129,140,248,0.12);
+  --border: #2D2550;
+  --border-light: #3D3560;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --sidebar-w: 280px;
+  --header-h: 64px;
+  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 24px); }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 15px;
+  overflow-x: hidden;
+}
+
+::selection { background: var(--accent); color: #fff; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+/* ---- HEADER ---- */
+.header {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  background: rgba(13,11,26,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  gap: 16px;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.header-logo .dot {
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, #9333EA, #EC4899);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800; color: #fff;
+}
+
+.header-search {
+  flex: 1;
+  max-width: 420px;
+  margin-left: auto;
+  position: relative;
+}
+
+.header-search input {
+  width: 100%;
+  padding: 8px 16px 8px 40px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--font);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.header-search input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.header-search input::placeholder { color: var(--text-dim); }
+
+.header-search .search-icon {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  color: var(--text-dim); font-size: 14px; pointer-events: none;
+}
+
+.header-version {
+  font-size: 12px; color: var(--text-dim);
+  background: var(--bg-card);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.menu-toggle {
+  display: none;
+  background: none; border: none;
+  color: var(--text); font-size: 22px;
+  cursor: pointer; padding: 4px;
+}
+
+/* ---- SIDEBAR ---- */
+.sidebar {
+  position: fixed;
+  top: var(--header-h);
+  left: 0;
+  width: var(--sidebar-w);
+  height: calc(100vh - var(--header-h));
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 20px 0;
+  z-index: 90;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-group { margin-bottom: 8px; }
+
+.sidebar-group-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text-dim);
+  padding: 12px 24px 6px;
+}
+
+.sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 24px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 13.5px;
+  transition: all 0.15s;
+  border-left: 2px solid transparent;
+}
+
+.sidebar a:hover {
+  color: var(--text);
+  background: var(--accent-glow);
+}
+
+.sidebar a.active {
+  color: var(--accent-light);
+  background: var(--accent-glow);
+  border-left-color: var(--accent);
+  font-weight: 600;
+}
+
+.sidebar a .nav-icon {
+  width: 20px;
+  text-align: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* ---- MAIN ---- */
+.main {
+  margin-left: var(--sidebar-w);
+  margin-top: var(--header-h);
+  padding: 40px 48px 80px;
+  max-width: 960px;
+}
+
+/* ---- HERO ---- */
+.hero {
+  padding: 48px 0 40px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 48px;
+}
+
+.hero h1 {
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #fff 0%, #A855F7 40%, #EC4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  font-size: 17px;
+  color: var(--text-dim);
+  max-width: 640px;
+  line-height: 1.7;
+}
+
+.hero-badges {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-purple { background: var(--accent-glow); color: var(--accent-light); border: 1px solid rgba(147,51,234,0.25); }
+.badge-green { background: var(--green-dim); color: var(--green); border: 1px solid rgba(0,206,201,0.25); }
+.badge-yellow { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(253,203,110,0.25); }
+.badge-pink { background: var(--pink-dim); color: var(--pink); border: 1px solid rgba(236,72,153,0.25); }
+.badge-blue { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(129,140,248,0.25); }
+
+/* ---- SECTIONS ---- */
+.section {
+  margin-bottom: 56px;
+  scroll-margin-top: calc(var(--header-h) + 24px);
+}
+
+.section h2 {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section h2 .section-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.section > .section-desc {
+  color: var(--text-dim);
+  margin-bottom: 28px;
+  font-size: 15px;
+}
+
+h3 {
+  font-size: 19px;
+  font-weight: 700;
+  margin-top: 32px;
+  margin-bottom: 12px;
+  color: var(--text);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+h4 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-top: 24px;
+  margin-bottom: 8px;
+  color: var(--accent-light);
+}
+
+p { margin-bottom: 12px; }
+
+ul, ol { padding-left: 22px; margin-bottom: 14px; }
+li { margin-bottom: 4px; }
+
+a { color: var(--accent-light); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---- CARDS ---- */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 16px;
+  transition: border-color 0.2s;
+}
+
+.card:hover { border-color: var(--border-light); }
+
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.mini-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: block;
+  color: inherit;
+}
+
+.mini-card:hover {
+  border-color: var(--accent);
+  background: var(--bg-card-hover);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+.mini-card h4 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  color: var(--text);
+  border: none;
+  padding: 0;
+}
+
+.mini-card p {
+  font-size: 12.5px;
+  color: var(--text-dim);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ---- CODE ---- */
+pre {
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 18px 22px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-code);
+  margin-bottom: 16px;
+  position: relative;
+}
+
+pre .lang-tag {
+  position: absolute;
+  top: 8px; right: 12px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-dim);
+  opacity: 0.6;
+  font-family: var(--font);
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: var(--bg-code);
+  padding: 2px 7px;
+  border-radius: 4px;
+  color: var(--accent-light);
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+.kw { color: #C084FC; }
+.str { color: #c3e88d; }
+.cm { color: #6B5F8A; font-style: italic; }
+.fn { color: #818cf8; }
+.tp { color: #ffcb6b; }
+.num { color: #f78c6c; }
+.op { color: #A78BFA; }
+
+/* ---- TABLES ---- */
+.table-wrap {
+  overflow-x: auto;
+  margin-bottom: 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+thead th {
+  background: var(--bg-code);
+  font-weight: 700;
+  text-align: left;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+}
+
+td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(147,51,234,0.04); }
+
+/* ---- COLLAPSIBLE ---- */
+details {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+
+details[open] { border-color: var(--border-light); }
+
+summary {
+  padding: 14px 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+  list-style: none;
+  transition: color 0.15s;
+}
+
+summary::-webkit-details-marker { display: none; }
+
+summary::before {
+  content: '\25B6';
+  font-size: 10px;
+  color: var(--text-dim);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+details[open] > summary::before { transform: rotate(90deg); }
+
+summary:hover { color: var(--accent-light); }
+
+details .details-body { padding: 0 20px 18px; }
+details .details-body p:first-child { margin-top: 0; }
+
+/* ---- CALLOUT ---- */
+.callout {
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.callout > div { flex: 1; }
+.callout p { margin-bottom: 6px; }
+.callout p:last-child { margin-bottom: 0; }
+
+.callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+.callout-tip { background: var(--green-dim); border: 1px solid rgba(0,206,201,0.2); }
+.callout-tip .callout-icon { color: var(--green); }
+
+.callout-warn { background: var(--yellow-dim); border: 1px solid rgba(253,203,110,0.2); }
+.callout-warn .callout-icon { color: var(--yellow); }
+
+.callout-info { background: var(--blue-dim); border: 1px solid rgba(129,140,248,0.2); }
+.callout-info .callout-icon { color: var(--blue); }
+
+.callout-danger { background: var(--pink-dim); border: 1px solid rgba(236,72,153,0.2); }
+.callout-danger .callout-icon { color: var(--pink); }
+
+/* ---- STEP LIST ---- */
+.steps { counter-reset: step; margin-bottom: 16px; }
+
+.step {
+  display: flex;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  counter-increment: step;
+}
+
+.step:last-child { border-bottom: none; }
+
+.step::before {
+  content: counter(step);
+  width: 28px; height: 28px;
+  background: var(--accent-glow);
+  color: var(--accent-light);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.step-content { flex: 1; }
+.step-content strong { color: var(--text); }
+
+/* ---- FLOW DIAGRAM ---- */
+.flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+}
+
+.flow-node {
+  padding: 8px 16px;
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.flow-arrow {
+  padding: 0 8px;
+  color: var(--text-dim);
+  font-size: 16px;
+}
+
+/* ---- TAGS ---- */
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tag-required { background: var(--pink-dim); color: var(--pink); }
+.tag-optional { background: var(--green-dim); color: var(--green); }
+.tag-auto { background: var(--accent-glow); color: var(--accent-light); }
+.tag-platform { background: var(--yellow-dim); color: var(--yellow); }
+.tag-info { background: var(--blue-dim); color: var(--blue); }
+
+/* ---- SEARCH RESULTS ---- */
+.search-overlay {
+  display: none;
+  position: fixed;
+  top: var(--header-h);
+  left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 95;
+}
+
+.search-results {
+  display: none;
+  position: fixed;
+  top: calc(var(--header-h) + 8px);
+  left: 50%; transform: translateX(-50%);
+  width: 520px;
+  max-width: calc(100vw - 32px);
+  max-height: 60vh;
+  overflow-y: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  z-index: 96;
+  padding: 8px;
+}
+
+.search-results.visible { display: block; }
+.search-overlay.visible { display: block; }
+
+.search-item {
+  display: block;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--text);
+  transition: background 0.1s;
+}
+
+.search-item:hover { background: var(--accent-glow); text-decoration: none; }
+.search-item-section { font-size: 11px; color: var(--accent-light); margin-bottom: 2px; }
+.search-item-title { font-weight: 600; font-size: 14px; }
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; padding: 24px 20px 60px; }
+  .menu-toggle { display: block; }
+  .header-search { max-width: 200px; }
+  .hero h1 { font-size: 28px; }
+  .card-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .header { padding: 0 16px; }
+  .header-version { display: none; }
+  .header-search { max-width: 160px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Toggle menu">&#9776;</button>
+  <a href="#overview" class="header-logo">
+    <div class="dot">D</div>
+    <span>Dominator</span>
+  </a>
+  <div class="header-search">
+    <span class="search-icon">&#128269;</span>
+    <input type="text" id="searchInput" placeholder="Search docs... (Ctrl+K)" autocomplete="off">
+  </div>
+  <span class="header-version">v1.0 &middot; Unity 2021.3+</span>
+</header>
+
+<!-- SEARCH -->
+<div class="search-overlay" id="searchOverlay"></div>
+<div class="search-results" id="searchResults"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Getting Started</div>
+    <a href="#overview"><span class="nav-icon">&#127968;</span> Overview</a>
+    <a href="#installation"><span class="nav-icon">&#10515;</span> Installation</a>
+    <a href="#quickstart"><span class="nav-icon">&#9889;</span> Quick Start</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Concepts</div>
+    <a href="#how-it-works"><span class="nav-icon">&#9881;</span> How It Works</a>
+    <a href="#no-code"><span class="nav-icon">&#128295;</span> No-Code / Editor Tools</a>
+    <a href="#settings"><span class="nav-icon">&#9881;</span> Settings &amp; Team Sync</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Features</div>
+    <a href="#hierarchy-project"><span class="nav-icon">&#127795;</span> Hierarchy &amp; Project</a>
+    <a href="#tabs-nav"><span class="nav-icon">&#128278;</span> Tabs, Favorites &amp; Search</a>
+    <a href="#inspector"><span class="nav-icon">&#128221;</span> Inspector &amp; Serializer</a>
+    <a href="#theming"><span class="nav-icon">&#127912;</span> Theming &amp; Accessibility</a>
+    <a href="#cleanup-backup"><span class="nav-icon">&#129529;</span> Cleanup &amp; Backup</a>
+    <a href="#notes-console-scene"><span class="nav-icon">&#128221;</span> Notes, Console &amp; Scene</a>
+    <a href="#migration-sharing"><span class="nav-icon">&#128230;</span> Migration &amp; Share Packs</a>
+    <a href="#ai"><span class="nav-icon">&#129302;</span> AI Assist</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Reference</div>
+    <a href="#api"><span class="nav-icon">&#128217;</span> Scripting API</a>
+    <a href="#troubleshooting"><span class="nav-icon">&#128161;</span> Troubleshooting</a>
+    <a href="#faq"><span class="nav-icon">&#10067;</span> FAQ</a>
+    <a href="#support"><span class="nav-icon">&#128236;</span> Support</a>
+  </div>
+
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+<!-- ============================================ -->
+<!--                  HERO                        -->
+<!-- ============================================ -->
+<div class="hero" id="overview">
+  <h1>Dominator</h1>
+  <p>One unified, telemetry-free editor-productivity suite for Unity &mdash; colored hierarchy &amp; folders, tabs &amp; favorites, a command palette, themes, cleanup, notes, backup and more. One install, one settings panel, one license. No scripting required, nothing phones home.</p>
+  <div class="hero-badges">
+    <span class="badge badge-purple">Unity 2021.3+</span>
+    <span class="badge badge-green">Editor-only &middot; zero player cost</span>
+    <span class="badge badge-yellow">Telemetry-free</span>
+    <span class="badge badge-pink">No-code, click-to-do</span>
+  </div>
+</div>
+
+<section class="section">
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>One suite, not a bag of tools.</strong> Every module shares <em>one</em> rule engine, <em>one</em> palette and <em>one</em> committed config. A single rule you author once styles the Hierarchy <strong>and</strong> the Project window <strong>and</strong> feeds Notes/Console/Cleanup &mdash; that integration is the product, and it is what a pile of separate assets can't copy.</div>
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#9989;</span>
+    <div><strong>Telemetry-free by construction.</strong> Network access is confined to two audited, opt-in files (BYO-key AI and opt-in remote logging) and CI fails the build if anything else reaches the network. Offline by default, no account, no tracking.</div>
+  </div>
+
+  <div class="card-grid">
+    <a class="mini-card" href="#quickstart"><h4>&#9889; Productive in a minute</h4><p>Open <strong>Project Settings &rarr; Dominator</strong>, add a rule, and your Hierarchy &amp; Project window light up &mdash; no code.</p></a>
+    <a class="mini-card" href="#no-code"><h4>&#128295; Click-to-do</h4><p>100+ menu commands, a unified searchable settings panel, and a first-run Welcome window. Nothing requires a script.</p></a>
+    <a class="mini-card" href="#hierarchy-project"><h4>&#127795; Hierarchy &amp; folders</h4><p>Colors, icons, organizers, virtual folders &amp; bookmarks driven by the shared rule engine.</p></a>
+    <a class="mini-card" href="#migration-sharing"><h4>&#128230; Migrate &amp; share</h4><p>Import from vHierarchy / vFolders / Rainbow Folders, and export portable, tamper-evident share packs.</p></a>
+    <a class="mini-card" href="#theming"><h4>&#127912; Themes &amp; a11y</h4><p>One committed theme across every surface, colorblind-safe palettes and WCAG high-contrast.</p></a>
+    <a class="mini-card" href="#installation"><h4>&#10515; Drop-in &amp; clean exit</h4><p>Import and go. Editor-only &mdash; nothing ships in your player build, and removal is wizard-driven.</p></a>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             INSTALLATION                     -->
+<!-- ============================================ -->
+<section class="section" id="installation">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#10515;</span> Installation</h2>
+  <p class="section-desc">Import once. There is nothing to configure to start &mdash; the suite is live the moment it compiles.</p>
+
+  <div class="steps">
+    <div class="step"><div class="step-content"><strong>Import from the Asset Store</strong><br>In <code>Window &rarr; Package Manager &rarr; My Assets</code>, download and import Dominator. It lands under <code>Assets/Dominator/</code>.</div></div>
+    <div class="step"><div class="step-content"><strong>Let it compile</strong><br>On first import a <strong>Welcome</strong> window greets you with one-click links to the docs, the demo scene, and your first organizer. (Re-open it any time from <code>Tools &rarr; Dominator &rarr; Welcome</code>.)</div></div>
+    <div class="step"><div class="step-content"><strong>Open the settings</strong><br><code>Project Settings &rarr; Dominator</code> is the single, searchable home for every module's options. Per-user preferences live under <code>Preferences &rarr; Dominator</code>.</div></div>
+    <div class="step"><div class="step-content"><strong>That's it</strong><br>Your Hierarchy and Project window are already enhanced. Add a rule or drop an organizer to see decoration appear.</div></div>
+  </div>
+
+  <h3>Requirements</h3>
+  <ul>
+    <li>Unity <strong>2021.3</strong> or newer (developed and validated on Unity <strong>6000.0</strong>).</li>
+    <li><strong>Editor-only.</strong> All logic lives in Editor assemblies and is stripped from player builds &mdash; zero runtime cost, zero footprint in your shipped game.</li>
+    <li>No internet connection, account, or external service required.</li>
+  </ul>
+
+  <h3>What gets installed</h3>
+  <pre><code><span class="kw">Assets/Dominator/</span>
+  Runtime/        <span class="cm">// the only player-facing piece: an inert organizer marker (zero cost)</span>
+  Editor/         <span class="cm">// Core (rule engine, palette, theming, settings, safety) + 14 modules</span>
+  Demo/           <span class="cm">// an interactive, WebGL-ready product tour scene you can open and play</span>
+  Documentation~/ <span class="cm">// you are here (this HTML) + markdown references</span>
+  Tests/          <span class="cm">// EditMode + PlayMode (run headless via Unity -runTests)</span><span class="lang-tag">Project</span></code></pre>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Committed, not hidden.</strong> Your team config lives as merge-friendly text under <code>ProjectSettings/Dominator/</code> &mdash; commit it and a teammate's <code>git pull</code> gives them the identical, decorated project.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             QUICK START                      -->
+<!-- ============================================ -->
+<section class="section" id="quickstart">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#9889;</span> Quick Start</h2>
+  <p class="section-desc">Author one rule and watch it flow through every surface &mdash; about a minute, no code.</p>
+
+  <div class="steps">
+    <div class="step"><div class="step-content"><strong>Open the rule editor</strong><br><code>Tools &rarr; Dominator &rarr; Rules &rarr; Open Rule Editor</code> (<code>Ctrl+Alt+U</code>), or use <code>New Rule&hellip;</code>.</div></div>
+    <div class="step"><div class="step-content"><strong>Make a rule</strong><br>e.g. <em>Name starts with</em> <code>NPC_</code> &rarr; a red tint and an icon. Choose whether it applies to the Hierarchy, the Project window, or both.</div></div>
+    <div class="step"><div class="step-content"><strong>Watch it apply everywhere</strong><br>Every matching GameObject row <em>and</em> matching asset/folder is decorated instantly &mdash; the same rule, across both surfaces, across every scene.</div></div>
+    <div class="step"><div class="step-content"><strong>Add a hierarchy organizer</strong><br><code>GameObject &rarr; Dominator &rarr; Header / Divider / Folder</code> drops a labelled organizer row to structure your scene. Configure it in the Inspector (it has tooltips).</div></div>
+    <div class="step"><div class="step-content"><strong>Find anything</strong><br><code>Ctrl+K</code> opens the command palette &mdash; search assets, objects, settings, commands and favorites in one box.</div></div>
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#128161;</span>
+    <div><strong>Everything is undoable.</strong> Rules, organizers, theme changes and migrations are all wired to Unity's Undo &mdash; one <code>Ctrl+Z</code> reverts the whole action.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             HOW IT WORKS                     -->
+<!-- ============================================ -->
+<section class="section" id="how-it-works">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#9881;</span> How It Works</h2>
+  <p class="section-desc">The integration moat: one rule, one palette, one config &mdash; flowing through every module.</p>
+
+  <div class="flow">
+    <div class="flow-node">One rule you author</div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-node">Unified Rule Engine</div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-node">Hierarchy</div>
+    <div class="flow-arrow">+</div>
+    <div class="flow-node">Project / Folders</div>
+    <div class="flow-arrow">+</div>
+    <div class="flow-node">Notes &middot; Console &middot; Cleanup</div>
+  </div>
+
+  <p>Unlike a collection of separate assets, Dominator resolves every visual decision through one shared <strong>rule engine</strong> and one <strong>palette</strong>. A pattern rule (by name, type, tag, layer, path or asset type) is evaluated once and consumed identically by the Hierarchy decorator and the Project-folder resolver, so the icon you assign is the same icon everywhere &mdash; by construction, not by copying settings between tools.</p>
+
+  <div class="card-grid">
+    <div class="card"><div class="card-title">&#129518; Unified rule engine</div><p style="color:var(--text-dim);font-size:13.5px;">One committed <code>DominatorRuleSet</code> drives hierarchy rows and folder faces. Pattern-based, so a rule auto-applies across every scene and prefab.</p></div>
+    <div class="card"><div class="card-title">&#127912; One visual language</div><p style="color:var(--text-dim);font-size:13.5px;">A single palette and theme token set resolves identically into every surface &mdash; no per-module color tables to keep in sync.</p></div>
+    <div class="card"><div class="card-title">&#128101; Team-config-sync</div><p style="color:var(--text-dim);font-size:13.5px;">All rules, palette, theme and quick-access config is committed, merge-friendly text. One <code>git pull</code> = an identical studio setup.</p></div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             NO-CODE / EDITOR TOOLS           -->
+<!-- ============================================ -->
+<section class="section" id="no-code">
+  <h2><span class="section-icon" style="background:var(--pink-dim);color:var(--pink)">&#128295;</span> No-Code / Editor Tools</h2>
+  <p class="section-desc">Dominator is built to be driven by clicking. Every primary capability is reachable from a menu, the settings panel, or the Inspector &mdash; no scripting needed.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#9989;</span>
+    <div><strong>A non-coder is the target user.</strong> Open the settings, pick options, assign a rule, drop an organizer &mdash; and get a correct, visible result with no script. The full scripting API (below) is there for power users, but nothing requires it.</div>
+  </div>
+
+  <h3>First-run Welcome window</h3>
+  <p>On first import a Welcome window opens once (it never nags again, and is suppressed in batch/CI). It offers one-click buttons to open this documentation, open the interactive demo scene, create your first organizer, and start the guided tour. Re-open it any time from <code>Tools &rarr; Dominator &rarr; Welcome</code>.</p>
+
+  <h3>The unified settings panel</h3>
+  <p><code>Project Settings &rarr; Dominator</code> is one searchable page with a section rail covering every module &mdash; general, accessibility, theming, localization, AI, licensing and more. Per-user options live under <code>Preferences &rarr; Dominator</code> so they never dirty the committed team config.</p>
+
+  <h3>Menu entry points</h3>
+  <p>Over a hundred commands are organized under four roots so features are discoverable without ever opening a script:</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Menu root</th><th>What you'll find</th></tr></thead>
+      <tbody>
+        <tr><td><code>Tools &rarr; Dominator</code></td><td>Settings, Rules (editor / import / export), Theming, Accessibility, Migration wizard, Share packs, Cleanup, Localization, Scene Tools, AI, Diagnostics, Guided Tour, Welcome.</td></tr>
+        <tr><td><code>Window &rarr; Dominator</code></td><td>Command Palette (<code>Ctrl+K</code>), Console (<code>Ctrl+Shift+C</code>), Favorites, Navigation Timeline, Find Usages, Tabs &amp; Workspaces, Virtual Folders.</td></tr>
+        <tr><td><code>GameObject &rarr; Dominator</code></td><td>Create Header / Divider / Folder organizers, Group selection, Replace With&hellip;, Add to Favorites.</td></tr>
+        <tr><td><code>Assets &rarr; Dominator</code></td><td>Set folder color/icon, auto-icon from contents, bookmark folder, create rule from selection, quarantine, find reverse references, backup history.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Inspector-friendly.</strong> The one authoring component &mdash; the hierarchy <strong>Organizer</strong> &mdash; has a custom inspector with tooltips and a "Create another" button, and is created from the <code>GameObject &rarr; Dominator</code> menu. Everything else is configured in the settings panel or via menus.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             SETTINGS & TEAM SYNC             -->
+<!-- ============================================ -->
+<section class="section" id="settings">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#9881;</span> Settings &amp; Team Sync</h2>
+  <p class="section-desc">Committed where it should be shared, per-user where it shouldn't.</p>
+
+  <ul>
+    <li><strong>Project (committed):</strong> rules, palette, theme, folder styles and quick-access live as text under <code>ProjectSettings/Dominator/</code> &mdash; merge-friendly and GlobalObjectId-keyed, so they survive refactors and travel with the repo.</li>
+    <li><strong>Per-user (local):</strong> personal preferences and onboarding state live under your user preferences folder and never dirty the committed config or cause merge conflicts.</li>
+    <li><strong>Import / export:</strong> <code>Tools &rarr; Dominator &rarr; Export Config&hellip; / Import Config&hellip;</code> round-trips the whole setup as reviewable JSON.</li>
+    <li><strong>Reset:</strong> <code>Reset All Settings&hellip;</code> returns to defaults; every change is Undo-wired and snapshot-protected (see Backup).</li>
+  </ul>
+
+  <div class="callout callout-warn">
+    <span class="callout-icon">&#9888;</span>
+    <div><strong>License tiers.</strong> Some advanced features are gated by tier (Free / Pro / Studio). Activate from <code>Tools &rarr; Dominator &rarr; License</code>. Owned features never re-lock on upgrade.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             HIERARCHY & PROJECT              -->
+<!-- ============================================ -->
+<section class="section" id="hierarchy-project">
+  <h2><span class="section-icon" style="background:var(--green-dim);color:var(--green)">&#127795;</span> Hierarchy &amp; Project</h2>
+  <p class="section-desc">The two surfaces buyers see most &mdash; both driven by the same shared rule engine.</p>
+
+  <h3>Hierarchy Enhancer</h3>
+  <ul>
+    <li>Per-row colors, icons and component hints, driven by rules or set directly.</li>
+    <li><strong>Organizers:</strong> Header, Divider and Folder rows to structure a scene &mdash; created from <code>GameObject &rarr; Dominator</code>, configured in the Inspector.</li>
+    <li>Readable large scenes: a per-row minimap and zero-allocation rendering validated against a 10,000-object stress scene.</li>
+  </ul>
+
+  <h3>Project &amp; Folders</h3>
+  <ul>
+    <li>Folder colors and icons (set explicitly, inherited, or resolved from a rule), plus auto-icon-from-contents.</li>
+    <li><strong>Virtual folders</strong> and bookmarks, and a folder navigation bar &mdash; from the <code>Assets &rarr; Dominator</code> context menu.</li>
+    <li>GlobalObjectId-safe identity so styles survive moves and renames.</li>
+  </ul>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#128161;</span>
+    <div>Right-click a folder &rarr; <code>Dominator &rarr; Create Rule From Selection</code> to turn an example into a reusable, project-wide rule in one click.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          TABS, FAVORITES & SEARCH            -->
+<!-- ============================================ -->
+<section class="section" id="tabs-nav">
+  <h2><span class="section-icon" style="background:var(--yellow-dim);color:var(--yellow)">&#128278;</span> Tabs, Favorites &amp; Search</h2>
+  <p class="section-desc">Navigate a big project without losing your place.</p>
+
+  <div class="card-grid">
+    <div class="card"><div class="card-title">&#128278; Tabs &amp; Workspaces</div><p style="color:var(--text-dim);font-size:13.5px;">Saved object/asset/component tabs, pinned inspectors and named workspaces &mdash; committed to VCS. Plus the Peek toolkit: inspect, probe and replace without leaving context.</p></div>
+    <div class="card"><div class="card-title">&#11088; Favorites</div><p style="color:var(--text-dim);font-size:13.5px;">A unified quick-reference model: a saved tab <em>is</em> a favorite. GlobalObjectId-backed so they never vanish on restart, and team-shareable.</p></div>
+    <div class="card"><div class="card-title">&#128269; Command Palette</div><p style="color:var(--text-dim);font-size:13.5px;"><code>Ctrl+K</code> "Search Everywhere": assets, objects, components, settings, commands, macros and favorites, with bounded top-K results.</p></div>
+    <div class="card"><div class="card-title">&#128260; Navigation History</div><p style="color:var(--text-dim);font-size:13.5px;">Back/forward selection history with a breadcrumb trail and a persistent timeline &mdash; recover where you were after any focus change.</p></div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          INSPECTOR & SERIALIZER              -->
+<!-- ============================================ -->
+<section class="section" id="inspector">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128221;</span> Inspector &amp; Serializer</h2>
+  <p class="section-desc">A better Inspector, and a serializer with a no-lock-in exit ramp.</p>
+  <ul>
+    <li>20+ attributes (buttons, groups, tabs, foldouts, validation, conditional show/hide, sliders, progress bars, dropdowns, info boxes) &mdash; pure metadata in the runtime assembly, drawers in the editor.</li>
+    <li>A validation scanner that surfaces missing references and broken setups with one-click focus.</li>
+    <li>Serialize-anything (dictionaries, polymorphic <code>SerializeReference</code>) with a safe migration path &mdash; and a documented exit ramp so you are never locked in.</li>
+    <li>Coexists with Odin; opt in per type.</li>
+  </ul>
+</section>
+
+<!-- ============================================ -->
+<!--          THEMING & ACCESSIBILITY             -->
+<!-- ============================================ -->
+<section class="section" id="theming">
+  <h2><span class="section-icon" style="background:var(--pink-dim);color:var(--pink)">&#127912;</span> Theming &amp; Accessibility</h2>
+  <p class="section-desc">One visual language across the whole suite, accessible by default.</p>
+  <ul>
+    <li><strong>Theme editor</strong> (<code>Tools &rarr; Dominator &rarr; Theming &rarr; Theme Editor</code>): one committed theme file styles every surface from one set of roles &mdash; not per-window chrome.</li>
+    <li>Built-in themes (Stock, Studio Dark, Studio Light, High-Contrast) plus your own, importable/exportable as <code>.dominatortheme.json</code>.</li>
+    <li><strong>Accessibility:</strong> colorblind-safe palettes with redundant icons/labels, WCAG high-contrast theme, reduce-motion, and a one-click accessibility audit.</li>
+    <li>Color-vision preview (Protanopia / Deuteranopia / Tritanopia) to check your scheme.</li>
+  </ul>
+</section>
+
+<!-- ============================================ -->
+<!--          CLEANUP & BACKUP                    -->
+<!-- ============================================ -->
+<section class="section" id="cleanup-backup">
+  <h2><span class="section-icon" style="background:var(--green-dim);color:var(--green)">&#129529;</span> Cleanup &amp; Backup</h2>
+  <p class="section-desc">Find dead weight safely, and never lose your config.</p>
+
+  <h3>Asset Cleanup &amp; Dependencies</h3>
+  <ul>
+    <li>Unused / duplicate asset detection that is <strong>runtime-reference-aware</strong> &mdash; it understands <code>Resources.Load</code>, reflection and Addressables-style string paths that naive scanners miss.</li>
+    <li><strong>Quarantine, not delete:</strong> candidates move to a quarantine folder with a reason and a one-click undo &mdash; nothing is destroyed.</li>
+    <li>Reverse-reference ("find usages") graph, also powering honest find-usages elsewhere in the suite.</li>
+  </ul>
+
+  <h3>Backup &amp; Recovery</h3>
+  <ul>
+    <li>Versioned local snapshots with diff and restore, freeze-aware non-blocking saves, and crash recovery.</li>
+    <li>Undo-integrated recovery of the suite's <em>committed config</em> &mdash; a bad <code>git checkout</code> can't silently wipe hours of organization.</li>
+  </ul>
+</section>
+
+<!-- ============================================ -->
+<!--          NOTES, CONSOLE & SCENE              -->
+<!-- ============================================ -->
+<section class="section" id="notes-console-scene">
+  <h2><span class="section-icon" style="background:var(--yellow-dim);color:var(--yellow)">&#128221;</span> Notes, Console &amp; Scene Tools</h2>
+  <p class="section-desc">Annotate, triage and arrange &mdash; all wired into the rest of the suite.</p>
+
+  <div class="card-grid">
+    <div class="card"><div class="card-title">&#128221; Notes &amp; TODOs</div><p style="color:var(--text-dim);font-size:13.5px;">Notes anchored to objects/assets/scenes by GlobalObjectId, plus a unified dashboard aggregating notes and code <code>// TODO</code> comments, with jump-to-context.</p></div>
+    <div class="card"><div class="card-title">&#128226; Console</div><p style="color:var(--text-dim);font-size:13.5px;">Filter groups, inline source preview, regex/text search, a timing column and opt-in remote device logs &mdash; with provably zero domain-reload/asset-refresh penalty.</p></div>
+    <div class="card"><div class="card-title">&#128296; Scene Tools</div><p style="color:var(--text-dim);font-size:13.5px;">Ruler, align &amp; distribute, transform-preserving smart replace, group/ungroup, snap, probe and screenshot &mdash; from <code>Tools &rarr; Dominator &rarr; Scene Tools</code>.</p></div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          MIGRATION & SHARE PACKS             -->
+<!-- ============================================ -->
+<section class="section" id="migration-sharing">
+  <h2><span class="section-icon" style="background:var(--orange-dim);color:var(--orange)">&#128230;</span> Migration &amp; Share Packs</h2>
+  <p class="section-desc">Bring your existing setup in, and share your presets out.</p>
+
+  <h3>Migration importers</h3>
+  <p>The <code>Tools &rarr; Dominator &rarr; Migration &rarr; Import Wizard&hellip;</code> imports your existing setup from popular tools (vHierarchy 2, vFolders 2, Rainbow Folders 2, Rainbow Hierarchy 2, and more). Import is a <strong>non-destructive dry run first</strong>: you review a diff with a <em>completeness %</em> and a High/Medium/Low confidence band before applying. Apply is idempotent and Undo-wired; your original third-party config is never touched.</p>
+
+  <h3>Marketplace share packs</h3>
+  <ul>
+    <li>Export a theme and/or a rule pack as a portable <code>.dominatorpack.json</code> (or a rule-only <code>.dominatorruleset.json</code>) from <code>Tools &rarr; Dominator &rarr; Share &rarr; Export Share Pack&hellip;</code>.</li>
+    <li>Packs are <strong>deterministic</strong> (byte-stable for the same input), <strong>content-hashed</strong> (a tampered pack is detected and refused), and <strong>forward-tolerant</strong> of newer schema versions.</li>
+    <li>Import is non-destructive and content-deduped: re-importing the same pack is a safe no-op, and imported rules get fresh ids so a shared pack can never clobber a local rule. One shared rule then flows through every surface.</li>
+  </ul>
+</section>
+
+<!-- ============================================ -->
+<!--             AI ASSIST                        -->
+<!-- ============================================ -->
+<section class="section" id="ai">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#129302;</span> AI Assist</h2>
+  <p class="section-desc">Optional, bring-your-own-key, offline by default &mdash; and it writes into the same unified rule engine.</p>
+  <ul>
+    <li>Turn natural language into valid Dominator rules, parse NL commands for the palette, and get icon/color suggestions &mdash; from <code>Tools &rarr; Dominator &rarr; AI</code>.</li>
+    <li><strong>Bring-your-own-key</strong> and <strong>offline-by-default:</strong> an offline heuristic path works with no network at all. If you opt in with a key, egress is confined to a single audited transport file and is mocked in CI.</li>
+    <li>Because AI output is written into the existing <code>DominatorRuleSet</code>, it inherits cross-surface reach and team-sync for free.</li>
+  </ul>
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#128274;</span>
+    <div>AI is entirely optional and off until you configure a key. With no key, Dominator makes zero network calls.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             SCRIPTING API                    -->
+<!-- ============================================ -->
+<section class="section" id="api">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128217;</span> Scripting API</h2>
+  <p class="section-desc">Everything the menus do is also available to power users in code (the no-code paths are additive, never a replacement).</p>
+
+  <h4>Author a rule</h4>
+  <pre><code><span class="kw">using</span> Dominator.Editor.Core.Api;
+
+<span class="kw">var</span> rule = DominatorRule.<span class="fn">CreateDefault</span>(<span class="str">"Enemies"</span>);
+rule.scope   = RuleScope.Both;        <span class="cm">// Hierarchy + Project</span>
+rule.field   = MatchField.Name;
+rule.mode    = MatchMode.StartsWith;
+rule.pattern = <span class="str">"NPC_"</span>;
+rule.backgroundColor = <span class="kw">new</span> <span class="tp">Color</span>(<span class="num">0.9f</span>, <span class="num">0.2f</span>, <span class="num">0.2f</span>);
+
+DominatorRuleSet.instance.<span class="fn">Add</span>(rule);   <span class="cm">// committed + Undo-wired; flows to every surface</span><span class="lang-tag">C#</span></code></pre>
+
+  <h4>Create a hierarchy organizer</h4>
+  <pre><code><span class="kw">using</span> Dominator.Editor.Modules.Hierarchy;
+
+<span class="tp">GameObject</span> header = OrganizerFactory.<span class="fn">CreateHeader</span>(<span class="str">"Gameplay"</span>);
+<span class="tp">GameObject</span> folder = OrganizerFactory.<span class="fn">CreateFolder</span>(<span class="str">"UI"</span>);   <span class="cm">// Undo-correct, selects + pings</span><span class="lang-tag">C#</span></code></pre>
+
+  <h4>Export / import a share pack</h4>
+  <pre><code><span class="kw">using</span> Dominator.Editor.Core.Packaging;
+
+<span class="kw">var</span> pack = DominatorSharePack.<span class="fn">CreatePack</span>(<span class="str">"Studio Preset"</span>, author, desc, version, theme, rules);
+DominatorSharePack.<span class="fn">Export</span>(pack, path, <span class="kw">out</span> <span class="kw">var</span> error);     <span class="cm">// deterministic, content-hashed</span>
+
+<span class="kw">var</span> back = DominatorSharePack.<span class="fn">Parse</span>(File.<span class="fn">ReadAllText</span>(path), <span class="kw">out</span> _);
+<span class="kw">if</span> (DominatorSharePack.<span class="fn">VerifyIntegrity</span>(back)) { <span class="cm">/* safe to apply */</span> }<span class="lang-tag">C#</span></code></pre>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div>A headless CI entry point <code>Dominator.Editor.CI.DominatorCI.Validate</code> lets you gate the suite in automation (<code>Unity -batchmode -executeMethod &hellip;</code>).</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             TROUBLESHOOTING                  -->
+<!-- ============================================ -->
+<section class="section" id="troubleshooting">
+  <h2><span class="section-icon" style="background:var(--yellow-dim);color:var(--yellow)">&#128161;</span> Troubleshooting</h2>
+  <p class="section-desc">Common questions, quick answers.</p>
+
+  <details>
+    <summary>I don't see any decoration in the Hierarchy / Project window</summary>
+    <div class="details-body">
+      <p>Decoration is driven by rules. Open <code>Tools &rarr; Dominator &rarr; Rules &rarr; Open Rule Editor</code> and add a rule (e.g. name contains a string), or set a folder color directly via <code>Assets &rarr; Dominator &rarr; Set Folder Color</code>. Confirm theming is enabled in <code>Project Settings &rarr; Dominator</code>.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>The Welcome window didn't appear</summary>
+    <div class="details-body">
+      <p>It opens only once per user (and is suppressed in batch/CI). Re-open it any time from <code>Tools &rarr; Dominator &rarr; Welcome</code>.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>I can't add the Organizer component from "Add Component"</summary>
+    <div class="details-body">
+      <p>That's intentional &mdash; the organizer marker is authored, not hand-added. Create one from <code>GameObject &rarr; Dominator &rarr; Header / Divider / Folder</code>; then configure it in the Inspector.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Does removing the suite leave junk behind?</summary>
+    <div class="details-body">
+      <p>No. Run <code>Tools &rarr; Dominator &rarr; Prepare for Removal&hellip;</code> first &mdash; it cleans up organizer markers and committed config. The runtime marker is inert and harmless even if left in place.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>A migration import didn't bring in everything</summary>
+    <div class="details-body">
+      <p>The import wizard shows a completeness % and a confidence band <em>before</em> you apply. Anything unresolved is listed so you can map it manually; your original third-party config is never modified.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ============================================ -->
+<!--             FAQ                              -->
+<!-- ============================================ -->
+<section class="section" id="faq">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#10067;</span> FAQ</h2>
+  <p class="section-desc">The questions buyers ask most.</p>
+
+  <details>
+    <summary>Does anything ship in my player build?</summary>
+    <div class="details-body"><p>Only one inert marker component (<code>DominatorOrganizer</code>) with zero <code>Awake/Update</code> and zero runtime cost. All logic is in Editor assemblies and is stripped from players.</p></div>
+  </details>
+
+  <details>
+    <summary>Does it phone home or collect telemetry?</summary>
+    <div class="details-body"><p>No. Network access is confined to two audited, opt-in files (BYO-key AI and opt-in remote logging), and CI fails the build if anything else reaches the network. Offline by default.</p></div>
+  </details>
+
+  <details>
+    <summary>Do I have to write code?</summary>
+    <div class="details-body"><p>No. Every primary capability is reachable from a menu, the settings panel, or the Inspector. The scripting API is for power users and is purely additive.</p></div>
+  </details>
+
+  <details>
+    <summary>Is my config shareable with my team?</summary>
+    <div class="details-body"><p>Yes &mdash; it's committed text under <code>ProjectSettings/Dominator/</code>. Commit it, and a teammate's <code>git pull</code> gives them the identical setup. You can also export portable share packs.</p></div>
+  </details>
+
+  <details>
+    <summary>Which Unity versions are supported?</summary>
+    <div class="details-body"><p>Unity 2021.3 and newer, validated headlessly on 2021.3, 2022.3 and 6000.0. A UI-Toolkit hierarchy backend is included for newer editors.</p></div>
+  </details>
+
+  <details>
+    <summary>Does it work with Odin / other inspector tools?</summary>
+    <div class="details-body"><p>Yes &mdash; the inspector enhancements coexist with Odin and are opt-in per type.</p></div>
+  </details>
+</section>
+
+<!-- ============================================ -->
+<!--                SUPPORT                       -->
+<!-- ============================================ -->
+<section class="section" id="support">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128236;</span> Support</h2>
+  <p class="section-desc">Need help? We're here for you.</p>
+
+  <div class="card" style="text-align:center;padding:40px 24px;">
+    <div style="font-size:48px;margin-bottom:16px;">&#128231;</div>
+    <h3 style="border:none;margin-top:0;padding:0;text-align:center;">Get in Touch</h3>
+    <p style="color:var(--text-dim);max-width:480px;margin:8px auto 24px;">Bug reports, feature requests, setup questions &mdash; reach out and we'll get back to you.</p>
+    <a href="mailto:szekipapa77@gmail.com" style="display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,var(--accent),var(--pink));color:#fff;text-decoration:none;border-radius:var(--radius-sm);font-weight:700;font-size:15px;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+      &#9993; szekipapa77@gmail.com
+    </a>
+    <p style="color:var(--text-dim);font-size:13px;margin-top:16px;">We typically respond within 24&ndash;48 hours.</p>
+  </div>
+
+  <div class="card-grid" style="margin-top:16px;">
+    <div class="card">
+      <div class="card-title">&#128172; Before contacting</div>
+      <ul style="padding-left:20px;color:var(--text-dim);font-size:14px;line-height:1.9;">
+        <li>Check the <a href="#troubleshooting">Troubleshooting</a> section</li>
+        <li>Run <strong>Tools &rarr; Dominator &rarr; Diagnostics &rarr; Copy Support Bundle</strong></li>
+        <li>Confirm theming is enabled in <strong>Project Settings &rarr; Dominator</strong></li>
+        <li>Check the Console for any Dominator messages</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">&#128203; Helpful info to include</div>
+      <ul style="padding-left:20px;color:var(--text-dim);font-size:14px;line-height:1.9;">
+        <li>Unity version (e.g. <code>6000.0.30f1</code>)</li>
+        <li>Dominator version (<strong>v1.0</strong>)</li>
+        <li>Render pipeline (Built-in / URP / HDRP)</li>
+        <li>The redacted support bundle (it's telemetry-free)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout callout-tip" style="margin-top:20px;">
+    <span class="callout-icon">&#11088;</span>
+    <div><strong>Enjoying Dominator?</strong> A review on the Unity Asset Store helps other developers discover the asset and helps us keep improving it. Thank you!</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div style="border-top:1px solid var(--border);padding-top:32px;margin-top:48px;text-align:center;color:var(--text-dim);font-size:13px;">
+  <p>Dominator v1.0 &middot; Built for Unity 2021.3+ &middot; Editor-only, telemetry-free</p>
+  <p style="margin-top:8px;">Support: <a href="mailto:szekipapa77@gmail.com" style="color:var(--accent-light);text-decoration:none;">szekipapa77@gmail.com</a></p>
+</div>
+
+</main>
+
+<!-- SCRIPTS -->
+<script>
+// Search functionality
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+const searchOverlay = document.getElementById('searchOverlay');
+
+const sections = [];
+document.querySelectorAll('.section, .hero').forEach(s => {
+  const h2 = s.querySelector('h2');
+  const h1 = s.querySelector('h1');
+  const desc = s.querySelector('.section-desc');
+  const h3s = s.querySelectorAll('h3');
+  const id = s.id || (s.parentElement && s.parentElement.id) || '';
+  if (!id) return;
+  sections.push({
+    id: id,
+    title: h2 ? h2.textContent.trim() : (h1 ? h1.textContent.trim() : ''),
+    desc: desc ? desc.textContent.trim() : '',
+    content: s.textContent.toLowerCase(),
+    h3: Array.from(h3s).map(h => h.textContent.trim())
+  });
+});
+
+searchInput.addEventListener('input', function() {
+  const q = this.value.toLowerCase().trim();
+  if (q.length < 2) {
+    searchResults.classList.remove('visible');
+    searchOverlay.classList.remove('visible');
+    return;
+  }
+  const matches = sections.filter(s => s.content.includes(q)).slice(0, 8);
+  if (matches.length === 0) {
+    searchResults.innerHTML = '<div style="padding:16px;color:var(--text-dim);text-align:center;">No results found</div>';
+  } else {
+    searchResults.innerHTML = matches.map(m => {
+      const matchH3 = m.h3.find(h => h.toLowerCase().includes(q));
+      return '<a href="#' + m.id + '" class="search-item" onclick="closeSearch()">' +
+        '<div class="search-item-section">' + m.title + '</div>' +
+        '<div class="search-item-title">' + (matchH3 || m.desc || m.title) + '</div>' +
+      '</a>';
+    }).join('');
+  }
+  searchResults.classList.add('visible');
+  searchOverlay.classList.add('visible');
+});
+
+function closeSearch() {
+  searchResults.classList.remove('visible');
+  searchOverlay.classList.remove('visible');
+  searchInput.value = '';
+  document.querySelector('.sidebar').classList.remove('open');
+}
+
+searchOverlay.addEventListener('click', closeSearch);
+
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    searchInput.focus();
+  }
+  if (e.key === 'Escape') closeSearch();
+});
+
+// Active sidebar link via IntersectionObserver
+const navLinks = document.querySelectorAll('.sidebar a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector('.sidebar a[href="#' + entry.target.id + '"]');
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -70% 0px', threshold: 0 });
+
+document.querySelectorAll('.section[id], .hero[id]').forEach(s => observer.observe(s));
+
+// Close mobile sidebar on nav click
+navLinks.forEach(link => {
+  link.addEventListener('click', () => {
+    document.querySelector('.sidebar').classList.remove('open');
+  });
+});
+</script>
+
+</body>
+</html>
