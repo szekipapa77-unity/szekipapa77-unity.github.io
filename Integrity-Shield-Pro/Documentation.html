@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Integrity Shield Pro - Documentation</title>
+<style>
+:root {
+  --bg: #0D0B1A;
+  --bg-card: #161230;
+  --bg-card-hover: #1E1840;
+  --bg-code: #1A1535;
+  --bg-sidebar: #100D20;
+  --text: #e2e2ea;
+  --text-dim: #9088b0;
+  --text-code: #c8c8d8;
+  --accent: #9333EA;
+  --accent-light: #A855F7;
+  --accent-glow: rgba(147,51,234,0.15);
+  --green: #00cec9;
+  --green-dim: rgba(0,206,201,0.12);
+  --yellow: #fdcb6e;
+  --yellow-dim: rgba(253,203,110,0.12);
+  --pink: #EC4899;
+  --pink-dim: rgba(236,72,153,0.12);
+  --orange: #e17055;
+  --orange-dim: rgba(225,112,85,0.12);
+  --blue: #818cf8;
+  --blue-dim: rgba(129,140,248,0.12);
+  --border: #2D2550;
+  --border-light: #3D3560;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --sidebar-w: 280px;
+  --header-h: 64px;
+  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 24px); }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 15px;
+  overflow-x: hidden;
+}
+
+::selection { background: var(--accent); color: #fff; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+/* ---- HEADER ---- */
+.header {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  background: rgba(13,11,26,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  gap: 16px;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.header-logo .dot {
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, #9333EA, #EC4899);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800; color: #fff;
+}
+
+.header-search {
+  flex: 1;
+  max-width: 420px;
+  margin-left: auto;
+  position: relative;
+}
+
+.header-search input {
+  width: 100%;
+  padding: 8px 16px 8px 40px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--font);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.header-search input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.header-search input::placeholder { color: var(--text-dim); }
+
+.header-search .search-icon {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  color: var(--text-dim); font-size: 14px; pointer-events: none;
+}
+
+.header-version {
+  font-size: 12px; color: var(--text-dim);
+  background: var(--bg-card);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.menu-toggle {
+  display: none;
+  background: none; border: none;
+  color: var(--text); font-size: 22px;
+  cursor: pointer; padding: 4px;
+}
+
+/* ---- SIDEBAR ---- */
+.sidebar {
+  position: fixed;
+  top: var(--header-h);
+  left: 0;
+  width: var(--sidebar-w);
+  height: calc(100vh - var(--header-h));
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 20px 0;
+  z-index: 90;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-group { margin-bottom: 8px; }
+
+.sidebar-group-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text-dim);
+  padding: 12px 24px 6px;
+}
+
+.sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 24px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 13.5px;
+  transition: all 0.15s;
+  border-left: 2px solid transparent;
+}
+
+.sidebar a:hover {
+  color: var(--text);
+  background: var(--accent-glow);
+}
+
+.sidebar a.active {
+  color: var(--accent-light);
+  background: var(--accent-glow);
+  border-left-color: var(--accent);
+  font-weight: 600;
+}
+
+.sidebar a .nav-icon {
+  width: 20px;
+  text-align: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* ---- MAIN ---- */
+.main {
+  margin-left: var(--sidebar-w);
+  margin-top: var(--header-h);
+  padding: 40px 48px 80px;
+  max-width: 960px;
+}
+
+/* ---- HERO ---- */
+.hero {
+  padding: 48px 0 40px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 48px;
+}
+
+.hero h1 {
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #fff 0%, #A855F7 40%, #EC4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  font-size: 17px;
+  color: var(--text-dim);
+  max-width: 640px;
+  line-height: 1.7;
+}
+
+.hero-badges {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-purple { background: var(--accent-glow); color: var(--accent-light); border: 1px solid rgba(147,51,234,0.25); }
+.badge-green { background: var(--green-dim); color: var(--green); border: 1px solid rgba(0,206,201,0.25); }
+.badge-yellow { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(253,203,110,0.25); }
+.badge-pink { background: var(--pink-dim); color: var(--pink); border: 1px solid rgba(236,72,153,0.25); }
+.badge-blue { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(129,140,248,0.25); }
+
+/* ---- SECTIONS ---- */
+.section {
+  margin-bottom: 56px;
+  scroll-margin-top: calc(var(--header-h) + 24px);
+}
+
+.section h2 {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section h2 .section-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.section > .section-desc {
+  color: var(--text-dim);
+  margin-bottom: 28px;
+  font-size: 15px;
+}
+
+h3 {
+  font-size: 19px;
+  font-weight: 700;
+  margin-top: 32px;
+  margin-bottom: 12px;
+  color: var(--text);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+h4 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-top: 24px;
+  margin-bottom: 8px;
+  color: var(--accent-light);
+}
+
+p { margin-bottom: 12px; }
+
+ul, ol { padding-left: 22px; margin-bottom: 14px; }
+li { margin-bottom: 4px; }
+
+a { color: var(--accent-light); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---- CARDS ---- */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 16px;
+  transition: border-color 0.2s;
+}
+
+.card:hover { border-color: var(--border-light); }
+
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.mini-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: block;
+  color: inherit;
+}
+
+.mini-card:hover {
+  border-color: var(--accent);
+  background: var(--bg-card-hover);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+.mini-card h4 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  color: var(--text);
+  border: none;
+  padding: 0;
+}
+
+.mini-card p {
+  font-size: 12.5px;
+  color: var(--text-dim);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ---- CODE ---- */
+pre {
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 18px 22px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-code);
+  margin-bottom: 16px;
+  position: relative;
+}
+
+pre .lang-tag {
+  position: absolute;
+  top: 8px; right: 12px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-dim);
+  opacity: 0.6;
+  font-family: var(--font);
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: var(--bg-code);
+  padding: 2px 7px;
+  border-radius: 4px;
+  color: var(--accent-light);
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+.kw { color: #C084FC; }
+.str { color: #c3e88d; }
+.cm { color: #6B5F8A; font-style: italic; }
+.fn { color: #818cf8; }
+.tp { color: #ffcb6b; }
+.num { color: #f78c6c; }
+.op { color: #A78BFA; }
+
+/* ---- TABLES ---- */
+.table-wrap {
+  overflow-x: auto;
+  margin-bottom: 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+thead th {
+  background: var(--bg-code);
+  font-weight: 700;
+  text-align: left;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+}
+
+td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(147,51,234,0.04); }
+
+/* ---- COLLAPSIBLE ---- */
+details {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+
+details[open] { border-color: var(--border-light); }
+
+summary {
+  padding: 14px 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+  list-style: none;
+  transition: color 0.15s;
+}
+
+summary::-webkit-details-marker { display: none; }
+
+summary::before {
+  content: '\25B6';
+  font-size: 10px;
+  color: var(--text-dim);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+details[open] > summary::before { transform: rotate(90deg); }
+
+summary:hover { color: var(--accent-light); }
+
+details .details-body { padding: 0 20px 18px; }
+details .details-body p:first-child { margin-top: 0; }
+
+/* ---- CALLOUT ---- */
+.callout {
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.callout > div { flex: 1; }
+.callout p { margin-bottom: 6px; }
+.callout p:last-child { margin-bottom: 0; }
+
+.callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+.callout-tip { background: var(--green-dim); border: 1px solid rgba(0,206,201,0.2); }
+.callout-tip .callout-icon { color: var(--green); }
+
+.callout-warn { background: var(--yellow-dim); border: 1px solid rgba(253,203,110,0.2); }
+.callout-warn .callout-icon { color: var(--yellow); }
+
+.callout-info { background: var(--blue-dim); border: 1px solid rgba(129,140,248,0.2); }
+.callout-info .callout-icon { color: var(--blue); }
+
+.callout-danger { background: var(--pink-dim); border: 1px solid rgba(236,72,153,0.2); }
+.callout-danger .callout-icon { color: var(--pink); }
+
+/* ---- STEP LIST ---- */
+.steps { counter-reset: step; margin-bottom: 16px; }
+
+.step {
+  display: flex;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  counter-increment: step;
+}
+
+.step:last-child { border-bottom: none; }
+
+.step::before {
+  content: counter(step);
+  width: 28px; height: 28px;
+  background: var(--accent-glow);
+  color: var(--accent-light);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.step-content { flex: 1; }
+.step-content strong { color: var(--text); }
+
+/* ---- FLOW DIAGRAM ---- */
+.flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+}
+
+.flow-node {
+  padding: 8px 16px;
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.flow-arrow {
+  padding: 0 8px;
+  color: var(--text-dim);
+  font-size: 16px;
+}
+
+/* ---- TAGS ---- */
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tag-required { background: var(--pink-dim); color: var(--pink); }
+.tag-optional { background: var(--green-dim); color: var(--green); }
+.tag-auto { background: var(--accent-glow); color: var(--accent-light); }
+.tag-platform { background: var(--yellow-dim); color: var(--yellow); }
+.tag-info { background: var(--blue-dim); color: var(--blue); }
+
+/* ---- SEARCH RESULTS ---- */
+.search-overlay {
+  display: none;
+  position: fixed;
+  top: var(--header-h);
+  left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 95;
+}
+
+.search-results {
+  display: none;
+  position: fixed;
+  top: calc(var(--header-h) + 8px);
+  left: 50%; transform: translateX(-50%);
+  width: 520px;
+  max-width: calc(100vw - 32px);
+  max-height: 60vh;
+  overflow-y: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  z-index: 96;
+  padding: 8px;
+}
+
+.search-results.visible { display: block; }
+.search-overlay.visible { display: block; }
+
+.search-item {
+  display: block;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--text);
+  transition: background 0.1s;
+}
+
+.search-item:hover { background: var(--accent-glow); text-decoration: none; }
+.search-item-section { font-size: 11px; color: var(--accent-light); margin-bottom: 2px; }
+.search-item-title { font-weight: 600; font-size: 14px; }
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; padding: 24px 20px 60px; }
+  .menu-toggle { display: block; }
+  .header-search { max-width: 200px; }
+  .hero h1 { font-size: 28px; }
+  .card-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .header { padding: 0 16px; }
+  .header-version { display: none; }
+  .header-search { max-width: 160px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Toggle menu">&#9776;</button>
+  <a href="#overview" class="header-logo">
+    <div class="dot">IS</div>
+    <span>Integrity Shield Pro</span>
+  </a>
+  <div class="header-search">
+    <span class="search-icon">&#128269;</span>
+    <input type="text" id="searchInput" placeholder="Search docs... (Ctrl+K)" autocomplete="off">
+  </div>
+  <span class="header-version">v1.0 &middot; Unity 6000.0+</span>
+</header>
+
+<!-- SEARCH -->
+<div class="search-overlay" id="searchOverlay"></div>
+<div class="search-results" id="searchResults"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Getting Started</div>
+    <a href="#overview"><span class="nav-icon">&#127968;</span> Overview</a>
+    <a href="#installation"><span class="nav-icon">&#10515;</span> Installation</a>
+    <a href="#quickstart-nocode"><span class="nav-icon">&#9889;</span> Quick Start: No-Code</a>
+    <a href="#quickstart-code"><span class="nav-icon">&#128187;</span> Quick Start: Scripting</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Concepts</div>
+    <a href="#how-it-works"><span class="nav-icon">&#9881;</span> How It Works</a>
+    <a href="#profiles"><span class="nav-icon">&#127918;</span> Profiles &amp; Policy</a>
+    <a href="#responses"><span class="nav-icon">&#128737;</span> Responses</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Features</div>
+    <a href="#detectors"><span class="nav-icon">&#128270;</span> Detectors</a>
+    <a href="#protected-values"><span class="nav-icon">&#128274;</span> Protected Values</a>
+    <a href="#protected-storage"><span class="nav-icon">&#128190;</span> Protected Storage</a>
+    <a href="#multiplayer"><span class="nav-icon">&#127760;</span> Multiplayer Evidence</a>
+    <a href="#remote-policy"><span class="nav-icon">&#128225;</span> Remote Policy</a>
+    <a href="#analytics"><span class="nav-icon">&#128202;</span> Analytics &amp; Reporting</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Editor</div>
+    <a href="#editor-tools"><span class="nav-icon">&#128295;</span> Editor Tools / No-Code</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Reference</div>
+    <a href="#platforms"><span class="nav-icon">&#128241;</span> Platforms</a>
+    <a href="#api"><span class="nav-icon">&#128217;</span> Scripting API</a>
+    <a href="#troubleshooting"><span class="nav-icon">&#128161;</span> Troubleshooting</a>
+    <a href="#faq"><span class="nav-icon">&#10067;</span> FAQ</a>
+    <a href="#support"><span class="nav-icon">&#128236;</span> Support</a>
+  </div>
+
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+<!-- HERO -->
+<div class="hero" id="overview">
+  <h1>Integrity Shield Pro</h1>
+  <p>Client-side anti-cheat and tamper protection for Unity &mdash; protected values, encrypted storage, a catalog of runtime detectors, and HMAC-signed evidence for your server. Drop in one component and press Play; no scripting required to get started.</p>
+  <div class="hero-badges">
+    <span class="badge badge-purple">Unity 6000.0+</span>
+    <span class="badge badge-green">No-Code Ready</span>
+    <span class="badge badge-yellow">Mono &amp; IL2CPP</span>
+    <span class="badge badge-pink">All Platforms</span>
+    <span class="badge badge-blue">No auto-ban by default</span>
+  </div>
+</div>
+
+<section class="section">
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>What it is.</strong> A layered, client-side integrity toolkit: it raises the cost of tampering and gives your backend signed evidence to act on. It is <strong>defense-in-depth</strong>, not a silver bullet &mdash; pair it with server authority for anything that affects fairness or economy. See <a href="#faq">FAQ</a> and the bundled <code>SecurityLimitations.md</code>.</div>
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#9989;</span>
+    <div><strong>Safe by default.</strong> Detection is <em>silent</em> out of the box &mdash; the asset never auto-bans, punishes, or collects personal data by default. You decide the response policy. All limitations are documented honestly.</div>
+  </div>
+
+  <div class="card-grid">
+    <a class="mini-card" href="#quickstart-nocode"><h4>&#9889; Protection in 30 seconds</h4><p>Add the <strong>Integrity Shield Bootstrap</strong> component, pick a profile, press Play.</p></a>
+    <a class="mini-card" href="#detectors"><h4>&#128270; 13 built-in detectors</h4><p>Speedhack, debugger, injection, known tools, file integrity, root/jailbreak, emulator and more.</p></a>
+    <a class="mini-card" href="#protected-values"><h4>&#128274; Protected values</h4><p>Obfuscated, tamper-evident <code>ProtectedInt</code>/<code>ProtectedFloat</code> and protected collections.</p></a>
+    <a class="mini-card" href="#protected-storage"><h4>&#128190; Encrypted storage</h4><p>AES-CBC + HMAC <code>ProtectedPrefs</code> / <code>ProtectedFileStore</code> with tamper detection.</p></a>
+    <a class="mini-card" href="#multiplayer"><h4>&#127760; Signed evidence</h4><p>HMAC-signed envelopes with replay protection for Mirror, Netcode, FishNet, HTTP or WebSocket.</p></a>
+    <a class="mini-card" href="#editor-tools"><h4>&#128295; No-code editor tools</h4><p>Bootstrap component, scaffolding menu, Setup Wizard, dashboards and viewers.</p></a>
+  </div>
+</section>
+
+<!-- INSTALLATION -->
+<section class="section" id="installation">
+  <h2><span class="section-icon" style="background:var(--green-dim);color:var(--green)">&#10515;</span> Installation</h2>
+  <p class="section-desc">Import the package and you're ready &mdash; the core needs no extra packages.</p>
+
+  <div class="steps">
+    <div class="step"><div class="step-content"><strong>Import the package.</strong> A one-time <strong>Welcome</strong> window opens with quick actions. You can reopen it anytime from <code>Tools &#9656; Integrity Shield &#9656; Welcome &amp; Help</code>.</div></div>
+    <div class="step"><div class="step-content"><strong>(Optional) Run the Setup Wizard.</strong> <code>Tools &#9656; Integrity Shield &#9656; Setup Wizard</code> creates default Profile / Policy / Signature assets and picks a game profile.</div></div>
+    <div class="step"><div class="step-content"><strong>Add protection.</strong> Continue to the <a href="#quickstart-nocode">No-Code Quick Start</a>.</div></div>
+  </div>
+
+  <h3>Requirements</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Component</th><th>Needs</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Core runtime + editor tools</td><td><span class="tag tag-optional">No extra packages</span></td><td>Compiles in an empty project against default Unity modules. Verified by clean-room import.</td></tr>
+        <tr><td>Demo scenes</td><td><code>com.unity.ugui</code></td><td>uGUI ships in every standard template (3D, 2D, URP, HDRP).</td></tr>
+        <tr><td>Tests (developer only)</td><td><code>com.unity.test-framework</code></td><td>Not required at runtime.</td></tr>
+        <tr><td>Mobile native detection</td><td><span class="tag tag-optional">Bundled</span></td><td>Android <code>.so</code> (arm64-v8a, armeabi-v7a, x86_64) + iOS native source included.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout callout-tip"><span class="callout-icon">&#9989;</span><div>Unity 6000.0 (Unity 6) or newer. The full runtime is verified end-to-end on both <strong>Mono</strong> and <strong>IL2CPP</strong> players.</div></div>
+</section>
+
+<!-- QUICK START NO-CODE -->
+<section class="section" id="quickstart-nocode">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#9889;</span> Quick Start &mdash; No Code</h2>
+  <p class="section-desc">A non-coder can get working protection by clicking, not scripting.</p>
+
+  <div class="steps">
+    <div class="step"><div class="step-content"><strong>Add the component.</strong> In the menu bar choose <code>GameObject &#9656; Integrity Shield &#9656; Add Protection (Bootstrap)</code>. This drops an <strong>Integrity Shield</strong> object into your scene.</div></div>
+    <div class="step"><div class="step-content"><strong>Choose your protection.</strong> In the Inspector, either assign a <strong>Profile Asset</strong> or pick a <strong>Built-In Profile</strong> from the dropdown that matches your game (the inspector shows a one-line description of each).</div></div>
+    <div class="step"><div class="step-content"><strong>Press Play.</strong> Protection starts automatically. The Inspector shows a live <em>Runtime Status</em> panel; open <code>Tools &#9656; Integrity Shield &#9656; Event Viewer</code> to watch detections.</div></div>
+  </div>
+
+  <div class="callout callout-info"><span class="callout-icon">&#9432;</span><div>No profile asset assigned? That's fine &mdash; the selected <strong>Built-In Profile</strong> preset is used at runtime. Click <strong>Create Profile Asset</strong> in the Inspector when you want to customize detectors, policy and reporting.</div></div>
+
+  <h3>Built-in profiles</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Profile</th><th>For</th></tr></thead>
+      <tbody>
+        <tr><td>Single Player Basic</td><td>Offline games &mdash; protected values, encrypted storage, time checks.</td></tr>
+        <tr><td>Single Player Economy</td><td>Offline with currency/economy &mdash; adds time-manipulation + file-integrity.</td></tr>
+        <tr><td>Casual Multiplayer</td><td>Casual online &mdash; enables signed evidence reporting.</td></tr>
+        <tr><td>Competitive Multiplayer</td><td>Competitive online &mdash; debugger, injection, known-tool detection + evidence.</td></tr>
+        <tr><td>Mobile Live Service</td><td>Mobile &mdash; Android/iOS native root, jailbreak, emulator detection.</td></tr>
+        <tr><td>PC Competitive</td><td>PC &mdash; debugger, injection, known-tool, file-integrity detection.</td></tr>
+        <tr><td>QA Stress Test</td><td>Enables every detector with a relaxed frame budget.</td></tr>
+        <tr><td>WebGL Limited</td><td>Disables detectors not meaningful in the browser sandbox.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- QUICK START CODE -->
+<section class="section" id="quickstart-code">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#128187;</span> Quick Start &mdash; Scripting</h2>
+  <p class="section-desc">Prefer code? Initialize the manager directly. (A code-first <code>Initialize</code> always takes precedence over the no-code Bootstrap.)</p>
+
+  <pre><span class="lang-tag">C#</span><code><span class="kw">using</span> IntegrityShield;
+
+<span class="kw">public class</span> <span class="tp">GameBoot</span> : <span class="tp">MonoBehaviour</span> {
+    <span class="kw">void</span> <span class="fn">Awake</span>() {
+        <span class="cm">// Pass a profile asset, or null for sensible defaults.</span>
+        <span class="tp">IntegrityShieldManager</span>.<span class="fn">Initialize</span>(myProfile);
+    }
+}</code></pre>
+
+  <p>Protect a value and react to threats:</p>
+  <pre><span class="lang-tag">C#</span><code><span class="cm">// Obfuscated, tamper-evident value.</span>
+<span class="kw">var</span> coins = <span class="kw">new</span> <span class="tp">ProtectedInt</span>(<span class="num">100</span>);
+coins.<span class="fn">Value</span> += <span class="num">50</span>;
+
+<span class="cm">// Subscribe to integrity responses.</span>
+<span class="tp">IntegrityShieldManager</span>.Instance.ResponseIssued += decision =&gt; {
+    <span class="tp">Debug</span>.<span class="fn">Log</span>(<span class="str">$"Response: {decision.action}"</span>);
+};</code></pre>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how-it-works">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#9881;</span> How It Works</h2>
+  <p class="section-desc">Detectors observe the runtime, raise threat events, the policy engine decides a response, and evidence is optionally exported.</p>
+
+  <div class="flow">
+    <div class="flow-node">Detectors</div><span class="flow-arrow">&#8594;</span>
+    <div class="flow-node">Threat Event Bus</div><span class="flow-arrow">&#8594;</span>
+    <div class="flow-node">Policy Engine</div><span class="flow-arrow">&#8594;</span>
+    <div class="flow-node">Response</div><span class="flow-arrow">&#8594;</span>
+    <div class="flow-node">Exporters / Server Evidence</div>
+  </div>
+
+  <ul>
+    <li><strong>Detector scheduler</strong> runs detectors within a per-frame budget so protection never spikes your frame time.</li>
+    <li><strong>Threat events</strong> carry a detector id, signal, severity, confidence and evidence bundle; the bus is thread-safe and bounded.</li>
+    <li><strong>Policy engine</strong> matches events against rules (severity / confidence / platform / build / repeat-count / time-window) and accumulates a session risk score.</li>
+    <li><strong>Responses</strong> range from silent logging to exporting evidence, requiring server validation, or quitting &mdash; you choose per rule.</li>
+  </ul>
+</section>
+
+<!-- PROFILES -->
+<section class="section" id="profiles">
+  <h2><span class="section-icon" style="background:var(--yellow-dim);color:var(--yellow)">&#127918;</span> Profiles &amp; Policy</h2>
+  <p class="section-desc">A <strong>Profile</strong> bundles which features and detectors are on; a <strong>Policy</strong> defines the rules and responses.</p>
+
+  <h3>Profile</h3>
+  <p>Create via <code>Assets &#9656; Create &#9656; Integrity Shield &#9656; Profile</code>. The custom inspector shows a plain-language description of the chosen game type and an <strong>Apply Preset Defaults</strong> button that configures detectors, frame budget and reporting for that scenario. Fields are grouped and tooltipped.</p>
+
+  <h3>Policy rules</h3>
+  <p>A rule matches by detector, signal, platform, scripting backend, dev/release build, minimum severity, minimum confidence, required event count and time window, then issues a response and a risk-score delta. Tune rules visually in <code>Tools &#9656; Integrity Shield &#9656; Policy Editor</code> and dry-run them in the <strong>Policy Simulator</strong>.</p>
+
+  <div class="callout callout-tip"><span class="callout-icon">&#128274;</span><div>A <strong>local kill switch</strong> (PlayerPrefs flag) lets you disable all detectors during local development without code changes.</div></div>
+</section>
+
+<!-- RESPONSES -->
+<section class="section" id="responses">
+  <h2><span class="section-icon" style="background:var(--pink-dim);color:var(--pink)">&#128737;</span> Responses</h2>
+  <p class="section-desc">What happens when a rule matches. You control this entirely; nothing punishes players by default.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Response</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td>Log</td><td>Record the event silently (default-friendly).</td></tr>
+        <tr><td>Export</td><td>Route the event to your exporters (local JSON Lines and/or HTTP).</td></tr>
+        <tr><td>Require Server Validation</td><td>Flag the session for server-authoritative re-checks; sends signed evidence.</td></tr>
+        <tr><td>Block Online Session</td><td>Mark the session as not eligible for online play.</td></tr>
+        <tr><td>Disable Leaderboard / Ranked Queue</td><td>Soft responses your game code can read and honor.</td></tr>
+        <tr><td>Quit Application</td><td>Only when explicitly allowed in the policy (off by default).</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout callout-warn"><span class="callout-icon">&#9888;</span><div>Client-side responses are deterrents. For anything that affects fairness or economy, treat the client as untrusted and enforce on your server &mdash; the signed evidence path exists for exactly this.</div></div>
+</section>
+
+<!-- DETECTORS -->
+<section class="section" id="detectors">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#128270;</span> Detectors</h2>
+  <p class="section-desc">Thirteen built-in detectors run on a frame-budgeted scheduler. Enable per profile.</p>
+  <div class="card-grid">
+    <div class="mini-card"><h4>Speedhack / Time Manipulation</h4><p>Detects fake clock drift between trusted and local time.</p></div>
+    <div class="mini-card"><h4>Debugger</h4><p>Flags an attached debugger on supported platforms.</p></div>
+    <div class="mini-card"><h4>Known Tool</h4><p>Word-boundary matching of cheat-tool process/module names (Cheat Engine, Frida, Xposed, &hellip;).</p></div>
+    <div class="mini-card"><h4>Native Module Injection</h4><p>Flags suspicious loaded native modules.</p></div>
+    <div class="mini-card"><h4>Assembly Injection</h4><p>Reports unexpected managed assemblies (framework-aware allowlist; reports once).</p></div>
+    <div class="mini-card"><h4>File Integrity</h4><p>Hashes manifest files and flags mismatch / missing.</p></div>
+    <div class="mini-card"><h4>Wallhack / Visibility Sentinel</h4><p>Detects hidden-object visibility and occlusion mismatches.</p></div>
+    <div class="mini-card"><h4>Memory Tamper Canary</h4><p>Decoy values that reveal memory editing.</p></div>
+    <div class="mini-card"><h4>Root / Jailbreak / Emulator</h4><p>Android &amp; iOS native signals (root, Magisk, jailbreak, emulator/VM).</p></div>
+    <div class="mini-card"><h4>App / Certificate Integrity</h4><p>Package name, signing certificate and app-hash mismatch checks.</p></div>
+  </div>
+  <div class="callout callout-info"><span class="callout-icon">&#9432;</span><div>Each detector reports a <strong>confidence</strong> (0&ndash;100) and <strong>severity</strong>; the policy decides what (if anything) to do. Detectors are tuned to avoid false positives (for example short tool tokens match only on whole words).</div></div>
+</section>
+
+<!-- PROTECTED VALUES -->
+<section class="section" id="protected-values">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128274;</span> Protected Values</h2>
+  <p class="section-desc">Drop-in replacements for primitive fields that resist memory editing and reveal tampering.</p>
+  <p>Values are XOR-obfuscated in memory with a decoy mismatch check &mdash; a memory editor that changes the stored value triggers a tamper event. Supported types include <code>ProtectedInt</code>, <code>ProtectedFloat</code>, <code>ProtectedBool</code>, <code>ProtectedString</code>, <code>ProtectedVector2/3/4</code>, <code>ProtectedQuaternion</code>, <code>ProtectedColor</code> and many more, plus protected collections: <code>ProtectedList</code>, <code>ProtectedDictionary</code>, <code>ProtectedQueue</code>, <code>ProtectedStack</code> and <code>ProtectedHashSet</code>.</p>
+  <pre><span class="lang-tag">C#</span><code><span class="kw">var</span> health = <span class="kw">new</span> <span class="tp">ProtectedFloat</span>(<span class="num">100f</span>);
+health.<span class="fn">Value</span> -= <span class="num">25f</span>;          <span class="cm">// use it like a normal float</span>
+<span class="kw">var</span> inventory = <span class="kw">new</span> <span class="tp">ProtectedList</span>&lt;<span class="tp">int</span>&gt;();
+inventory.<span class="fn">Add</span>(<span class="num">7</span>);</code></pre>
+  <div class="callout callout-tip"><span class="callout-icon">&#9989;</span><div>In the Inspector, protected fields render as read-only <code>(protected)</code> labels so their decoy contents aren't mistaken for the real value.</div></div>
+</section>
+
+<!-- PROTECTED STORAGE -->
+<section class="section" id="protected-storage">
+  <h2><span class="section-icon" style="background:var(--green-dim);color:var(--green)">&#128190;</span> Protected Storage</h2>
+  <p class="section-desc">Encrypted, authenticated local storage that fails closed when tampered.</p>
+  <p>Records are encrypted with <strong>AES-CBC</strong> and authenticated with <strong>HMAC-SHA256</strong> (encrypt-then-MAC), with separately derived encryption and authentication keys. Use <code>ProtectedPrefs</code> in place of <code>PlayerPrefs</code>, and <code>ProtectedFileStore</code> for larger JSON/text payloads.</p>
+  <pre><span class="lang-tag">C#</span><code><span class="tp">ProtectedPrefs</span>.<span class="fn">SetInt</span>(<span class="str">"coins"</span>, <span class="num">500</span>);
+<span class="kw">int</span> coins = <span class="tp">ProtectedPrefs</span>.<span class="fn">GetInt</span>(<span class="str">"coins"</span>, <span class="num">0</span>);  <span class="cm">// returns default if tampered</span></code></pre>
+  <ul>
+    <li>Verified backup recovery and corrupted-record quarantine.</li>
+    <li>Key rotation via <code>ProtectedPrefs.RotateKey&lt;T&gt;()</code> and <code>ProtectedFileStore.RotateTextKeyAsync()</code>.</li>
+    <li>Optional <code>DeviceBoundKeyProvider</code> binds saves to an install/account so a copied save fails to authenticate elsewhere.</li>
+  </ul>
+  <div class="callout callout-warn"><span class="callout-icon">&#9888;</span><div>The default key provider stores a per-install key in <code>PlayerPrefs</code> for zero-config and cloud-save compatibility. On platforms where <code>PlayerPrefs</code> is readable, this is deterrence, not a cryptographic guarantee &mdash; keep server authority for fairness-critical values. See <code>ProtectedStorage.md</code>.</div></div>
+</section>
+
+<!-- MULTIPLAYER -->
+<section class="section" id="multiplayer">
+  <h2><span class="section-icon" style="background:var(--yellow-dim);color:var(--yellow)">&#127760;</span> Multiplayer Evidence</h2>
+  <p class="section-desc">Give your server tamper-evident, replay-resistant evidence to act on.</p>
+  <p>Threat events are wrapped in an <code>EvidenceEnvelope</code> and signed with HMAC-SHA256 (with a per-session nonce for replay protection). Your server verifies with the shared key before trusting the report.</p>
+  <div class="flow">
+    <div class="flow-node">Client signs envelope</div><span class="flow-arrow">&#8594;</span>
+    <div class="flow-node">Transport</div><span class="flow-arrow">&#8594;</span>
+    <div class="flow-node">Server verifies (HMAC + nonce)</div><span class="flow-arrow">&#8594;</span>
+    <div class="flow-node">Accept / Reject</div>
+  </div>
+  <p>Bundled transports: <strong>Mirror</strong>, <strong>Netcode for GameObjects</strong>, <strong>FishNet</strong>, generic <strong>HTTP</strong> and <strong>WebSocket</strong>. Server-side rule validators are included for movement speed, economy delta, cooldown, inventory, match result and session risk.</p>
+  <div class="callout callout-info"><span class="callout-icon">&#9432;</span><div>The full client&rarr;socket&rarr;server-verify round-trip (accept, replay-reject, tamper-reject) is covered by automated tests, including inside a built player.</div></div>
+</section>
+
+<!-- REMOTE POLICY -->
+<section class="section" id="remote-policy">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#128225;</span> Remote Policy</h2>
+  <p class="section-desc">Tune detection live without shipping an app update.</p>
+  <p>Fetch a signed policy from your endpoint; it is verified with HMAC-SHA256 and an expiry timestamp before being applied, and every apply/reject is recorded to an audit log. Tampered or expired policies are rejected.</p>
+  <pre><span class="lang-tag">C#</span><code><span class="kw">var</span> ok = <span class="tp">RemotePolicyService</span>.<span class="fn">TryVerifyAndApply</span>(envelope, key, policy, audit, <span class="kw">out</span> <span class="kw">var</span> error);</code></pre>
+</section>
+
+<!-- ANALYTICS -->
+<section class="section" id="analytics">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128202;</span> Analytics &amp; Reporting</h2>
+  <p class="section-desc">Privacy-aware local and remote reporting.</p>
+  <p>Route threat events to local <strong>JSON Lines</strong> files and/or an <strong>HTTP endpoint</strong>. Exporters enforce a bounded queue and apply privacy redaction (e.g. emails and raw player ids are stripped at the Standard/Minimal privacy levels). Configure via <code>Assets &#9656; Create &#9656; Integrity Shield &#9656; Event Routing Config</code> or the Event Routing window.</p>
+  <div class="callout callout-tip"><span class="callout-icon">&#128274;</span><div>No personal data is collected by default. You opt in to analytics and choose the privacy level.</div></div>
+</section>
+
+<!-- EDITOR TOOLS -->
+<section class="section" id="editor-tools">
+  <h2><span class="section-icon" style="background:var(--pink-dim);color:var(--pink)">&#128295;</span> Editor Tools &amp; No-Code Workflow</h2>
+  <p class="section-desc">Everything important is reachable by clicking. This is a headline capability &mdash; you can ship protection without writing a line.</p>
+
+  <h3>Drop-in &amp; scaffolding</h3>
+  <ul>
+    <li><strong>Integrity Shield Bootstrap</strong> component &mdash; assign a profile or pick a built-in preset; protection auto-starts on Play. Live runtime status in the Inspector.</li>
+    <li><code>GameObject &#9656; Integrity Shield &#9656; Add Protection (Bootstrap)</code> &mdash; one-click scene scaffolding with full Undo.</li>
+    <li><strong>Welcome &amp; Help</strong> window &mdash; opens once on first import; re-openable and dismissible.</li>
+  </ul>
+
+  <h3>Authoring assets (no code)</h3>
+  <p>Create from <code>Assets &#9656; Create &#9656; Integrity Shield &#9656; &hellip;</code>: Profile, Policy, Known Tool Signature Database, File Integrity Manifest, Event Routing Config. The <strong>Signature Database</strong> inspector supports <strong>CSV import</strong> (file picker or drag-and-drop, with automatic delimiter detection &mdash; comma, semicolon, tab or pipe), copy-as-CSV, clipboard merge, and reset-to-defaults.</p>
+
+  <h3>Windows (Tools &#9656; Integrity Shield)</h3>
+  <div class="card-grid">
+    <div class="mini-card"><h4>Setup Wizard</h4><p>Create default assets &amp; pick a game profile.</p></div>
+    <div class="mini-card"><h4>Dashboard</h4><p>Hub for every Integrity Shield tool.</p></div>
+    <div class="mini-card"><h4>Policy Editor / Simulator</h4><p>Author rules and dry-run events against them.</p></div>
+    <div class="mini-card"><h4>Event &amp; Evidence Viewers</h4><p>Inspect recent threat events and signed envelopes.</p></div>
+    <div class="mini-card"><h4>Signature Database</h4><p>Edit and import known-tool signatures.</p></div>
+    <div class="mini-card"><h4>Risk Scanner</h4><p>Scan your project for risky patterns (e.g. raw PlayerPrefs).</p></div>
+    <div class="mini-card"><h4>Protected Storage Browser</h4><p>Inspect protected records.</p></div>
+    <div class="mini-card"><h4>Analytics Dashboard</h4><p>Summarize routed events.</p></div>
+    <div class="mini-card"><h4>Build Validator / Benchmarks</h4><p>Pre-ship checks and micro-benchmarks.</p></div>
+  </div>
+</section>
+
+<!-- PLATFORMS -->
+<section class="section" id="platforms">
+  <h2><span class="section-icon" style="background:var(--green-dim);color:var(--green)">&#128241;</span> Platforms</h2>
+  <p class="section-desc">Builds verified across all desktop and mobile targets, on Mono and IL2CPP.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Platform</th><th>Status</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Windows (x64)</td><td><span class="tag tag-optional">Verified</span></td><td>Mono &amp; IL2CPP players verified end-to-end.</td></tr>
+        <tr><td>macOS</td><td><span class="tag tag-optional">Verified</span></td><td>Standalone build verified.</td></tr>
+        <tr><td>Linux (x64)</td><td><span class="tag tag-optional">Verified</span></td><td>Standalone build verified.</td></tr>
+        <tr><td>Android</td><td><span class="tag tag-optional">Verified</span></td><td>Bundled native library; root/emulator/injection signals.</td></tr>
+        <tr><td>iOS</td><td><span class="tag tag-optional">Verified</span></td><td>Bundled native source; jailbreak/injection signals.</td></tr>
+        <tr><td>WebGL</td><td><span class="tag tag-platform">Limited</span></td><td>Browser sandbox limits some detectors (use the WebGL profile).</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- API -->
+<section class="section" id="api">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#128217;</span> Scripting API</h2>
+  <p class="section-desc">The most common entry points. The no-code Bootstrap calls these for you.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Member</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>IntegrityShieldManager.Initialize(profile)</code></td><td>Start protection with a profile (or <code>null</code> for defaults).</td></tr>
+        <tr><td><code>IntegrityShieldManager.IsInitialized</code></td><td>Whether protection is running.</td></tr>
+        <tr><td><code>IntegrityShieldManager.EmitThreat(&hellip;)</code></td><td>Raise a custom threat event (thread-safe).</td></tr>
+        <tr><td><code>Instance.RunManualCheck(id)</code></td><td>Run a single detector on demand.</td></tr>
+        <tr><td><code>Instance.Events.RecentEvents</code></td><td>Recent threat events.</td></tr>
+        <tr><td><code>Instance.ResponseIssued</code></td><td>Event fired when a response decision is made.</td></tr>
+        <tr><td><code>Instance.Status</code></td><td>Live status (initialized, detector count, kill switch&hellip;).</td></tr>
+        <tr><td><code>IntegrityShieldBootstrap.StartProtection()</code></td><td>Start from a UI button / your code.</td></tr>
+        <tr><td><code>IntegrityShieldManager.Shutdown()</code></td><td>Stop protection and release runtime state.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>See <code>APIReference.md</code> in the Documentation folder for the full surface.</p>
+</section>
+
+<!-- TROUBLESHOOTING -->
+<section class="section" id="troubleshooting">
+  <h2><span class="section-icon" style="background:var(--yellow-dim);color:var(--yellow)">&#128161;</span> Troubleshooting</h2>
+  <p class="section-desc">The issues that come up most, and how to resolve them.</p>
+
+  <details open>
+    <summary>Nothing happens when I press Play</summary>
+    <div class="details-body"><p>Protection only starts if it is initialized. Add the <strong>Integrity Shield Bootstrap</strong> component (or use <code>GameObject &#9656; Integrity Shield &#9656; Add Protection</code>) with <em>Initialize On Awake</em> enabled, or call <code>IntegrityShieldManager.Initialize(profile)</code> from your code. The Bootstrap's Inspector shows a live Runtime Status panel in Play mode.</p></div>
+  </details>
+  <details>
+    <summary>I see "[IntegrityShield] &hellip;" warnings in the Console</summary>
+    <div class="details-body"><p>Those are intended threat-event logs (the system reporting a detection), not errors. Tune what gets logged via the Policy, or raise the routing minimum severity in the Event Routing Config.</p></div>
+  </details>
+  <details>
+    <summary>A legitimate tool is being flagged</summary>
+    <div class="details-body"><p>Edit the Known Tool Signature Database (remove or adjust a token), or disable the Known Tool detector in your Policy. Tokens match on whole words to reduce false positives.</p></div>
+  </details>
+  <details>
+    <summary>The Demo scripts won't compile in a bare project</summary>
+    <div class="details-body"><p>The Demo uses uGUI. Add <code>com.unity.ugui</code> via the Package Manager (it's included in all standard templates), or delete the <code>Assets/IntegrityShield/Demo</code> folder &mdash; the core runtime has no extra dependencies.</p></div>
+  </details>
+  <details>
+    <summary>macOS build won't open ("damaged")</summary>
+    <div class="details-body"><p>Unsigned development builds are quarantined by Gatekeeper. Clear it with <code>xattr -dr com.apple.quarantine YourApp.app</code>, or sign the build.</p></div>
+  </details>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#10067;</span> FAQ</h2>
+  <p class="section-desc">Quick answers to the questions that come up most.</p>
+
+  <details open>
+    <summary>Does this make my game uncheatable?</summary>
+    <div class="details-body"><p>No &mdash; and no client-side tool can make that claim honestly. Integrity Shield raises the cost and effort of tampering and gives your server signed evidence to act on. For anything affecting fairness or economy, keep server-side authority. Limitations are documented in <code>SecurityLimitations.md</code>.</p></div>
+  </details>
+  <details>
+    <summary>Do I have to write code?</summary>
+    <div class="details-body"><p>No. Add the Bootstrap component (or use the GameObject menu), pick a profile, press Play. A full code API is available for advanced use and always takes precedence over the no-code path.</p></div>
+  </details>
+  <details>
+    <summary>Will it auto-ban my players?</summary>
+    <div class="details-body"><p>No. Detection is silent by default; the asset never bans or punishes on its own. You define the response policy.</p></div>
+  </details>
+  <details>
+    <summary>Does it work with IL2CPP?</summary>
+    <div class="details-body"><p>Yes. The full pipeline (crypto, storage, evidence, detectors) is verified end-to-end in a built IL2CPP player as well as Mono.</p></div>
+  </details>
+  <details>
+    <summary>Does it need native plugins or an internet connection?</summary>
+    <div class="details-body"><p>Desktop protection is pure C#. Mobile native detection uses a bundled Android library and iOS source (optional). No internet connection is required; remote policy and server evidence are opt-in features that use <em>your</em> endpoints.</p></div>
+  </details>
+  <details>
+    <summary>Is multiplayer required?</summary>
+    <div class="details-body"><p>No. Single-player profiles use protected values, encrypted storage and local detectors. The signed-evidence features are there when you need a server.</p></div>
+  </details>
+</section>
+
+<!-- SUPPORT -->
+<section class="section" id="support">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128236;</span> Support</h2>
+  <p class="section-desc">Need help? We're here for you.</p>
+
+  <div class="card" style="text-align:center;padding:40px 24px;">
+    <div style="font-size:48px;margin-bottom:16px;">&#128231;</div>
+    <h3 style="border:none;margin-top:0;padding:0;text-align:center;">Get in Touch</h3>
+    <p style="color:var(--text-dim);max-width:480px;margin:8px auto 24px;">Bug reports, feature requests, integration questions &mdash; reach out and we'll get back to you.</p>
+    <a href="mailto:szekipapa77@gmail.com" style="display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,var(--accent),var(--pink));color:#fff;text-decoration:none;border-radius:var(--radius-sm);font-weight:700;font-size:15px;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+      &#9993; szekipapa77@gmail.com
+    </a>
+    <p style="color:var(--text-dim);font-size:13px;margin-top:16px;">We typically respond within 24&ndash;48 hours.</p>
+  </div>
+
+  <div class="card-grid" style="margin-top:16px;">
+    <div class="card">
+      <div class="card-title">&#128172; Before contacting</div>
+      <ul style="padding-left:20px;color:var(--text-dim);font-size:14px;line-height:1.9;">
+        <li>Check the <a href="#troubleshooting">Troubleshooting</a> section</li>
+        <li>Run <strong>Tools &#9656; Integrity Shield &#9656; Build Validator</strong></li>
+        <li>Confirm the <strong>Integrity Shield Bootstrap</strong> is in your scene (or you call <code>Initialize</code>)</li>
+        <li>Check the Console for threat-event messages</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">&#128203; Helpful info to include</div>
+      <ul style="padding-left:20px;color:var(--text-dim);font-size:14px;line-height:1.9;">
+        <li>Unity version (e.g. <code>6000.0.62f1</code>)</li>
+        <li>Integrity Shield Pro version (<strong>v1.0</strong>)</li>
+        <li>Platform &amp; scripting backend (Mono / IL2CPP)</li>
+        <li>The profile you're using + what you expected</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout callout-tip" style="margin-top:20px;">
+    <span class="callout-icon">&#11088;</span>
+    <div><strong>Enjoying Integrity Shield Pro?</strong> A review on the Unity Asset Store helps other developers discover the asset and helps us keep improving it. Thank you!</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div style="border-top:1px solid var(--border);padding-top:32px;margin-top:48px;text-align:center;color:var(--text-dim);font-size:13px;">
+  <p>Integrity Shield Pro v1.0 &middot; Built for Unity 6000.0+ &middot; Verified on Mono &amp; IL2CPP</p>
+  <p style="margin-top:8px;">Support: <a href="mailto:szekipapa77@gmail.com" style="color:var(--accent-light);text-decoration:none;">szekipapa77@gmail.com</a></p>
+</div>
+
+</main>
+
+<!-- SCRIPTS -->
+<script>
+// Search functionality
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+const searchOverlay = document.getElementById('searchOverlay');
+
+const sections = [];
+document.querySelectorAll('.section, .hero').forEach(s => {
+  const h2 = s.querySelector('h2');
+  const h1 = s.querySelector('h1');
+  const desc = s.querySelector('.section-desc');
+  const h3s = s.querySelectorAll('h3');
+  const id = s.id || (s.parentElement && s.parentElement.id) || '';
+  if (!id) return;
+  sections.push({
+    id: id,
+    title: h2 ? h2.textContent.trim() : (h1 ? h1.textContent.trim() : ''),
+    desc: desc ? desc.textContent.trim() : '',
+    content: s.textContent.toLowerCase(),
+    h3: Array.from(h3s).map(h => h.textContent.trim())
+  });
+});
+
+searchInput.addEventListener('input', function() {
+  const q = this.value.toLowerCase().trim();
+  if (q.length < 2) {
+    searchResults.classList.remove('visible');
+    searchOverlay.classList.remove('visible');
+    return;
+  }
+  const matches = sections.filter(s => s.content.includes(q)).slice(0, 8);
+  if (matches.length === 0) {
+    searchResults.innerHTML = '<div style="padding:16px;color:var(--text-dim);text-align:center;">No results found</div>';
+  } else {
+    searchResults.innerHTML = matches.map(m => {
+      const matchH3 = m.h3.find(h => h.toLowerCase().includes(q));
+      return '<a href="#' + m.id + '" class="search-item" onclick="closeSearch()">' +
+        '<div class="search-item-section">' + m.title + '</div>' +
+        '<div class="search-item-title">' + (matchH3 || m.desc || m.title) + '</div>' +
+      '</a>';
+    }).join('');
+  }
+  searchResults.classList.add('visible');
+  searchOverlay.classList.add('visible');
+});
+
+function closeSearch() {
+  searchResults.classList.remove('visible');
+  searchOverlay.classList.remove('visible');
+  searchInput.value = '';
+  document.querySelector('.sidebar').classList.remove('open');
+}
+
+searchOverlay.addEventListener('click', closeSearch);
+
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    searchInput.focus();
+  }
+  if (e.key === 'Escape') closeSearch();
+});
+
+// Active sidebar link via IntersectionObserver
+const navLinks = document.querySelectorAll('.sidebar a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector('.sidebar a[href="#' + entry.target.id + '"]');
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -70% 0px', threshold: 0 });
+
+document.querySelectorAll('.section[id], .hero[id]').forEach(s => observer.observe(s));
+
+// Close mobile sidebar on nav click
+navLinks.forEach(link => {
+  link.addEventListener('click', () => {
+    document.querySelector('.sidebar').classList.remove('open');
+  });
+});
+</script>
+
+</body>
+</html>
