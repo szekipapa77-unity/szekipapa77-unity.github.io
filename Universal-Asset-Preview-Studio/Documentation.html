@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Universal Asset Preview Studio - Documentation</title>
+<style>
+:root {
+  --bg: #0D0B1A;
+  --bg-card: #161230;
+  --bg-card-hover: #1E1840;
+  --bg-code: #1A1535;
+  --bg-sidebar: #100D20;
+  --text: #e2e2ea;
+  --text-dim: #9088b0;
+  --text-code: #c8c8d8;
+  --accent: #9333EA;
+  --accent-light: #A855F7;
+  --accent-glow: rgba(147,51,234,0.15);
+  --green: #00cec9;
+  --green-dim: rgba(0,206,201,0.12);
+  --yellow: #fdcb6e;
+  --yellow-dim: rgba(253,203,110,0.12);
+  --pink: #EC4899;
+  --pink-dim: rgba(236,72,153,0.12);
+  --orange: #e17055;
+  --orange-dim: rgba(225,112,85,0.12);
+  --blue: #818cf8;
+  --blue-dim: rgba(129,140,248,0.12);
+  --border: #2D2550;
+  --border-light: #3D3560;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --sidebar-w: 280px;
+  --header-h: 64px;
+  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 24px); }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 15px;
+  overflow-x: hidden;
+}
+
+::selection { background: var(--accent); color: #fff; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+/* ---- HEADER ---- */
+.header {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  background: rgba(13,11,26,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  gap: 16px;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.header-logo .dot {
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, #9333EA, #EC4899);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800; color: #fff;
+}
+
+.header-search {
+  flex: 1;
+  max-width: 420px;
+  margin-left: auto;
+  position: relative;
+}
+
+.header-search input {
+  width: 100%;
+  padding: 8px 16px 8px 40px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--font);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.header-search input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.header-search input::placeholder { color: var(--text-dim); }
+
+.header-search .search-icon {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  color: var(--text-dim); font-size: 14px; pointer-events: none;
+}
+
+.header-version {
+  font-size: 12px; color: var(--text-dim);
+  background: var(--bg-card);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.menu-toggle {
+  display: none;
+  background: none; border: none;
+  color: var(--text); font-size: 22px;
+  cursor: pointer; padding: 4px;
+}
+
+/* ---- SIDEBAR ---- */
+.sidebar {
+  position: fixed;
+  top: var(--header-h);
+  left: 0;
+  width: var(--sidebar-w);
+  height: calc(100vh - var(--header-h));
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 20px 0;
+  z-index: 90;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-group { margin-bottom: 8px; }
+
+.sidebar-group-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text-dim);
+  padding: 12px 24px 6px;
+}
+
+.sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 24px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 13.5px;
+  transition: all 0.15s;
+  border-left: 2px solid transparent;
+}
+
+.sidebar a:hover {
+  color: var(--text);
+  background: var(--accent-glow);
+}
+
+.sidebar a.active {
+  color: var(--accent-light);
+  background: var(--accent-glow);
+  border-left-color: var(--accent);
+  font-weight: 600;
+}
+
+.sidebar a .nav-icon {
+  width: 20px;
+  text-align: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* ---- MAIN ---- */
+.main {
+  margin-left: var(--sidebar-w);
+  margin-top: var(--header-h);
+  padding: 40px 48px 80px;
+  max-width: 960px;
+}
+
+/* ---- HERO ---- */
+.hero {
+  padding: 48px 0 40px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 48px;
+}
+
+.hero h1 {
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #fff 0%, #A855F7 40%, #EC4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  font-size: 17px;
+  color: var(--text-dim);
+  max-width: 640px;
+  line-height: 1.7;
+}
+
+.hero-badges {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-purple { background: var(--accent-glow); color: var(--accent-light); border: 1px solid rgba(147,51,234,0.25); }
+.badge-green { background: var(--green-dim); color: var(--green); border: 1px solid rgba(0,206,201,0.25); }
+.badge-yellow { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(253,203,110,0.25); }
+.badge-pink { background: var(--pink-dim); color: var(--pink); border: 1px solid rgba(236,72,153,0.25); }
+.badge-blue { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(129,140,248,0.25); }
+
+/* ---- SECTIONS ---- */
+.section {
+  margin-bottom: 56px;
+  scroll-margin-top: calc(var(--header-h) + 24px);
+}
+
+.section h2 {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section h2 .section-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.section > .section-desc {
+  color: var(--text-dim);
+  margin-bottom: 28px;
+  font-size: 15px;
+}
+
+h3 {
+  font-size: 19px;
+  font-weight: 700;
+  margin-top: 32px;
+  margin-bottom: 12px;
+  color: var(--text);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+h4 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-top: 24px;
+  margin-bottom: 8px;
+  color: var(--accent-light);
+}
+
+p { margin-bottom: 12px; }
+
+ul, ol { padding-left: 22px; margin-bottom: 14px; }
+li { margin-bottom: 4px; }
+
+a { color: var(--accent-light); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---- CARDS ---- */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 16px;
+  transition: border-color 0.2s;
+}
+
+.card:hover { border-color: var(--border-light); }
+
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.mini-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: block;
+  color: inherit;
+}
+
+.mini-card:hover {
+  border-color: var(--accent);
+  background: var(--bg-card-hover);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+.mini-card h4 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  color: var(--text);
+  border: none;
+  padding: 0;
+}
+
+.mini-card p {
+  font-size: 12.5px;
+  color: var(--text-dim);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ---- CODE ---- */
+pre {
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 18px 22px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-code);
+  margin-bottom: 16px;
+  position: relative;
+}
+
+pre .lang-tag {
+  position: absolute;
+  top: 8px; right: 12px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-dim);
+  opacity: 0.6;
+  font-family: var(--font);
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: var(--bg-code);
+  padding: 2px 7px;
+  border-radius: 4px;
+  color: var(--accent-light);
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+.kw { color: #C084FC; }
+.str { color: #c3e88d; }
+.cm { color: #6B5F8A; font-style: italic; }
+.fn { color: #818cf8; }
+.tp { color: #ffcb6b; }
+.num { color: #f78c6c; }
+.op { color: #A78BFA; }
+
+/* ---- TABLES ---- */
+.table-wrap {
+  overflow-x: auto;
+  margin-bottom: 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+thead th {
+  background: var(--bg-code);
+  font-weight: 700;
+  text-align: left;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+}
+
+td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(147,51,234,0.04); }
+
+/* ---- COLLAPSIBLE ---- */
+details {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+
+details[open] { border-color: var(--border-light); }
+
+summary {
+  padding: 14px 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+  list-style: none;
+  transition: color 0.15s;
+}
+
+summary::-webkit-details-marker { display: none; }
+
+summary::before {
+  content: '\25B6';
+  font-size: 10px;
+  color: var(--text-dim);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+details[open] > summary::before { transform: rotate(90deg); }
+
+summary:hover { color: var(--accent-light); }
+
+details .details-body { padding: 0 20px 18px; }
+details .details-body p:first-child { margin-top: 0; }
+
+/* ---- CALLOUT ---- */
+.callout {
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.callout > div { flex: 1; }
+.callout p { margin-bottom: 6px; }
+.callout p:last-child { margin-bottom: 0; }
+
+.callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+.callout-tip { background: var(--green-dim); border: 1px solid rgba(0,206,201,0.2); }
+.callout-tip .callout-icon { color: var(--green); }
+
+.callout-warn { background: var(--yellow-dim); border: 1px solid rgba(253,203,110,0.2); }
+.callout-warn .callout-icon { color: var(--yellow); }
+
+.callout-info { background: var(--blue-dim); border: 1px solid rgba(129,140,248,0.2); }
+.callout-info .callout-icon { color: var(--blue); }
+
+.callout-danger { background: var(--pink-dim); border: 1px solid rgba(236,72,153,0.2); }
+.callout-danger .callout-icon { color: var(--pink); }
+
+/* ---- STEP LIST ---- */
+.steps { counter-reset: step; margin-bottom: 16px; }
+
+.step {
+  display: flex;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  counter-increment: step;
+}
+
+.step:last-child { border-bottom: none; }
+
+.step::before {
+  content: counter(step);
+  width: 28px; height: 28px;
+  background: var(--accent-glow);
+  color: var(--accent-light);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.step-content { flex: 1; }
+.step-content strong { color: var(--text); }
+
+/* ---- FLOW DIAGRAM ---- */
+.flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+}
+
+.flow-node {
+  padding: 8px 16px;
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.flow-arrow {
+  padding: 0 8px;
+  color: var(--text-dim);
+  font-size: 16px;
+}
+
+/* ---- TAGS ---- */
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tag-required { background: var(--pink-dim); color: var(--pink); }
+.tag-optional { background: var(--green-dim); color: var(--green); }
+.tag-auto { background: var(--accent-glow); color: var(--accent-light); }
+.tag-platform { background: var(--yellow-dim); color: var(--yellow); }
+.tag-info { background: var(--blue-dim); color: var(--blue); }
+
+/* ---- SEARCH RESULTS ---- */
+.search-overlay {
+  display: none;
+  position: fixed;
+  top: var(--header-h);
+  left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 95;
+}
+
+.search-results {
+  display: none;
+  position: fixed;
+  top: calc(var(--header-h) + 8px);
+  left: 50%; transform: translateX(-50%);
+  width: 520px;
+  max-width: calc(100vw - 32px);
+  max-height: 60vh;
+  overflow-y: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  z-index: 96;
+  padding: 8px;
+}
+
+.search-results.visible { display: block; }
+.search-overlay.visible { display: block; }
+
+.search-item {
+  display: block;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--text);
+  transition: background 0.1s;
+}
+
+.search-item:hover { background: var(--accent-glow); text-decoration: none; }
+.search-item-section { font-size: 11px; color: var(--accent-light); margin-bottom: 2px; }
+.search-item-title { font-weight: 600; font-size: 14px; }
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; padding: 24px 20px 60px; }
+  .menu-toggle { display: block; }
+  .header-search { max-width: 200px; }
+  .hero h1 { font-size: 28px; }
+  .card-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .header { padding: 0 16px; }
+  .header-version { display: none; }
+  .header-search { max-width: 160px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Toggle menu">&#9776;</button>
+  <a href="#overview" class="header-logo">
+    <div class="dot">U</div>
+    <span>Universal Asset Preview Studio</span>
+  </a>
+  <div class="header-search">
+    <span class="search-icon">&#128269;</span>
+    <input type="text" id="searchInput" placeholder="Search docs... (Ctrl+K)" autocomplete="off">
+  </div>
+  <span class="header-version">v0.3.0 &middot; Unity 6000.0+</span>
+</header>
+
+<!-- SEARCH -->
+<div class="search-overlay" id="searchOverlay"></div>
+<div class="search-results" id="searchResults"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Getting Started</div>
+    <a href="#overview"><span class="nav-icon">&#127968;</span> Overview</a>
+    <a href="#installation"><span class="nav-icon">&#10515;</span> Installation</a>
+    <a href="#quickstart"><span class="nav-icon">&#9889;</span> Quick Start</a>
+    <a href="#how-it-works"><span class="nav-icon">&#9881;</span> How It Works</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Features</div>
+    <a href="#browser"><span class="nav-icon">&#128269;</span> Asset Browser</a>
+    <a href="#previews"><span class="nav-icon">&#128444;</span> Previews</a>
+    <a href="#thumbnails"><span class="nav-icon">&#127909;</span> Thumbnails &amp; GIF</a>
+    <a href="#validation"><span class="nav-icon">&#9989;</span> Validation</a>
+    <a href="#dependency-graph"><span class="nav-icon">&#128376;</span> Dependency Graph</a>
+    <a href="#comparison"><span class="nav-icon">&#9878;</span> Comparison</a>
+    <a href="#audit"><span class="nav-icon">&#128230;</span> Package &amp; Addressables Audit</a>
+    <a href="#headless"><span class="nav-icon">&#129302;</span> Headless / CI</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Editor Tools</div>
+    <a href="#editor-tools"><span class="nav-icon">&#128295;</span> Editor Tools / No-Code</a>
+    <a href="#asset-modules"><span class="nav-icon">&#129513;</span> Asset Type Modules</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Reference</div>
+    <a href="#api"><span class="nav-icon">&#128217;</span> Scripting API</a>
+    <a href="#troubleshooting"><span class="nav-icon">&#128161;</span> Troubleshooting</a>
+    <a href="#faq"><span class="nav-icon">&#10067;</span> FAQ</a>
+    <a href="#support"><span class="nav-icon">&#128236;</span> Support</a>
+  </div>
+
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+<!-- ============================================ -->
+<!--                  HERO                        -->
+<!-- ============================================ -->
+<div class="hero" id="overview">
+  <h1>Universal Asset Preview Studio</h1>
+  <p>An Editor-only studio for Unity that indexes your whole project, then lets you browse, preview, validate, compare, organize and export every asset from one window &mdash; with live 3D playback, asset-health checks, thumbnail/GIF generation and headless CI automation. No runtime components, nothing to drop in a scene.</p>
+  <div class="hero-badges">
+    <span class="badge badge-purple">Unity 6000.0+</span>
+    <span class="badge badge-green">Editor-only &middot; No runtime code</span>
+    <span class="badge badge-yellow">URP &middot; HDRP &middot; Built-in</span>
+    <span class="badge badge-pink">Validation &middot; Previews &middot; Export</span>
+  </div>
+</div>
+
+<section class="section">
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>One window, the whole project.</strong> UAPS (Universal Asset Preview Studio) is an in-Editor workflow tool. Open the <strong>Studio</strong> window, let it index your assets once, and you have a unified browser, a live preview stage, asset-health validation, dependency graphs, comparison sheets and repeatable export &mdash; all without writing code. It does not add runtime behaviour to your game.</div>
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#9989;</span>
+    <div><strong>Built for real catalogs and reviews.</strong> Exports are intended for repeatable preview output &mdash; store thumbnails, documentation catalogs, contact sheets and JSON/CSV/Markdown/HTML reports &mdash; not one-off screenshots. The same pipelines run headless in CI.</div>
+  </div>
+
+  <div class="card-grid">
+    <a class="mini-card" href="#browser"><h4>&#128269; Unified browser</h4><p>Indexed search across the project with filters, tags, collections and saved searches &mdash; virtualized for huge projects.</p></a>
+    <a class="mini-card" href="#previews"><h4>&#128444; Live previews</h4><p>Camera, lighting, environment and floor controls with live particle / animation / VFX playback and a renderer-stats overlay.</p></a>
+    <a class="mini-card" href="#validation"><h4>&#9989; Asset health</h4><p>51 built-in validation rules with platform-budget profiles and JSON / CSV / Markdown / HTML reports.</p></a>
+    <a class="mini-card" href="#thumbnails"><h4>&#127909; Thumbnails &amp; GIF</h4><p>Static and animated (GIF) thumbnails with batch export and Project-window integration.</p></a>
+    <a class="mini-card" href="#editor-tools"><h4>&#128295; No-code authoring</h4><p>Welcome window, menus and Create-asset menus for Validation Profiles, Export Presets and Team Workspaces.</p></a>
+    <a class="mini-card" href="#headless"><h4>&#129302; Headless / CI</h4><p>Batchmode validation, reports, audits, turntables and media export through <code>UapsCli</code>.</p></a>
+  </div>
+
+  <p>This guide starts with <a href="#installation">installation</a> and the <a href="#quickstart">quick start</a>, then walks each feature page, the <a href="#editor-tools">no-code Editor tools</a>, and the <a href="#api">scripting API</a>. Reference and support are at the end.</p>
+</section>
+
+<!-- ============================================ -->
+<!--             INSTALLATION                     -->
+<!-- ============================================ -->
+<section class="section" id="installation">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#10515;</span> Installation</h2>
+  <p class="section-desc">Import once, open the Studio, let it index. There is nothing to add to a scene.</p>
+
+  <div class="steps">
+    <div class="step"><div class="step-content"><strong>Import from the Asset Store</strong><br>In <code>Window &rarr; Package Manager &rarr; My Assets</code>, download and import Universal Asset Preview Studio. It lands at <code>Assets/UniversalAssetPreviewStudio/</code>.</div></div>
+    <div class="step"><div class="step-content"><strong>Read the Welcome window</strong><br>On first import a <strong>Welcome</strong> window auto-opens once. It is dismissible and re-openable from <code>Window &rarr; Universal Asset Preview Studio &rarr; Welcome</code>.</div></div>
+    <div class="step"><div class="step-content"><strong>Open the Studio</strong><br><code>Window &rarr; Universal Asset Preview Studio &rarr; Open Studio</code>. Let the first scan finish &mdash; large projects may take a few minutes while assets are indexed.</div></div>
+    <div class="step"><div class="step-content"><strong>(Optional) Open the demo</strong><br><code>Window &rarr; Universal Asset Preview Studio &rarr; Open Demo Scene</code> opens a WebGL-safe showcase that visualizes the editor workflows.</div></div>
+  </div>
+
+  <h3>Requirements</h3>
+  <ul>
+    <li>Unity <strong>6000.0</strong> or newer.</li>
+    <li>Works on <strong>URP</strong>, <strong>HDRP</strong> and <strong>Built-in</strong> render pipelines.</li>
+    <li>Optional <strong>Addressables</strong> (for the Addressables audit) and the <strong>Visual Effect Graph</strong> (for live VFX previews). Both are auto-detected and degrade gracefully when absent.</li>
+  </ul>
+
+  <h3>What gets installed</h3>
+  <pre><code><span class="kw">Assets/UniversalAssetPreviewStudio/</span>
+  Editor/         <span class="cm">// the Studio window, views, providers, analyzers,</span>
+                  <span class="cm">//   validation rules, exporters and the CLI (editor-only)</span>
+  Runtime/        <span class="cm">// intentionally minimal: UapsRuntimeInfo (name/version) only</span>
+  Demo/           <span class="cm">// WebGL-safe interactive showcase scene</span>
+  Documentation/  <span class="cm">// You are here</span>
+  Documentation~/ <span class="cm">// Markdown source docs (QuickStart, UserManual, API, SDK, ...)</span>
+  Tests/          <span class="cm">// EditMode + PlayMode (run headless via UapsTestAutomation)</span><span class="lang-tag">Project</span></code></pre>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Editor-only by design.</strong> UAPS is an Editor package. APIs that rely on <code>UnityEditor</code>, <code>AssetDatabase</code>, importers, previews or the Test Runner are not available in player builds. The runtime assembly only exposes <code>UapsRuntimeInfo.ProductName</code> and <code>Version</code>.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             QUICK START                      -->
+<!-- ============================================ -->
+<section class="section" id="quickstart">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#9889;</span> Quick Start</h2>
+  <p class="section-desc">From a fresh import to a clean exported batch in a handful of steps.</p>
+
+  <div class="steps">
+    <div class="step"><div class="step-content"><strong>Open the Studio &amp; scan</strong><br><code>Window &rarr; Universal Asset Preview Studio &rarr; Open Studio</code>, then let the first index finish.</div></div>
+    <div class="step"><div class="step-content"><strong>Filter to what you care about</strong><br>Use search and query filters (for example <code>type:prefab</code>, <code>tag:hero</code>, <code>triangles&gt;10000</code>) to narrow the result set.</div></div>
+    <div class="step"><div class="step-content"><strong>Preview &amp; favorite the best candidates</strong><br>Select an asset to load it into the preview stage; review the image, metadata, validation findings and dependency list. Mark good ones as favorites.</div></div>
+    <div class="step"><div class="step-content"><strong>Validate</strong><br>Open <strong>Validation</strong> view, pick a profile preset, and apply it to the visible results to catch problems before export.</div></div>
+    <div class="step"><div class="step-content"><strong>Generate thumbnails &amp; export</strong><br>Use <code>Export PNG</code> for the selection or <code>Batch Thumbs</code> for the filtered set, then spot-check naming and framing on the output.</div></div>
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#128161;</span>
+    <div><strong>Suggested first pass.</strong> Scan the project &rarr; filter to the asset type you care about &rarr; favorite the best candidates &rarr; run validation on favorites &rarr; generate thumbnails &rarr; export a small batch and confirm output naming and framing.</div>
+  </div>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Low Memory mode.</strong> Enable <code>Low Memory</code> in the toolbar when browsing very large projects, low-memory machines, or remote editor sessions. It caps browser thumbnail size, disables overscan rows, limits in-memory thumbnail retention, and uses cached/fallback cell images instead of loading every uncached preview during scroll.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             HOW IT WORKS                     -->
+<!-- ============================================ -->
+<section class="section" id="how-it-works">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#9881;</span> How It Works</h2>
+  <p class="section-desc">One index feeds a single browse / preview / validate / compare / export pipeline.</p>
+
+  <div class="flow">
+    <span class="flow-node">Index</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">Browse / Preview</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">Validate</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">Compare</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">Export</span>
+  </div>
+
+  <ol>
+    <li><strong>Index.</strong> UAPS scans the project into <code>UapsAssetRecord</code> entries with GUID, path, type, health, tags, collections, dependencies, reverse referencers, metrics and validation findings. Domain analyzers extract per-family signals. Updates are incremental through Unity asset post-processor events while the window is open.</li>
+    <li><strong>Browse / Preview.</strong> Search and filter the index, then select an asset to load it onto the preview stage with shared camera / lighting / environment controls and live playback.</li>
+    <li><strong>Validate.</strong> The active <code>UapsValidationProfile</code> applies its rule set and thresholds to each record and surfaces info / warning / error findings.</li>
+    <li><strong>Compare.</strong> Place up to four assets side by side for metric, dependency, import-setting and validation diffs, plus a visual sheet.</li>
+    <li><strong>Export.</strong> Produce PNG thumbnails, GIFs, contact sheets, documentation catalogs, dependency graphs and reports &mdash; in the UI or headless in CI.</li>
+  </ol>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Domain-aware, not type-name-only.</strong> Validation and metadata use extracted signals: a single prefab can be checked as geometry, VFX, UI, audio and dependency content in one pass if its component hierarchy contains those systems.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             ASSET BROWSER                    -->
+<!-- ============================================ -->
+<section class="section" id="browser">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128269;</span> Asset Browser</h2>
+  <p class="section-desc">The indexed starting point for all work &mdash; search, filter, sort, organize.</p>
+
+  <p>Browse by name and path, or narrow with the left panel (type text, favorite state, collection, warning/error state). Select one asset for a detailed preview, or add up to four to <a href="#comparison">Compare</a>. Grid, list and presentation views are virtualized: only the visible row range plus a small overscan buffer is drawn, so very large result sets stay responsive.</p>
+
+  <h3>Query filters</h3>
+  <p>The search box accepts structured filters alongside free text. Invalid query fields are reported in the browser instead of silently matching every asset.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Filter</th><th>Matches</th></tr></thead>
+    <tbody>
+      <tr><td><code>type:prefab</code>, <code>tag:vfx</code>, <code>collection:&lt;name&gt;</code></td><td>Asset type text, tag, or collection membership.</td></tr>
+      <tr><td><code>health:warning</code>, <code>health:error</code></td><td>Validation status.</td></tr>
+      <tr><td><code>triangles&gt;10000</code>, <code>polycount&gt;50000</code>, <code>width&gt;2048</code></td><td>Geometry and texture metrics.</td></tr>
+      <tr><td><code>lods&gt;0</code>, <code>uv&gt;0</code>, <code>shader:lit</code>, <code>pipeline:urp</code>, <code>format:unorm</code>, <code>alpha:true</code></td><td>Import / material / texture signals.</td></tr>
+      <tr><td><code>particles&gt;500</code>, <code>drawcalls&gt;4</code>, <code>raycasts&gt;10</code></td><td>VFX, draw-call proxy and UI raycast metrics.</td></tr>
+      <tr><td><code>dependencies&gt;20</code>, <code>dep:missing</code>, <code>ref:hero</code>, <code>referencers&gt;1</code></td><td>Dependency and reverse-referencer signals.</td></tr>
+      <tr><td><code>addressable:true</code>, <code>addr:weapons</code></td><td>Addressable signals.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Sorting</h3>
+  <p>Order visible results by name, type, path, package, health, triangle count, texture memory, audio duration, VFX particle count, dependency count and related browser keys. Descending sort keeps a stable ascending path tie-break for equal primary keys.</p>
+
+  <h3>Favorites, tags &amp; collections</h3>
+  <ul>
+    <li><strong>Favorites</strong> are per-user quick triage.</li>
+    <li><strong>Tags</strong> are flexible overlapping labels (<code>hero</code>, <code>needs-review</code>, <code>store</code>, <code>low-poly</code>). Tags added from the Studio are mirrored into the project team workspace asset so they can be shared.</li>
+    <li><strong>Collections</strong> are explicit asset sets or saved-query sets &mdash; release batches, store packages, client deliveries. The team workspace stores collection names, explicit GUID membership, optional saved queries, notes and export preset names.</li>
+    <li><strong>Saved searches</strong> in the Sources panel capture the current search text and filters; selecting one reapplies them.</li>
+    <li><strong>Bulk visible</strong> controls add or remove a tag or collection from the entire current filtered result set (with confirmation for large sets).</li>
+  </ul>
+</section>
+
+<!-- ============================================ -->
+<!--             PREVIEWS                         -->
+<!-- ============================================ -->
+<section class="section" id="previews">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#128444;</span> Previews</h2>
+  <p class="section-desc">A shared preview stage with camera, lighting, environment, floor and live playback.</p>
+
+  <p>The selected preview panel surrounds the asset with its metadata, validation findings, dependency list and export actions. Prefabs, meshes and materials are rendered through <code>UapsPreviewRenderPipeline.CaptureAsset</code> when Unity can render them; other asset types fall back to provider previews, cached thumbnails, or a type-colored fallback image.</p>
+
+  <h3>Shared preview controls</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Control</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td>Yaw / Pitch / FOV / Padding</td><td>Orbit the camera and frame the subject.</td></tr>
+      <tr><td>Render mode overlay</td><td>Switch how the subject is shaded for review.</td></tr>
+      <tr><td>Environment source</td><td>Skybox material, cubemap skybox, panoramic texture skybox (when the shader is available), or sampled-color fallback for unsupported assets.</td></tr>
+      <tr><td>Key light &amp; fill light</td><td>Adjustable light angle via <code>keyLightYaw</code> / <code>keyLightPitch</code> (no longer a hard-coded rotation).</td></tr>
+      <tr><td>Floor plane</td><td>Optional ground plane framed on subject bounds so it reads as an infinite floor.</td></tr>
+      <tr><td>Playback scrub</td><td>Live timeline position for animated subjects.</td></tr>
+      <tr><td>Stats overlay</td><td>On-preview renderer stats: triangles, vertices, submeshes, renderers, materials, skinned meshes and particle systems.</td></tr>
+      <tr><td>Background / transparency</td><td>Background color or transparent capture.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Live playback</h3>
+  <p><code>UapsPreviewSceneAnimator</code> advances Shuriken particle systems, samples Animator / legacy animation clips, and steps Visual Effect Graph effects (via reflection, with no hard dependency on the optional package) to a normalized timeline point before capture. <code>CaptureAssetFrame(asset, state, size, normalizedTime)</code> renders a single live frame, so 3D previews actually play instead of freezing at frame 0. Scene advancement is CPU-only and runs headless, though the final pixel render still needs a graphics device.</p>
+
+  <h3>Domain-specific previews</h3>
+  <ul>
+    <li>Audio clips use a generated waveform preview.</li>
+    <li>Readable textures use an inspection preview with RGB over checkerboard and an alpha strip.</li>
+    <li>Animation clips use a temporal timeline provider.</li>
+    <li>Other assets use Unity's <code>AssetPreview</code> support, then fall back to a mini thumbnail or type-colored fallback.</li>
+  </ul>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Environment note.</strong> The built-in render path samples environment assets as a color fallback. Projects that require physically accurate HDRI / image-based lighting should provide a custom stateful preview provider.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             THUMBNAILS / GIF                 -->
+<!-- ============================================ -->
+<section class="section" id="thumbnails">
+  <h2><span class="section-icon" style="background:var(--pink-dim);color:var(--pink)">&#127909;</span> Thumbnails &amp; GIF</h2>
+  <p class="section-desc">Static and animated thumbnails with caching, batch export and Project-window integration.</p>
+
+  <p>Thumbnails provide quick visual identification in the browser and in exported asset lists. Export thumbnails for the selected asset, or use <code>Batch Thumbs</code> for the entire filtered result set. Browser cells prefer cached thumbnails and Unity quick previews, so scrolling does not generate files for every asset.</p>
+
+  <h3>Cache</h3>
+  <ul>
+    <li>Cached PNGs include JSON sidecar metadata keyed by asset GUID, provider, import dependency hash, Unity version, color space, render pipeline, size and transparency mode.</li>
+    <li>The Export view shows cache size and corrupt-entry count, can queue missing visible cache entries, clean invalid entries, enforce a <strong>512&nbsp;MB</strong> budget, or clear the cache.</li>
+    <li>Use transparent PNG export for reusable catalog images.</li>
+    <li><code>Window &rarr; Universal Asset Preview Studio &rarr; Project Window Thumbnails</code> toggles cached overlays in the Project window. The overlay draws cached thumbnails only and never generates them during repaint.</li>
+  </ul>
+
+  <h3>Animated thumbnails &amp; GIF</h3>
+  <p><code>UapsAnimatedThumbnailService.GenerateFrameSequence(...)</code> writes a bounded PNG frame sequence (maximum <strong>24 frames</strong> at <strong>512&nbsp;px</strong>). Temporal preview providers are sampled frame-by-frame; when timeline sampling is unavailable, it emits a static fallback sequence and records a warning. Use <code>Export Selected GIF</code> when a short native GIF is required &mdash; UAPS keeps the source PNG frames and a manifest beside the GIF.</p>
+
+  <div class="callout callout-warn">
+    <span class="callout-icon">&#9888;</span>
+    <div><strong>GIF only is bundled.</strong> GIF encoding is built in for short bounded preview exports. WebP and video encoding are not bundled; those requests write a PNG frame sequence plus a JSON manifest unless you supply an external encoder (<code>-uapsEncoderPath</code>, optional <code>-uapsEncoderArgs</code> and <code>-uapsFps</code>) such as FFmpeg.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             VALIDATION                       -->
+<!-- ============================================ -->
+<section class="section" id="validation">
+  <h2><span class="section-icon" style="background:var(--green-dim);color:var(--green)">&#9989;</span> Validation</h2>
+  <p class="section-desc">Asset-health checks that answer one question fast: is this asset ready to preview, thumbnail and export?</p>
+
+  <p>The Validation view holds the active profile editor. Choose a built-in preset, assign an existing <code>UapsValidationProfile</code> asset, adjust grouped thresholds, apply the profile to the visible result set, reset from the preset, and save the tuned profile under <code>Assets/</code> when it should live in source control.</p>
+
+  <h3>Severity levels</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Level</th><th>Meaning</th><th>Examples</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag tag-info">Info</span></td><td>Does not block preview work; flags choices that may affect consistency.</td><td>Unusual dimensions, missing optional metadata, asset outside a preferred folder.</td></tr>
+      <tr><td><span class="tag tag-platform">Warning</span></td><td>Previews or exports may be incomplete, inconsistent or misleading.</td><td>Texture read/write enabled, high prefab component count, high dependency count, looping animation that moves root position, animator with empty states, duplicate Addressables addresses.</td></tr>
+      <tr><td><span class="tag tag-required">Error</span></td><td>Should be fixed before export.</td><td>Prefab contains a missing script, renderer slot with a missing material, material references a missing shader.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Rule catalog &amp; profiles</h3>
+  <p>The built-in catalog contains <strong>51 validation rules</strong>. Presets adjust both severity policy and thresholds over the same rule set. Available presets:</p>
+  <p>
+    <span class="tag tag-auto">General Development</span>
+    <span class="tag tag-auto">Mobile Low</span>
+    <span class="tag tag-auto">Mobile High</span>
+    <span class="tag tag-auto">Desktop</span>
+    <span class="tag tag-auto">VR</span>
+    <span class="tag tag-auto">Console</span>
+    <span class="tag tag-auto">Asset Store Publisher</span>
+    <span class="tag tag-auto">UI Heavy Project</span>
+    <span class="tag tag-auto">VFX Heavy Project</span>
+    <span class="tag tag-auto">Animation Library</span>
+  </p>
+  <p>For example, Mobile Low flags smaller textures, lower mesh budgets and lower particle counts than Desktop; UI Heavy relaxes UI thresholds; VFX Heavy relaxes VFX thresholds; Animation Library relaxes animation/controller thresholds. Project profiles can also override rule severities, disable rules, set a minimum severity and decide whether package assets are included.</p>
+
+  <h3>Typical checks</h3>
+  <ul>
+    <li>Missing scripts, missing material slots, materials with missing shaders.</li>
+    <li>Oversized textures, read/write enabled, missing mipmaps on large textures, non-power-of-two or apparently uncompressed formats, high texture memory.</li>
+    <li>High mesh triangle / submesh / blend-shape / bone counts, meshes without UV channels, high-poly prefabs without an LODGroup.</li>
+    <li>High material slot or shader-keyword counts, transparent / late render queues, incomplete basic PBR on lit materials.</li>
+    <li>Long audio clips with expensive load settings, high sample rates, stereo use, clipping risk or high memory estimates.</li>
+    <li>High particle budgets, particle-system / trail / line counts, and estimated VFX overdraw.</li>
+    <li>Large prefab component / collider / rigidbody / light / camera / AudioSource / Animator counts and high draw-call proxies.</li>
+    <li>Dense animation curve data, high event counts, looping root-motion mismatch, animator empty states and controller complexity.</li>
+    <li>UI prefabs with many raycast targets, layout groups or canvases, and missing responsive anchors.</li>
+    <li>High dependency counts; Shader Graph / VFX Graph error or missing-text signals; duplicate Addressables addresses.</li>
+  </ul>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Editorial, not QA.</strong> Validation is a fast editorial check for preview readiness. It reports editor-time signals and does not claim authoritative runtime performance results or prove an asset pack is defect-free.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             DEPENDENCY GRAPH                 -->
+<!-- ============================================ -->
+<section class="section" id="dependency-graph">
+  <h2><span class="section-icon" style="background:var(--yellow-dim);color:var(--yellow)">&#128376;</span> Dependency Graph</h2>
+  <p class="section-desc">Explore the selected asset's dependencies and reverse referencers, then export.</p>
+
+  <p>The Dependency Graph view supports traversal depth, incoming / outgoing toggles, type and path filtering, a draggable in-window node canvas, node expand/collapse controls, node summaries, labeled edges, and select / ping actions. The index records direct dependencies and reverse referencers for indexed assets, so graphs can show incoming reference edges where that data is available.</p>
+
+  <h3>Exporting</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Format</th><th>Use it for</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Markdown</strong></td><td>Review documents.</td></tr>
+      <tr><td><strong>DOT</strong></td><td>Rendering with external graph tools.</td></tr>
+      <tr><td><strong>SVG</strong></td><td>A deterministic visual graph you can open in a browser or embed in docs.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Export from the Export view or headless with <code>UapsCli.ExportDependencyGraph</code>; the underlying service is <code>UapsDependencyGraphService</code>.</p>
+</section>
+
+<!-- ============================================ -->
+<!--             COMPARISON                       -->
+<!-- ============================================ -->
+<section class="section" id="comparison">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#9878;</span> Comparison</h2>
+  <p class="section-desc">Place up to four assets side by side with metric, dependency, import and visual diffs.</p>
+
+  <p>Compare view holds up to four assets. Each card shows the preview, type, health and a metric summary, and the view builds <strong>metric</strong>, <strong>dependency</strong>, <strong>import-setting</strong> and <strong>validation</strong> diffs.</p>
+
+  <h3>Linked preview state</h3>
+  <p>Camera and playback sync toggles drive a shared comparison preview state for compatible assets. Linked yaw, pitch, FOV, padding, render mode, environment and playback scrub values are applied to built-in captures and to providers that implement the stateful or temporal preview contracts. Assets without those capabilities fall back to their normal preview behavior and report compatibility notes.</p>
+
+  <h3>Export</h3>
+  <ul>
+    <li><code>Export Report</code> writes a Markdown comparison report (metric / import / dependency / validation diffs).</li>
+    <li><code>Export Visual Sheet</code> writes a PNG sheet with side-by-side preview cells, health and metric bands, and a first-asset-versus-each-other diff heatmap row.</li>
+  </ul>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Heatmap scope.</strong> The visual diff heatmap is generated from equal-sized captured or fallback preview textures. It is useful as visual review evidence but is not a physically accurate render-pipeline diff.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             AUDIT                            -->
+<!-- ============================================ -->
+<section class="section" id="audit">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#128230;</span> Package &amp; Addressables Audit</h2>
+  <p class="section-desc">Quick project-structure and Addressables checks, in the UI or headless.</p>
+
+  <h3>Package audit</h3>
+  <p>The package audit reads <code>Packages/manifest.json</code> and reports dependency counts, Unity package/module counts, whether URP is present, and whether the Addressables package is installed. Run it headless with <code>UapsCli.PackageAudit</code> (<code>UapsPackageAnalyzer</code> underneath).</p>
+
+  <h3>Addressables audit</h3>
+  <p>Addressable status on indexed assets is detected from labels and common folder names. When the Addressables package is installed, <code>UapsAddressablesAnalyzer</code> uses reflection to report groups, entries, duplicate addresses and missing asset references; it also has a YAML fallback that scans <code>Assets/AddressableAssetsData</code> when present. Detailed bundle layout and remote/local risk simulation remain limited.</p>
+
+  <h3>Release readiness &amp; clean-import audits</h3>
+  <ul>
+    <li>The <strong>release-readiness</strong> report (<code>UapsReleaseReadinessValidator</code>) checks for required package structure, docs, tests, samples and core artifacts. <code>UapsCli.ReleaseReadiness</code> exits with a non-zero code when blocking errors are found, so CI release gates fail correctly.</li>
+    <li>The <strong>clean-import</strong> audit (<code>UapsCleanImportAuditor</code>) reports whether the package root, asmdefs, docs, samples, tests, editor scripts and runtime scripts are present before a clean-project import pass.</li>
+  </ul>
+</section>
+
+<!-- ============================================ -->
+<!--             HEADLESS / CI                    -->
+<!-- ============================================ -->
+<section class="section" id="headless">
+  <h2><span class="section-icon" style="background:var(--green-dim);color:var(--green)">&#129302;</span> Headless / CI</h2>
+  <p class="section-desc">Run the same pipelines in batchmode for continuous integration.</p>
+
+  <p>Invoke entry points with Unity <code>-batchmode -nographics -projectPath &lt;project&gt; -executeMethod &lt;method&gt;</code>. The CLI surface lives in <code>UapsCli</code>, and test automation in <code>UapsTestAutomation</code>.</p>
+
+  <h3>Entry points</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Method</th><th>Does</th></tr></thead>
+    <tbody>
+      <tr><td><code>UapsCli.RunValidation</code></td><td>Project validation report.</td></tr>
+      <tr><td><code>UapsCli.GenerateThumbnails</code></td><td>Thumbnails for a filtered set.</td></tr>
+      <tr><td><code>UapsCli.ExportReport</code></td><td>JSON / CSV / Markdown / HTML report.</td></tr>
+      <tr><td><code>UapsCli.ExportCatalog</code></td><td>Markdown / HTML documentation catalog.</td></tr>
+      <tr><td><code>UapsCli.ExportContactSheet</code></td><td>Contact sheet (<code>-uapsSize</code>, <code>-uapsColumns</code>, <code>-uapsMaxItems</code>).</td></tr>
+      <tr><td><code>UapsCli.ExportMedia</code></td><td>PNG frames + native GIF; external encoder for WebP/MP4.</td></tr>
+      <tr><td><code>UapsCli.ExportTurntable</code></td><td>Turntable contact sheet.</td></tr>
+      <tr><td><code>UapsCli.ExportDependencyGraph</code></td><td>Markdown / DOT / SVG graph.</td></tr>
+      <tr><td><code>UapsCli.PackageAudit</code> / <code>AddressablesAudit</code> / <code>CleanImportAudit</code></td><td>Project-structure and Addressables audits.</td></tr>
+      <tr><td><code>UapsCli.ReleaseReadiness</code></td><td>Release gate (non-zero exit on blocking errors).</td></tr>
+      <tr><td><code>UapsTestAutomation.RunEditMode</code> / <code>RunPlayMode</code></td><td>Run the test suites and write results XML.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Example commands</h3>
+  <pre><code><span class="cm"># Validation report</span>
+Unity.exe -batchmode -nographics -quit -projectPath <span class="str">"&lt;project&gt;"</span> \
+  -executeMethod UniversalAssetPreviewStudio.UapsCli.RunValidation \
+  -uapsOutput <span class="str">"UAPSReports/validation.json"</span>
+
+<span class="cm"># Contact sheet</span>
+Unity.exe -batchmode -nographics -quit -projectPath <span class="str">"&lt;project&gt;"</span> \
+  -executeMethod UniversalAssetPreviewStudio.UapsCli.ExportContactSheet \
+  -uapsOutput <span class="str">"UAPSReports/contact-sheet.png"</span> -uapsSize <span class="num">160</span> -uapsColumns <span class="num">4</span> -uapsMaxItems <span class="num">64</span>
+
+<span class="cm"># Animated media (GIF) for one clip</span>
+Unity.exe -batchmode -nographics -quit -projectPath <span class="str">"&lt;project&gt;"</span> \
+  -executeMethod UniversalAssetPreviewStudio.UapsCli.ExportMedia \
+  -uapsAssetPath <span class="str">"Assets/MyClip.anim"</span> -uapsOutput <span class="str">"UAPSReports/media"</span> \
+  -uapsFormat gif -uapsFrames <span class="num">24</span> -uapsSize <span class="num">256</span>
+
+<span class="cm"># Test automation</span>
+Unity.exe -batchmode -nographics -projectPath <span class="str">"&lt;project&gt;"</span> \
+  -executeMethod UniversalAssetPreviewStudio.UapsTestAutomation.RunEditMode \
+  -uapsOutput <span class="str">"TestResults/uaps-editmode.xml"</span><span class="lang-tag">Shell</span></code></pre>
+
+  <div class="callout callout-warn">
+    <span class="callout-icon">&#9888;</span>
+    <div><strong>Headless rendering caveat.</strong> Headless Unity sessions may not provide a graphics device. When <code>UapsPreviewRenderPipeline.CaptureAsset</code> cannot capture in batchmode, UAPS falls back to provider previews, cached thumbnails or documented frame-sequence fallbacks where the workflow supports them. Live scene advancement (particles/animation/VFX) still runs, but the final pixel render needs a render target.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             EDITOR TOOLS / NO-CODE          -->
+<!-- ============================================ -->
+<section class="section" id="editor-tools">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128295;</span> Editor Tools / No-Code</h2>
+  <p class="section-desc">Everything UAPS does is reachable from menus, windows and Create-asset entries &mdash; no scripting required.</p>
+
+  <h3>Windows &amp; menus</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Menu path</th><th>What it opens</th></tr></thead>
+    <tbody>
+      <tr><td><code>Window &rarr; Universal Asset Preview Studio &rarr; Open Studio</code></td><td>The main Studio window (<code>UapsWindow</code>) &mdash; browse, preview, validate, compare, organize, export, audit.</td></tr>
+      <tr><td><code>Window &rarr; &hellip; &rarr; Open Toolkit Studio</code></td><td>A UI Toolkit browser shell for modern docking / search / details. The classic Studio remains the feature-complete surface for all export and analysis actions.</td></tr>
+      <tr><td><code>Window &rarr; &hellip; &rarr; Welcome</code></td><td>The first-run Welcome window. Auto-opens once, dismissible, and re-openable here.</td></tr>
+      <tr><td><code>Window &rarr; &hellip; &rarr; Documentation</code></td><td>Opens this documentation.</td></tr>
+      <tr><td><code>Window &rarr; &hellip; &rarr; Open Demo Scene</code></td><td>Opens the WebGL-safe interactive demo scene.</td></tr>
+      <tr><td><code>Window &rarr; &hellip; &rarr; Project Window Thumbnails</code></td><td>Toggles cached Project-window thumbnail overlays.</td></tr>
+      <tr><td><code>Assets &rarr; UAPS &rarr; Preview Selected</code></td><td>Jumps the Studio to the currently selected asset.</td></tr>
+      <tr><td><code>Tools &rarr; Universal Asset Preview Studio &rarr; Demo / Samples</code></td><td>Rebuild the demo scene and generate the fixture library.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>No-code authoring assets</h3>
+  <p>Create configuration as ScriptableObjects (with inspector tooltips) from <code>Assets &rarr; Create &rarr; Universal Asset Preview Studio</code>:</p>
+  <div class="card-grid">
+    <div class="card"><div class="card-title">&#9989; Validation Profile</div><p style="color:var(--text-dim);font-size:13.5px;margin:0;">A <code>UapsValidationProfile</code> &mdash; rule overrides, minimum severity, package inclusion and threshold values. Pick a preset in Validation view, tune it, and save it here so it lives in source control.</p></div>
+    <div class="card"><div class="card-title">&#128228; Export Preset</div><p style="color:var(--text-dim);font-size:13.5px;margin:0;">A <code>UapsExportPreset</code> describing repeatable export settings for thumbnails, reports and catalogs.</p></div>
+    <div class="card"><div class="card-title">&#128101; Team Workspace</div><p style="color:var(--text-dim);font-size:13.5px;margin:0;">A <code>UapsTeamWorkspaceSettings</code> asset storing shared saved searches, tags, collections, pinned comparisons, recents and review assignments &mdash; project metadata that belongs in source control instead of personal EditorPrefs.</p></div>
+  </div>
+
+  <h3>The Welcome window</h3>
+  <p>On first import the Welcome window auto-opens once to orient new users toward opening the Studio and the demo scene. It is dismissible and can always be re-opened from the menu. It is informational only &mdash; nothing about your project changes when it shows.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#128161;</span>
+    <div><strong>Recommended team conventions.</strong> Keep tags short and consistent, use collections for handoff boundaries, validate before exporting, and regenerate thumbnails after large art, material or import-setting changes.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             ASSET TYPE MODULES              -->
+<!-- ============================================ -->
+<section class="section" id="asset-modules">
+  <h2><span class="section-icon" style="background:var(--yellow-dim);color:var(--yellow)">&#129513;</span> Asset Type Modules</h2>
+  <p class="section-desc">One index and shared pipeline, with domain-specific metadata and validation layered over each asset family.</p>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Family</th><th>Extracted signals</th><th>Common checks</th></tr></thead>
+    <tbody>
+      <tr><td>Textures &amp; sprites</td><td>Dimensions, graphics format, mipmaps, alpha import setting, readability, sprite count, estimated memory, average brightness, alpha coverage.</td><td>Size thresholds, read/write, missing mipmaps, high memory, NPOT, low alpha coverage, uncompressed formats.</td></tr>
+      <tr><td>Meshes &amp; prefabs</td><td>Vertices, triangles, submeshes, UVs, blend shapes, bounds, material slots, renderers, components, colliders, rigidbodies, lights, cameras, animators, AudioSources, LOD groups, missing scripts/materials, draw-call proxies.</td><td>Missing scripts/materials, triangle &amp; submesh thresholds, missing UVs, high-poly without LODGroup, prefab budgets.</td></tr>
+      <tr><td>Materials</td><td>Shader name, render queue, enabled keywords, texture slots, assigned/missing textures, normal map, basic PBR completeness.</td><td>Missing shaders, high keyword counts, transparent/late render queues, incomplete PBR on lit materials.</td></tr>
+      <tr><td>Audio</td><td>Duration, channels, frequency, estimated memory, waveform, peak, RMS, zero-crossing rate, loop-candidate estimate.</td><td>Expensive load for long clips, long stereo clips, high memory, clipping risk, high sample rates.</td></tr>
+      <tr><td>Animation &amp; controllers</td><td>Duration, frame rate, loop state, curve/event counts, root-motion signals; controller layers, parameters, states, transitions, blend trees, empty states, referenced clips.</td><td>Dense curves, high event counts, looping root-motion mismatch, empty states, controller complexity.</td></tr>
+      <tr><td>VFX</td><td>Particle systems, renderers, trails, lines, bursts, max particles, emission-rate estimate, world-space simulation, estimated overdraw.</td><td>Max particle thresholds, system/trail/line counts, estimated overdraw.</td></tr>
+      <tr><td>UI prefabs</td><td>RectTransforms, graphics, raycast targets, layout groups, canvases, fixed/stretch anchors, negative-size rects, responsive-anchor signal.</td><td>Excessive raycast targets / layout groups / canvases, missing responsive anchors.</td></tr>
+      <tr><td>Graph assets</td><td>Shader Graph / VFX Graph text analysis: estimated nodes, connection signals, properties, exposed properties, error/missing text.</td><td>Error/missing text signals, high estimated node counts (lightweight static pass).</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Editor-time signals.</strong> Metrics are editor-time signals for preview readiness, catalog quality and review triage &mdash; not authoritative runtime performance results. Validate final behaviour in target builds and on devices.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             SCRIPTING API                    -->
+<!-- ============================================ -->
+<section class="section" id="api">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#128217;</span> Scripting API</h2>
+  <p class="section-desc">The extension surface lives in the <code>UniversalAssetPreviewStudio</code> namespace. Treat public editor APIs as package contracts.</p>
+
+  <h3>Registry</h3>
+  <p><code>UapsRegistry</code> stores editor extension implementations. Registration deduplicates by ID where one exists, otherwise by implementation type.</p>
+  <pre><code><span class="kw">using</span> UniversalAssetPreviewStudio;
+
+<span class="tp">UapsRegistry</span>.RegisterPreviewProvider(<span class="kw">new</span> <span class="tp">MyPreviewProvider</span>());
+<span class="tp">UapsRegistry</span>.RegisterMetadataExtractor(<span class="kw">new</span> <span class="tp">MyExtractor</span>());
+<span class="tp">UapsRegistry</span>.RegisterValidationRule(<span class="kw">new</span> <span class="tp">MyRule</span>());
+<span class="tp">UapsRegistry</span>.RegisterExportAction(<span class="kw">new</span> <span class="tp">MyExportAction</span>());<span class="lang-tag">C#</span></code></pre>
+
+  <h3>Extension contracts</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Interface</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>IUapsAssetPreviewProvider</code></td><td>Returns preview textures for supported records.</td></tr>
+      <tr><td><code>IUapsStatefulPreviewProvider</code></td><td>Consumes <code>UapsPreviewState</code> for linked camera, render mode, environment and playback-aware previews.</td></tr>
+      <tr><td><code>IUapsTemporalPreviewProvider</code></td><td>Samples provider frames at normalized playback times for animated thumbnails and media.</td></tr>
+      <tr><td><code>IUapsThumbnailProvider</code></td><td>Returns thumbnail textures for supported records.</td></tr>
+      <tr><td><code>IUapsMetadataExtractor</code></td><td>Adds extracted signals to a record's metrics.</td></tr>
+      <tr><td><code>IUapsValidationRule</code></td><td>One deterministic finding rule (severity, message, optional fix).</td></tr>
+      <tr><td><code>IUapsComparisonAdapter</code></td><td>Contributes comparison data between assets.</td></tr>
+      <tr><td><code>IUapsExportAction</code></td><td>A registered export operation.</td></tr>
+      <tr><td><code>IUapsPreviewOverlay</code></td><td>Draws overlay content on the preview stage.</td></tr>
+      <tr><td><code>IUapsPreviewControlProvider</code></td><td>Adds preview control descriptors.</td></tr>
+      <tr><td><code>IUapsAssetTypeClassifier</code></td><td>Classifies indexed assets into families.</td></tr>
+      <tr><td><code>IUapsRenderPipelinePreviewAdapter</code></td><td>Adjusts the preview camera/lights/root for the active render pipeline.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Key entry classes</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Type</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>UapsAssetRecord</code> / <code>UapsAssetMetrics</code></td><td>The indexed asset model and its extracted metric signals.</td></tr>
+      <tr><td><code>UapsPreviewRenderPipeline.CaptureAsset(record, state, size)</code></td><td>Render a supported prefab / mesh / material capture with the shared preview state.</td></tr>
+      <tr><td><code>UapsPreviewRenderPipeline.CaptureAssetFrame(asset, state, size, normalizedTime)</code></td><td>Render a single live frame at a timeline point (advances particles / animation / VFX first).</td></tr>
+      <tr><td><code>UapsPreviewState</code></td><td>Shared yaw, pitch, FOV, padding, render mode, environment, background, lighting (incl. <code>keyLightYaw</code>/<code>keyLightPitch</code>), floor/stats toggles and playback values.</td></tr>
+      <tr><td><code>UapsPreviewSession.Create(record)</code></td><td>A plan-oriented preview lifecycle: provider, capabilities, controls, overlays, rendering and cleanup scope.</td></tr>
+      <tr><td><code>UapsAnimatedThumbnailService.GenerateFrameSequence(...)</code></td><td>Bounded PNG frame sequences using temporal providers, with static fallback.</td></tr>
+      <tr><td><code>UapsThumbnailService</code></td><td>Thumbnail generation, cached lookup, PNG export, sidecar metadata, cache stats and budget enforcement.</td></tr>
+      <tr><td><code>UapsValidationProfileService.Validate(record, profile)</code></td><td>Applies a profile to one record; <code>CreateProfile(...)</code> builds the built-in presets.</td></tr>
+      <tr><td><code>UapsSearchQuery.Parse(query)</code> / <code>UapsAssetIndexService.Search(...)</code></td><td>Parse browser filters and search indexed records.</td></tr>
+      <tr><td><code>UapsReportExporter</code> / <code>UapsDocumentationGenerator</code> / <code>UapsContactSheetExporter</code></td><td>JSON/CSV/Markdown/HTML reports, catalogs and contact sheets.</td></tr>
+      <tr><td><code>UapsDependencyGraphService</code> / <code>UapsComparisonReportService</code> / <code>UapsMediaExportService</code></td><td>Graph export, comparison reports/visual sheets and media exports.</td></tr>
+      <tr><td><code>UapsTeamWorkspaceService</code></td><td>Shared saved searches, tags, collections, pinned comparisons, recents and review assignments.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Built-in providers</h3>
+  <p><code>UapsAudioWaveformPreviewProvider</code>, <code>UapsAnimationTimelinePreviewProvider</code>, <code>UapsTextureInspectorPreviewProvider</code>, <code>UapsLiveSceneTemporalProvider</code> (live prefab/model playback, priority 50) and <code>UapsDefaultPreviewProvider</code>. Analyzers include <code>UapsAnimationAnalyzer</code>, <code>UapsAnimatorControllerAnalyzer</code>, <code>UapsRetargetAnalyzer</code>, <code>UapsVfxAnalyzer</code>, <code>UapsMaterialAnalyzer</code>, <code>UapsTextureAnalyzer</code>, <code>UapsAudioAnalyzer</code>, <code>UapsUiAnalyzer</code>, <code>UapsAddressablesAnalyzer</code> and <code>UapsGraphAssetAnalyzer</code>.</p>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Editor-only.</strong> These APIs depend on <code>UnityEditor</code>, <code>AssetDatabase</code>, importers, previews and the Test Runner and are not available in player builds. Capture methods can return null in graphics-limited batchmode &mdash; handle that with thumbnail / provider fallback paths.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             TROUBLESHOOTING                  -->
+<!-- ============================================ -->
+<section class="section" id="troubleshooting">
+  <h2><span class="section-icon" style="background:var(--pink-dim);color:var(--pink)">&#128161;</span> Troubleshooting</h2>
+  <p class="section-desc">The issues that come up most, and how to resolve them.</p>
+
+  <details open>
+    <summary>An asset doesn't appear in the browser</summary>
+    <div class="details-body">
+      <p>Refresh the browser and confirm the asset is inside the Unity project. Incremental updates run through Unity asset post-processor events while the Studio window is open; if the window was closed during a large import, a full rescan picks up the new assets.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>A preview is blank</summary>
+    <div class="details-body">
+      <p>Check whether the asset type is supported, whether dependencies are missing, and whether import settings allow preview generation. Metadata and validation still work for many assets even when Unity cannot render a rich preview image; UAPS falls back to a mini thumbnail or a type-colored fallback.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>A 3D preview freezes at frame 0</summary>
+    <div class="details-body">
+      <p>Use the <strong>Playback</strong> scrub control &mdash; live captures advance particles, animation and VFX before rendering. In headless sessions, scene advancement still runs but the final render needs a graphics device, so it may fall back to a static frame.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Exports are inconsistent</summary>
+    <div class="details-body">
+      <p>Regenerate thumbnails for the same filtered set and confirm the same output size and background option is used for the whole batch. Regenerate stale thumbnails after large art, material or import-setting changes.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Contact-sheet output is unexpectedly small</summary>
+    <div class="details-body">
+      <p>Check <code>-uapsMaxItems</code> or the current filtered result count. The CLI clamps large projects intentionally so automation cannot generate unbounded sheets by accident.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>WebP / MP4 export wrote PNG frames instead</summary>
+    <div class="details-body">
+      <p>Only GIF encoding is bundled. For WebP/MP4, supply an external encoder with <code>-uapsEncoderPath</code> (plus optional <code>-uapsEncoderArgs</code> and <code>-uapsFps</code>), e.g. FFmpeg. Without it, UAPS writes a bounded PNG frame sequence plus a JSON manifest and records the attempted command.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>The browser is sluggish on a huge project</summary>
+    <div class="details-body">
+      <p>Enable <code>Low Memory</code> in the toolbar. It caps browser thumbnail size, removes overscan rows, limits in-memory thumbnail retention, and uses cached/fallback cell images for uncached assets &mdash; ideal for very large projects, low-memory machines and remote editor sessions.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ============================================ -->
+<!--                  FAQ                         -->
+<!-- ============================================ -->
+<section class="section" id="faq">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#10067;</span> FAQ</h2>
+  <p class="section-desc">Quick answers to the questions that come up most.</p>
+
+  <details open>
+    <summary>Is there anything to add to a scene at runtime?</summary>
+    <div class="details-body">
+      <p>No. UAPS is an Editor-only workflow tool. The runtime assembly is intentionally minimal &mdash; it only exposes <code>UapsRuntimeInfo.ProductName</code> and <code>Version</code>. There are no runtime components to drop into a scene.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Which Unity versions and render pipelines are supported?</summary>
+    <div class="details-body">
+      <p>Unity <strong>6000.0</strong> or newer, on <strong>URP</strong>, <strong>HDRP</strong> and <strong>Built-in</strong>. Addressables and the Visual Effect Graph are optional &mdash; they are auto-detected and degrade gracefully when absent.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Do I need Addressables or the VFX Graph installed?</summary>
+    <div class="details-body">
+      <p>No. The Addressables audit uses reflection when the package is installed and falls back to scanning <code>Assets/AddressableAssetsData</code> otherwise. Live VFX previews step the Visual Effect Graph via reflection when present, with no hard dependency on the package.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>What export formats are supported?</summary>
+    <div class="details-body">
+      <p>PNG thumbnails and contact sheets; native GIF for short animated previews; JSON / CSV / Markdown / HTML reports; Markdown / HTML documentation catalogs; and Markdown / DOT / SVG dependency graphs. WebP and MP4 require a project-supplied external encoder; otherwise UAPS writes PNG frames plus a manifest.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Can I run it in CI without a display?</summary>
+    <div class="details-body">
+      <p>Yes &mdash; the <code>UapsCli</code> and <code>UapsTestAutomation</code> entry points run under <code>-batchmode -nographics</code>. When a graphics device is unavailable, render capture falls back to provider previews, cached thumbnails or documented frame-sequence fallbacks. <code>ReleaseReadiness</code> returns a non-zero exit code on blocking errors so release gates fail correctly.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Is the validation result authoritative for runtime performance?</summary>
+    <div class="details-body">
+      <p>No. Validation is a fast editorial check for preview readiness using editor-time signals. It does not claim authoritative runtime performance results or prove that an asset pack is defect-free; validate final behaviour in target builds.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Can my team share tags, collections and saved searches?</summary>
+    <div class="details-body">
+      <p>Yes. The <code>UapsTeamWorkspaceSettings</code> asset stores shared saved searches, project tags, collections, pinned comparisons, recents and review assignments, so this metadata can live in source control instead of personal EditorPrefs.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Can I extend it with my own previews or rules?</summary>
+    <div class="details-body">
+      <p>Yes. Implement one of the provider / extractor / rule / adapter / export interfaces and register it through <code>UapsRegistry</code>. See the <a href="#api">Scripting API</a>.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ============================================ -->
+<!--                SUPPORT                       -->
+<!-- ============================================ -->
+<section class="section" id="support">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128236;</span> Support</h2>
+  <p class="section-desc">Need help? We're here for you.</p>
+
+  <div class="card" style="text-align:center;padding:40px 24px;">
+    <div style="font-size:48px;margin-bottom:16px;">&#128231;</div>
+    <h3 style="border:none;margin-top:0;padding:0;text-align:center;">Get in Touch</h3>
+    <p style="color:var(--text-dim);max-width:480px;margin:8px auto 24px;">Bug reports, feature requests, workflow questions &mdash; reach out and we'll get back to you.</p>
+    <a href="mailto:szekipapa77@gmail.com" style="display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,var(--accent),var(--pink));color:#fff;text-decoration:none;border-radius:var(--radius-sm);font-weight:700;font-size:15px;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+      &#9993; szekipapa77@gmail.com
+    </a>
+    <p style="color:var(--text-dim);font-size:13px;margin-top:16px;">We typically respond within 24&ndash;48 hours.</p>
+  </div>
+
+  <div class="card-grid" style="margin-top:16px;">
+    <div class="card">
+      <div class="card-title">&#128172; Before contacting</div>
+      <ul style="padding-left:20px;color:var(--text-dim);font-size:14px;line-height:1.9;">
+        <li>Check the <a href="#troubleshooting">Troubleshooting</a> section</li>
+        <li>Refresh the browser / rescan the project</li>
+        <li>Confirm the asset is inside the Unity project</li>
+        <li>Check the Console for skipped-asset or capture messages</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">&#128203; Helpful info to include</div>
+      <ul style="padding-left:20px;color:var(--text-dim);font-size:14px;line-height:1.9;">
+        <li>Unity version (e.g. <code>6000.0.30f1</code>)</li>
+        <li>UAPS version (<strong>v0.3.0</strong>)</li>
+        <li>Render pipeline (Built-in / URP / HDRP)</li>
+        <li>The asset type + a sample asset path</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout callout-tip" style="margin-top:20px;">
+    <span class="callout-icon">&#11088;</span>
+    <div><strong>Enjoying Universal Asset Preview Studio?</strong> A review on the Unity Asset Store helps other developers discover the asset and helps us keep improving it. Thank you!</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div style="border-top:1px solid var(--border);padding-top:32px;margin-top:48px;text-align:center;color:var(--text-dim);font-size:13px;">
+  <p>Universal Asset Preview Studio v0.3.0 &middot; Built for Unity 6000.0+ &middot; Editor-only &middot; URP, HDRP &amp; Built-in</p>
+  <p style="margin-top:8px;">Support: <a href="mailto:szekipapa77@gmail.com" style="color:var(--accent-light);text-decoration:none;">szekipapa77@gmail.com</a></p>
+</div>
+
+</main>
+
+<!-- SCRIPTS -->
+<script>
+// Search functionality
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+const searchOverlay = document.getElementById('searchOverlay');
+
+const sections = [];
+document.querySelectorAll('.section, .hero').forEach(s => {
+  const h2 = s.querySelector('h2');
+  const h1 = s.querySelector('h1');
+  const desc = s.querySelector('.section-desc');
+  const h3s = s.querySelectorAll('h3');
+  const id = s.id || (s.parentElement && s.parentElement.id) || '';
+  if (!id) return;
+  sections.push({
+    id: id,
+    title: h2 ? h2.textContent.trim() : (h1 ? h1.textContent.trim() : ''),
+    desc: desc ? desc.textContent.trim() : '',
+    content: s.textContent.toLowerCase(),
+    h3: Array.from(h3s).map(h => h.textContent.trim())
+  });
+});
+
+searchInput.addEventListener('input', function() {
+  const q = this.value.toLowerCase().trim();
+  if (q.length < 2) {
+    searchResults.classList.remove('visible');
+    searchOverlay.classList.remove('visible');
+    return;
+  }
+  const matches = sections.filter(s => s.content.includes(q)).slice(0, 8);
+  if (matches.length === 0) {
+    searchResults.innerHTML = '<div style="padding:16px;color:var(--text-dim);text-align:center;">No results found</div>';
+  } else {
+    searchResults.innerHTML = matches.map(m => {
+      const matchH3 = m.h3.find(h => h.toLowerCase().includes(q));
+      return '<a href="#' + m.id + '" class="search-item" onclick="closeSearch()">' +
+        '<div class="search-item-section">' + m.title + '</div>' +
+        '<div class="search-item-title">' + (matchH3 || m.desc || m.title) + '</div>' +
+      '</a>';
+    }).join('');
+  }
+  searchResults.classList.add('visible');
+  searchOverlay.classList.add('visible');
+});
+
+function closeSearch() {
+  searchResults.classList.remove('visible');
+  searchOverlay.classList.remove('visible');
+  searchInput.value = '';
+  document.querySelector('.sidebar').classList.remove('open');
+}
+
+searchOverlay.addEventListener('click', closeSearch);
+
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    searchInput.focus();
+  }
+  if (e.key === 'Escape') closeSearch();
+});
+
+// Active sidebar link via IntersectionObserver
+const navLinks = document.querySelectorAll('.sidebar a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector('.sidebar a[href="#' + entry.target.id + '"]');
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -70% 0px', threshold: 0 });
+
+document.querySelectorAll('.section[id], .hero[id]').forEach(s => observer.observe(s));
+
+// Close mobile sidebar on nav click
+navLinks.forEach(link => {
+  link.addEventListener('click', () => {
+    document.querySelector('.sidebar').classList.remove('open');
+  });
+});
+</script>
+
+</body>
+</html>
