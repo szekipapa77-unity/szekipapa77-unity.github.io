@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UpscaleOS - Documentation</title>
+<style>
+:root {
+  --bg: #0D0B1A;
+  --bg-card: #161230;
+  --bg-card-hover: #1E1840;
+  --bg-code: #1A1535;
+  --bg-sidebar: #100D20;
+  --text: #e2e2ea;
+  --text-dim: #9088b0;
+  --text-code: #c8c8d8;
+  --accent: #9333EA;
+  --accent-light: #A855F7;
+  --accent-glow: rgba(147,51,234,0.15);
+  --green: #00cec9;
+  --green-dim: rgba(0,206,201,0.12);
+  --yellow: #fdcb6e;
+  --yellow-dim: rgba(253,203,110,0.12);
+  --pink: #EC4899;
+  --pink-dim: rgba(236,72,153,0.12);
+  --orange: #e17055;
+  --orange-dim: rgba(225,112,85,0.12);
+  --blue: #818cf8;
+  --blue-dim: rgba(129,140,248,0.12);
+  --border: #2D2550;
+  --border-light: #3D3560;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --sidebar-w: 280px;
+  --header-h: 64px;
+  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 24px); }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 15px;
+  overflow-x: hidden;
+}
+
+::selection { background: var(--accent); color: #fff; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+/* ---- HEADER ---- */
+.header {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  background: rgba(13,11,26,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  gap: 16px;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.header-logo .dot {
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, #9333EA, #EC4899);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800; color: #fff;
+}
+
+.header-search {
+  flex: 1;
+  max-width: 420px;
+  margin-left: auto;
+  position: relative;
+}
+
+.header-search input {
+  width: 100%;
+  padding: 8px 16px 8px 40px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--font);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.header-search input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.header-search input::placeholder { color: var(--text-dim); }
+
+.header-search .search-icon {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  color: var(--text-dim); font-size: 14px; pointer-events: none;
+}
+
+.header-version {
+  font-size: 12px; color: var(--text-dim);
+  background: var(--bg-card);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.menu-toggle {
+  display: none;
+  background: none; border: none;
+  color: var(--text); font-size: 22px;
+  cursor: pointer; padding: 4px;
+}
+
+/* ---- SIDEBAR ---- */
+.sidebar {
+  position: fixed;
+  top: var(--header-h);
+  left: 0;
+  width: var(--sidebar-w);
+  height: calc(100vh - var(--header-h));
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 20px 0;
+  z-index: 90;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-group { margin-bottom: 8px; }
+
+.sidebar-group-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text-dim);
+  padding: 12px 24px 6px;
+}
+
+.sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 24px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 13.5px;
+  transition: all 0.15s;
+  border-left: 2px solid transparent;
+}
+
+.sidebar a:hover {
+  color: var(--text);
+  background: var(--accent-glow);
+}
+
+.sidebar a.active {
+  color: var(--accent-light);
+  background: var(--accent-glow);
+  border-left-color: var(--accent);
+  font-weight: 600;
+}
+
+.sidebar a .nav-icon {
+  width: 20px;
+  text-align: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* ---- MAIN ---- */
+.main {
+  margin-left: var(--sidebar-w);
+  margin-top: var(--header-h);
+  padding: 40px 48px 80px;
+  max-width: 960px;
+}
+
+/* ---- HERO ---- */
+.hero {
+  padding: 48px 0 40px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 48px;
+}
+
+.hero h1 {
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #fff 0%, #A855F7 40%, #EC4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  font-size: 17px;
+  color: var(--text-dim);
+  max-width: 640px;
+  line-height: 1.7;
+}
+
+.hero-badges {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-purple { background: var(--accent-glow); color: var(--accent-light); border: 1px solid rgba(147,51,234,0.25); }
+.badge-green { background: var(--green-dim); color: var(--green); border: 1px solid rgba(0,206,201,0.25); }
+.badge-yellow { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(253,203,110,0.25); }
+.badge-pink { background: var(--pink-dim); color: var(--pink); border: 1px solid rgba(236,72,153,0.25); }
+.badge-blue { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(129,140,248,0.25); }
+
+/* ---- SECTIONS ---- */
+.section {
+  margin-bottom: 56px;
+  scroll-margin-top: calc(var(--header-h) + 24px);
+}
+
+.section h2 {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section h2 .section-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.section > .section-desc {
+  color: var(--text-dim);
+  margin-bottom: 28px;
+  font-size: 15px;
+}
+
+h3 {
+  font-size: 19px;
+  font-weight: 700;
+  margin-top: 32px;
+  margin-bottom: 12px;
+  color: var(--text);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+h4 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-top: 24px;
+  margin-bottom: 8px;
+  color: var(--accent-light);
+}
+
+p { margin-bottom: 12px; }
+
+ul, ol { padding-left: 22px; margin-bottom: 14px; }
+li { margin-bottom: 4px; }
+
+a { color: var(--accent-light); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---- CARDS ---- */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 16px;
+  transition: border-color 0.2s;
+}
+
+.card:hover { border-color: var(--border-light); }
+
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.mini-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: block;
+  color: inherit;
+}
+
+.mini-card:hover {
+  border-color: var(--accent);
+  background: var(--bg-card-hover);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+.mini-card h4 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  color: var(--text);
+  border: none;
+  padding: 0;
+}
+
+.mini-card p {
+  font-size: 12.5px;
+  color: var(--text-dim);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ---- CODE ---- */
+pre {
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 18px 22px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-code);
+  margin-bottom: 16px;
+  position: relative;
+}
+
+pre .lang-tag {
+  position: absolute;
+  top: 8px; right: 12px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-dim);
+  opacity: 0.6;
+  font-family: var(--font);
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: var(--bg-code);
+  padding: 2px 7px;
+  border-radius: 4px;
+  color: var(--accent-light);
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+.kw { color: #C084FC; }
+.str { color: #c3e88d; }
+.cm { color: #6B5F8A; font-style: italic; }
+.fn { color: #818cf8; }
+.tp { color: #ffcb6b; }
+.num { color: #f78c6c; }
+.op { color: #A78BFA; }
+
+/* ---- TABLES ---- */
+.table-wrap {
+  overflow-x: auto;
+  margin-bottom: 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+thead th {
+  background: var(--bg-code);
+  font-weight: 700;
+  text-align: left;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+}
+
+td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(147,51,234,0.04); }
+
+/* ---- COLLAPSIBLE ---- */
+details {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+
+details[open] { border-color: var(--border-light); }
+
+summary {
+  padding: 14px 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+  list-style: none;
+  transition: color 0.15s;
+}
+
+summary::-webkit-details-marker { display: none; }
+
+summary::before {
+  content: '\25B6';
+  font-size: 10px;
+  color: var(--text-dim);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+details[open] > summary::before { transform: rotate(90deg); }
+
+summary:hover { color: var(--accent-light); }
+
+details .details-body { padding: 0 20px 18px; }
+details .details-body p:first-child { margin-top: 0; }
+
+/* ---- CALLOUT ---- */
+.callout {
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.callout > div { flex: 1; }
+.callout p { margin-bottom: 6px; }
+.callout p:last-child { margin-bottom: 0; }
+
+.callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+.callout-tip { background: var(--green-dim); border: 1px solid rgba(0,206,201,0.2); }
+.callout-tip .callout-icon { color: var(--green); }
+
+.callout-warn { background: var(--yellow-dim); border: 1px solid rgba(253,203,110,0.2); }
+.callout-warn .callout-icon { color: var(--yellow); }
+
+.callout-info { background: var(--blue-dim); border: 1px solid rgba(129,140,248,0.2); }
+.callout-info .callout-icon { color: var(--blue); }
+
+.callout-danger { background: var(--pink-dim); border: 1px solid rgba(236,72,153,0.2); }
+.callout-danger .callout-icon { color: var(--pink); }
+
+/* ---- STEP LIST ---- */
+.steps { counter-reset: step; margin-bottom: 16px; }
+
+.step {
+  display: flex;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  counter-increment: step;
+}
+
+.step:last-child { border-bottom: none; }
+
+.step::before {
+  content: counter(step);
+  width: 28px; height: 28px;
+  background: var(--accent-glow);
+  color: var(--accent-light);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.step-content { flex: 1; }
+.step-content strong { color: var(--text); }
+
+/* ---- FLOW DIAGRAM ---- */
+.flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+}
+
+.flow-node {
+  padding: 8px 16px;
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.flow-arrow {
+  padding: 0 8px;
+  color: var(--text-dim);
+  font-size: 16px;
+}
+
+/* ---- TAGS ---- */
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tag-required { background: var(--pink-dim); color: var(--pink); }
+.tag-optional { background: var(--green-dim); color: var(--green); }
+.tag-auto { background: var(--accent-glow); color: var(--accent-light); }
+.tag-platform { background: var(--yellow-dim); color: var(--yellow); }
+.tag-info { background: var(--blue-dim); color: var(--blue); }
+
+/* ---- SEARCH RESULTS ---- */
+.search-overlay {
+  display: none;
+  position: fixed;
+  top: var(--header-h);
+  left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 95;
+}
+
+.search-results {
+  display: none;
+  position: fixed;
+  top: calc(var(--header-h) + 8px);
+  left: 50%; transform: translateX(-50%);
+  width: 520px;
+  max-width: calc(100vw - 32px);
+  max-height: 60vh;
+  overflow-y: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  z-index: 96;
+  padding: 8px;
+}
+
+.search-results.visible { display: block; }
+.search-overlay.visible { display: block; }
+
+.search-item {
+  display: block;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--text);
+  transition: background 0.1s;
+}
+
+.search-item:hover { background: var(--accent-glow); text-decoration: none; }
+.search-item-section { font-size: 11px; color: var(--accent-light); margin-bottom: 2px; }
+.search-item-title { font-weight: 600; font-size: 14px; }
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; padding: 24px 20px 60px; }
+  .menu-toggle { display: block; }
+  .header-search { max-width: 200px; }
+  .hero h1 { font-size: 28px; }
+  .card-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .header { padding: 0 16px; }
+  .header-version { display: none; }
+  .header-search { max-width: 160px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Toggle menu">&#9776;</button>
+  <a href="#overview" class="header-logo">
+    <div class="dot">U</div>
+    <span>UpscaleOS</span>
+  </a>
+  <div class="header-search">
+    <span class="search-icon">&#128269;</span>
+    <input type="text" id="searchInput" placeholder="Search docs... (Ctrl+K)" autocomplete="off">
+  </div>
+  <span class="header-version">v1.0 &middot; Unity 6000.0+</span>
+</header>
+
+<!-- SEARCH -->
+<div class="search-overlay" id="searchOverlay"></div>
+<div class="search-results" id="searchResults"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Getting Started</div>
+    <a href="#overview"><span class="nav-icon">&#127968;</span> Overview</a>
+    <a href="#installation"><span class="nav-icon">&#10515;</span> Installation</a>
+    <a href="#quickstart"><span class="nav-icon">&#9889;</span> Quick Start (URP)</a>
+    <a href="#how-it-works"><span class="nav-icon">&#9881;</span> How It Works</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">No-Code / Editor Tools</div>
+    <a href="#no-code"><span class="nav-icon">&#127919;</span> Zero-Code Workflow</a>
+    <a href="#controller"><span class="nav-icon">&#127918;</span> Upscale Controller</a>
+    <a href="#presets-workflow"><span class="nav-icon">&#128190;</span> Quality Preset Asset</a>
+    <a href="#menus"><span class="nav-icon">&#128295;</span> Editor Menus &amp; Wizard</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Features</div>
+    <a href="#quality-presets"><span class="nav-icon">&#127916;</span> Quality Presets</a>
+    <a href="#backends"><span class="nav-icon">&#128268;</span> Backends &amp; Fallback</a>
+    <a href="#smart-mode"><span class="nav-icon">&#129504;</span> Smart Mode</a>
+    <a href="#adaptive"><span class="nav-icon">&#128200;</span> Adaptive Resolution</a>
+    <a href="#sharpening"><span class="nav-icon">&#10024;</span> Sharpening</a>
+    <a href="#frame-gen"><span class="nav-icon">&#127909;</span> Frame Generation</a>
+    <a href="#pipelines"><span class="nav-icon">&#127760;</span> Multi-Pipeline</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Scripting API</div>
+    <a href="#api-service"><span class="nav-icon">&#128217;</span> UpscaleService</a>
+    <a href="#api-controller"><span class="nav-icon">&#128221;</span> UpscaleController</a>
+    <a href="#api-preset"><span class="nav-icon">&#128196;</span> UpscalePreset</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Help</div>
+    <a href="#troubleshooting"><span class="nav-icon">&#128161;</span> Troubleshooting</a>
+    <a href="#faq"><span class="nav-icon">&#10067;</span> FAQ</a>
+    <a href="#support"><span class="nav-icon">&#128236;</span> Support</a>
+  </div>
+
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+<!-- ============================================ -->
+<!--                  HERO                        -->
+<!-- ============================================ -->
+<div class="hero" id="overview">
+  <h1>UpscaleOS</h1>
+  <p>The Universal Upscaling Layer for Unity &mdash; one component/API for the major upscalers with automatic GPU detection and an open-source core that runs on every GPU with zero native DLLs.</p>
+  <div class="hero-badges">
+    <span class="badge badge-purple">Unity 6000.0+</span>
+    <span class="badge badge-green">Open core &middot; Zero native DLLs</span>
+    <span class="badge badge-yellow">URP / HDRP / Built-in</span>
+    <span class="badge badge-pink">DLSS &middot; FSR &middot; XeSS &middot; SGSR</span>
+  </div>
+</div>
+
+<section class="section">
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>One layer, every GPU.</strong> Add <strong>one component</strong> (or call <strong>one API</strong>) and UpscaleOS detects the player's GPU and picks the best available upscaler. The open-source core &mdash; FSR&nbsp;1, a vendor-agnostic temporal reconstructor, NIS-style, SGSR&nbsp;1/2 and a Bilinear floor &mdash; runs on <em>every</em> GPU with <strong>no native DLLs</strong>. The vendor ML paths (DLSS / FSR&nbsp;4 / XeSS) are <em>optional</em>.</div>
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#9989;</span>
+    <div><strong>It can never hard-fail.</strong> An automatic fallback chain always lands on a backend that runs &mdash; ending at Bilinear &mdash; so there is no GPU where UpscaleOS fails to render. See <a href="#backends">Backends &amp; Automatic Fallback</a>.</div>
+  </div>
+
+  <div class="card-grid">
+    <a class="mini-card" href="#no-code"><h4>&#127919; No-code setup</h4><p>Drop an <strong>Upscaling Camera</strong> or add the <strong>Upscale Controller</strong>, pick a Quality preset, press Play.</p></a>
+    <a class="mini-card" href="#quickstart"><h4>&#9889; URP in one click</h4><p>The Setup Wizard adds the renderer feature to every URP renderer for you.</p></a>
+    <a class="mini-card" href="#backends"><h4>&#128268; Auto GPU detection</h4><p>RTX &rarr; DLSS, RDNA4 &rarr; FSR4, Arc &rarr; XeSS, else the open core &mdash; chosen automatically.</p></a>
+    <a class="mini-card" href="#smart-mode"><h4>&#129504; Smart Mode</h4><p>Benchmarks every available backend and auto-picks the best one inside your FPS budget.</p></a>
+    <a class="mini-card" href="#adaptive"><h4>&#128200; Adaptive resolution</h4><p>Auto-tune render scale to hold a target FPS, CPU/GPU-bound aware.</p></a>
+    <a class="mini-card" href="#api-service"><h4>&#128217; Code-first too</h4><p>A static <code>UpscaleService</code> API &mdash; configure, inspect selection, reset history.</p></a>
+  </div>
+
+  <p>This guide starts with installation and a one-click URP quick start, then the <a href="#no-code">no-code / editor workflow</a>, the <a href="#quality-presets">feature set</a>, the <a href="#api-service">scripting API</a>, and finally <a href="#troubleshooting">troubleshooting</a> and <a href="#support">support</a>.</p>
+</section>
+
+<!-- ============================================ -->
+<!--             INSTALLATION                     -->
+<!-- ============================================ -->
+<section class="section" id="installation">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#10515;</span> Installation</h2>
+  <p class="section-desc">Import the package, run the Setup Wizard, add the component.</p>
+
+  <div class="steps">
+    <div class="step"><div class="step-content"><strong>Import from the Asset Store</strong><br>In <code>Window &rarr; Package Manager &rarr; My Assets</code>, download and import UpscaleOS. It lands at <code>Assets/UpscaleOS/</code>.</div></div>
+    <div class="step"><div class="step-content"><strong>Open the Setup Wizard</strong><br><code>Tools &rarr; UpscaleOS &rarr; Setup Wizard</code> runs colour-coded project diagnostics with one-click fixes. On URP, click <strong>Add UpscaleOS to all URP renderers</strong>.</div></div>
+    <div class="step"><div class="step-content"><strong>Add the renderer path</strong><br>The wizard installs the <code>UpscaleOSRendererFeature</code> on your URP renderer(s); the feature requests the depth and motion vectors that temporal upscalers need.</div></div>
+    <div class="step"><div class="step-content"><strong>Add the component &amp; play</strong><br>Add the <strong>Upscale Controller</strong> to your camera (or use <code>GameObject &rarr; UpscaleOS &rarr; Upscaling Camera</code>), pick a <strong>Quality</strong> preset, and press Play.</div></div>
+  </div>
+
+  <h3>Requirements</h3>
+  <ul>
+    <li>Unity <strong>6000.0</strong> or newer.</li>
+    <li><strong>URP&nbsp;17</strong> for the one-click path, or <strong>HDRP&nbsp;17</strong> via a CustomPass. The Built-in pipeline has a driver (<code>OnRenderImage</code> based).</li>
+    <li>The <strong>open core needs no native DLLs</strong> and runs on every GPU.</li>
+    <li>Vendor ML backends (DLSS / FSR&nbsp;4 / XeSS) are <strong>Windows&nbsp;x64</strong> + the vendor SDK + the native bridge you build &mdash; entirely optional.</li>
+  </ul>
+
+  <h3>What gets installed</h3>
+  <pre><code><span class="kw">Assets/UpscaleOS/</span>
+  Runtime/        <span class="cm">// UpscaleService, UpscaleController, the open-core backends,</span>
+                  <span class="cm">//   the URP renderer feature + HDRP CustomPass + Built-in driver</span>
+  Runtime/Native/ <span class="cm">// the native-bridge source you build to enable vendor ML paths</span>
+  Editor/         <span class="cm">// Setup Wizard, Diagnostics, Welcome, Quality Compare, inspectors</span>
+  Demo/           <span class="cm">// a generated demo scene (Create Demo Scene) with motion-vector objects</span>
+  Documentation/  <span class="cm">// You are here</span>
+  Tests/          <span class="cm">// EditMode + PlayMode validation</span><span class="lang-tag">Project</span></code></pre>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>First-run Welcome.</strong> A Welcome window auto-opens once after import. Re-open it any time via <code>Tools &rarr; UpscaleOS &rarr; Welcome</code>.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          QUICK START - URP                   -->
+<!-- ============================================ -->
+<section class="section" id="quickstart">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#9889;</span> Quick Start (URP)</h2>
+  <p class="section-desc">The primary one-click path: a renderer feature plus one component.</p>
+
+  <div class="steps">
+    <div class="step"><div class="step-content"><strong>Add UpscaleOS to your renderers</strong><br><code>Tools &rarr; UpscaleOS &rarr; Setup Wizard &rarr; Add UpscaleOS to all URP renderers</code>. This adds the renderer feature (which requests depth + motion vectors) to every URP renderer.</div></div>
+    <div class="step"><div class="step-content"><strong>Add the Upscale Controller</strong><br>On your main camera: <code>Add Component &rarr; UpscaleOS &rarr; Upscale Controller</code>. (Or drop a ready-made camera with <code>GameObject &rarr; UpscaleOS &rarr; Upscaling Camera</code>, which also installs the feature.)</div></div>
+    <div class="step"><div class="step-content"><strong>Pick a Quality preset</strong><br>Choose a <strong>Quality</strong> mode (e.g. <em>Balanced</em>) &mdash; or enable <strong>Smart Mode</strong> to let UpscaleOS benchmark and choose for you.</div></div>
+    <div class="step"><div class="step-content"><strong>Press Play</strong><br>UpscaleOS detects your GPU and selects the best available backend automatically. Use <code>Tools &rarr; UpscaleOS &rarr; Diagnostics</code> to confirm what was chosen.</div></div>
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#128161;</span>
+    <div><strong>Validate motion vectors before you ship.</strong> Temporal upscalers depend on correct motion vectors. Run <code>Tools &rarr; UpscaleOS &rarr; Validate Motion Vectors</code> to catch ghosting risks early.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             HOW IT WORKS                     -->
+<!-- ============================================ -->
+<section class="section" id="how-it-works">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#9881;</span> How It Works</h2>
+  <p class="section-desc">Render the scene below display resolution, reconstruct it, present at display resolution.</p>
+
+  <div class="flow">
+    <span class="flow-node">Render low-res</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">+ Jitter</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">+ Motion vectors</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">Reconstruct</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">Sharpen (RCAS)</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">Display-res</span>
+  </div>
+
+  <ol>
+    <li>The pipeline renders the scene at a reduced <strong>internal render scale</strong> (e.g. 67% for <em>Quality</em>).</li>
+    <li>A sub-pixel <strong>jitter</strong> is applied each frame so successive frames sample different positions.</li>
+    <li>The selected backend reconstructs the full <strong>display resolution</strong> image. Temporal backends additionally consume <strong>motion vectors</strong> (and depth) to reuse detail from previous frames; spatial backends upscale the single frame.</li>
+    <li>An optional <strong>RCAS</strong> sharpening pass cleans up the reconstructed result.</li>
+    <li>The pass injects <strong>before post-processing</strong>, so UI drawn afterwards stays crisp at native resolution by default.</li>
+  </ol>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>The temporal path is what removes aliasing and recovers detail.</strong> That is why jitter + motion vectors feed it &mdash; without valid motion vectors, temporal backends can ghost or smear (see <a href="#troubleshooting">Troubleshooting</a>).</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          NO-CODE WORKFLOW                    -->
+<!-- ============================================ -->
+<section class="section" id="no-code">
+  <h2><span class="section-icon" style="background:var(--green-dim);color:var(--green)">&#127919;</span> Zero-Code Workflow</h2>
+  <p class="section-desc">UpscaleOS is fully usable without writing a line of code &mdash; this is a headline capability.</p>
+
+  <div class="steps">
+    <div class="step"><div class="step-content"><strong>Drop an Upscaling Camera</strong><br><code>GameObject &rarr; UpscaleOS &rarr; Upscaling Camera</code> drops a ready camera that already has the controller and installs the URP renderer feature for you.</div></div>
+    <div class="step"><div class="step-content"><strong>&hellip; or add the component to your own camera</strong><br><code>Add Component &rarr; UpscaleOS &rarr; Upscale Controller</code> on an existing camera does the same job.</div></div>
+    <div class="step"><div class="step-content"><strong>Pick a Quality preset (or enable Smart Mode)</strong><br>Choose a <strong>Quality</strong> mode in the inspector, or tick <strong>Smart Mode</strong> to auto-select the best backend within your FPS budget.</div></div>
+    <div class="step"><div class="step-content"><strong>Press Play</strong><br>That's it &mdash; UpscaleOS detects the GPU, selects a backend, and starts upscaling.</div></div>
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#128075;</span>
+    <div><strong>Welcome window.</strong> A first-run Welcome window auto-opens once and is re-openable any time via <code>Tools &rarr; UpscaleOS &rarr; Welcome</code> &mdash; a guided jump-off to the wizard, demo and diagnostics.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          UPSCALE CONTROLLER                  -->
+<!-- ============================================ -->
+<section class="section" id="controller">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#127918;</span> The Upscale Controller Component</h2>
+  <p class="section-desc">The single component that drives upscaling on a camera. <code>Add Component &rarr; UpscaleOS &rarr; Upscale Controller</code>.</p>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Field</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Quality Preset</strong> <span class="tag tag-optional">Optional</span></td><td>An optional <a href="#presets-workflow">Quality Preset asset</a> slot. When assigned, it is applied automatically on enable.</td></tr>
+      <tr><td><strong>Quality</strong></td><td>The preset enum (Native AA &hellip; Ultra Performance, or Custom). See <a href="#quality-presets">Quality Presets</a>.</td></tr>
+      <tr><td><strong>Custom Render Scale</strong></td><td>0.25&ndash;1.0 internal render scale, used when <strong>Quality = Custom</strong>.</td></tr>
+      <tr><td><strong>Preferred Backend</strong></td><td><code>Auto</code> or a specific backend. <em>Auto</em> uses the fallback chain; Smart Mode overrides this.</td></tr>
+      <tr><td><strong>Smart Mode</strong></td><td>Benchmarks the available backends and auto-picks the best one within your FPS budget (overrides Preferred Backend).</td></tr>
+      <tr><td><strong>Sharpness</strong></td><td>RCAS sharpness applied after reconstruction (0&ndash;1).</td></tr>
+      <tr><td><strong>Post-Sharpen</strong> + strength</td><td>An extra CAS/RCAS pass to sharpen temporal/vendor results, with its own strength.</td></tr>
+      <tr><td><strong>Frame Generation</strong> <span class="tag tag-info">Request</span></td><td>Requests frame generation &mdash; see <a href="#frame-gen">Frame Generation</a> for what this does on the open vs. vendor path.</td></tr>
+      <tr><td><strong>Auto-Tune To Target FPS</strong> + Target FPS</td><td>Enable adaptive resolution; the governor nudges render scale to hold the target (30&ndash;240).</td></tr>
+      <tr><td><strong>Native-Resolution Layers</strong> <span class="tag tag-info">Reserved</span></td><td>Reserved / planned &mdash; <em>not yet active</em>.</td></tr>
+      <tr><td><strong>Show Debug Overlay</strong></td><td>Draws a live on-screen overlay of the active backend and render stats.</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Code-first is preserved.</strong> If you set values in <code>Start()</code> or at runtime, your code wins over an assigned preset &mdash; the preset is only applied automatically on enable.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          QUALITY PRESET WORKFLOW             -->
+<!-- ============================================ -->
+<section class="section" id="presets-workflow">
+  <h2><span class="section-icon" style="background:var(--green-dim);color:var(--green)">&#128190;</span> The Quality Preset Asset Workflow</h2>
+  <p class="section-desc">A reusable <code>ScriptableObject</code> for standardising settings across scenes and projects &mdash; a team-friendly workflow.</p>
+
+  <div class="steps">
+    <div class="step"><div class="step-content"><strong>Create the asset</strong><br><code>Assets &rarr; Create &rarr; UpscaleOS &rarr; Quality Preset</code> makes a <strong>Quality Preset</strong> ScriptableObject in your project.</div></div>
+    <div class="step"><div class="step-content"><strong>Assign it to a controller</strong><br>Drag it into the controller's <strong>Quality Preset</strong> slot. When assigned, it is applied automatically on enable.</div></div>
+    <div class="step"><div class="step-content"><strong>Reuse it everywhere</strong><br>Share the same preset across scenes/projects so every camera uses identical upscaling settings.</div></div>
+  </div>
+
+  <h3>Inspector buttons</h3>
+  <p>The Upscale Controller inspector has helper buttons so you never have to hand-edit the asset:</p>
+  <ul>
+    <li><strong>Apply preset to fields</strong> &mdash; push the assigned preset's values onto the controller's fields.</li>
+    <li><strong>Capture fields into preset</strong> &mdash; write the controller's current fields back into the preset.</li>
+    <li><strong>Create &amp; assign preset</strong> &mdash; make a new preset from the current fields and assign it in one click.</li>
+  </ul>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#128161;</span>
+    <div><strong>Code-first still wins.</strong> An assigned preset applies on enable, but anything you set in <code>Start()</code> / at runtime overrides it &mdash; presets and code coexist.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          EDITOR MENUS & WIZARD               -->
+<!-- ============================================ -->
+<section class="section" id="menus">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128295;</span> Editor Menus &amp; Setup Wizard</h2>
+  <p class="section-desc">Everything UpscaleOS does in the editor is reachable from a few menus.</p>
+
+  <h3>Tools &rarr; UpscaleOS</h3>
+  <div class="card-grid">
+    <div class="card"><div class="card-title">&#128075; Welcome</div><p style="color:var(--text-dim);font-size:13.5px;margin:0;">The first-run window; re-openable any time as a guided jump-off point.</p></div>
+    <div class="card"><div class="card-title">&#129520; Setup Wizard</div><p style="color:var(--text-dim);font-size:13.5px;margin:0;">Colour-coded diagnostics with one-click fixes, the URP "add to all renderers" button, and quick links.</p></div>
+    <div class="card"><div class="card-title">&#128270; Diagnostics</div><p style="color:var(--text-dim);font-size:13.5px;margin:0;">Shows your GPU, available backends, and which optional vendor DLLs are installed.</p></div>
+    <div class="card"><div class="card-title">&#10145; Validate Motion Vectors</div><p style="color:var(--text-dim);font-size:13.5px;margin:0;">Catches ghosting risks for temporal backends before you ship.</p></div>
+    <div class="card"><div class="card-title">&#127909; Quality Compare</div><p style="color:var(--text-dim);font-size:13.5px;margin:0;">Side-by-side comparison of presets/backends.</p></div>
+    <div class="card"><div class="card-title">&#128218; Documentation</div><p style="color:var(--text-dim);font-size:13.5px;margin:0;">Opens this documentation.</p></div>
+    <div class="card"><div class="card-title">&#127916; Create Demo Scene</div><p style="color:var(--text-dim);font-size:13.5px;margin:0;">Generates a demo scene with a controller, debug overlay, and motion-vector objects.</p></div>
+    <div class="card"><div class="card-title">&#128230; Export .unitypackage</div><p style="color:var(--text-dim);font-size:13.5px;margin:0;">Exports the asset as a <code>.unitypackage</code>.</p></div>
+  </div>
+
+  <h3>Other menus</h3>
+  <ul>
+    <li><code>GameObject &rarr; UpscaleOS &rarr; Upscaling Camera</code> &mdash; drops a ready camera with the controller + installs the URP renderer feature.</li>
+    <li><code>Assets &rarr; Create &rarr; UpscaleOS &rarr; Quality Preset</code> &mdash; creates a Quality Preset ScriptableObject.</li>
+  </ul>
+
+  <h3>The Setup Wizard in detail</h3>
+  <p>The Setup Wizard (<code>Tools &rarr; UpscaleOS &rarr; Setup Wizard</code>) runs colour-coded project diagnostics with one-click fixes. It includes:</p>
+  <ul>
+    <li>An <strong>Add UpscaleOS to all URP renderers</strong> button that adds the renderer feature (which requests depth + motion vectors).</li>
+    <li>A quick-start summary.</li>
+    <li>Links to the demo scene, Quality Compare, and Diagnostics.</li>
+  </ul>
+</section>
+
+<!-- ============================================ -->
+<!--          QUALITY PRESETS                     -->
+<!-- ============================================ -->
+<section class="section" id="quality-presets">
+  <h2><span class="section-icon" style="background:var(--pink-dim);color:var(--pink)">&#127916;</span> Quality Presets</h2>
+  <p class="section-desc">Each preset maps to an upscale factor and an internal render percentage &mdash; lower render % means more performance.</p>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Quality Mode</th><th>Upscale factor</th><th>Internal render %</th></tr></thead>
+    <tbody>
+      <tr><td><code>Native AA</code></td><td>1.0x</td><td>100%</td></tr>
+      <tr><td><code>Ultra Quality</code></td><td>1.3x</td><td>77%</td></tr>
+      <tr><td><code>Quality</code></td><td>1.5x</td><td>67%</td></tr>
+      <tr><td><code>Balanced</code></td><td>1.7x</td><td>59%</td></tr>
+      <tr><td><code>Performance</code></td><td>2.0x</td><td>50%</td></tr>
+      <tr><td><code>Ultra Performance</code></td><td>3.0x</td><td>33%</td></tr>
+      <tr><td><code>Custom</code></td><td>&mdash;</td><td>your own 0.25&ndash;1.0 render scale</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Native AA renders at 100%.</strong> It does not upscale &mdash; it uses the temporal path purely as an anti-aliaser. <strong>Custom</strong> lets you dial any render scale between 0.25 and 1.0 via the controller's <em>Custom Render Scale</em> field.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          BACKENDS & FALLBACK                 -->
+<!-- ============================================ -->
+<section class="section" id="backends">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#128268;</span> Backends &amp; Automatic Fallback</h2>
+  <p class="section-desc">An open-source core that runs everywhere, optional vendor ML paths, and a fallback chain that can never hard-fail.</p>
+
+  <h3>Open-source core <span style="font-weight:400;color:var(--text-dim)">&mdash; every GPU, no DLLs</span></h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Backend</th><th>Type</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><code>FSR 1</code></td><td>Spatial</td><td>EASU + RCAS.</td></tr>
+      <tr><td><code>UpscaleOS-TU</code></td><td>Temporal</td><td>Vendor-agnostic temporal reconstruction with dilated motion vectors + a reactive mask.</td></tr>
+      <tr><td><code>NIS-style</code></td><td>Spatial</td><td>Directional spatial scaler.</td></tr>
+      <tr><td><code>SGSR 1</code> / <code>SGSR 2</code></td><td>Mobile</td><td>Snapdragon GSR-style scalers for mobile.</td></tr>
+      <tr><td><code>Bilinear</code></td><td>Floor</td><td>The always-works fallback.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Vendor ML backends <span style="font-weight:400;color:var(--text-dim)">&mdash; optional</span></h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Backend</th><th>Hardware</th><th>How it activates</th></tr></thead>
+    <tbody>
+      <tr><td><code>NVIDIA DLSS</code></td><td>RTX (via NVIDIA Streamline / NGX)</td><td rowspan="3">The Unity-side plumbing is complete. You build a <strong>native bridge from the included source</strong> and drop in the vendor SDK + DLLs to activate them; otherwise they <strong>deregister</strong> and the open core runs. No closed binaries ship.</td></tr>
+      <tr><td><code>AMD FSR 4</code></td><td>RDNA 4</td></tr>
+      <tr><td><code>Intel XeSS</code></td><td>Intel Arc</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Automatic fallback chain</h3>
+  <p>UpscaleOS picks the best available backend for the GPU and <strong>always falls back</strong> so it can <strong>never hard-fail</strong> to render:</p>
+  <pre><code>NVIDIA RTX  &rarr; DLSS    <span class="cm">// only if the vendor DLL + bridge are present</span>
+AMD RDNA4   &rarr; FSR4    <span class="cm">// only if the vendor DLL + bridge are present</span>
+Intel Arc   &rarr; XeSS    <span class="cm">// only if the vendor DLL + bridge are present</span>
+
+desktop, no vendor DLL  &rarr; UpscaleOS-TU
+mobile                  &rarr; SGSR2 &rarr; SGSR1
+weakest / unknown       &rarr; FSR1 &rarr; Bilinear<span class="lang-tag">Fallback</span></code></pre>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#9989;</span>
+    <div><strong>No closed binaries ship.</strong> Activating a vendor path is entirely your choice: build the included bridge source, add the vendor SDK + DLLs under that vendor's license, and the backend activates automatically. With nothing added, the open core runs &mdash; everywhere.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          SMART MODE                          -->
+<!-- ============================================ -->
+<section class="section" id="smart-mode">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#129504;</span> Smart Mode</h2>
+  <p class="section-desc">Let UpscaleOS measure your GPU and choose for you.</p>
+
+  <p>When <strong>Smart Mode</strong> is enabled, UpscaleOS <strong>benchmarks every backend available on the player's GPU at startup</strong> and selects the <strong>highest-quality one whose cost fits your frame budget</strong>. It <strong>overrides Preferred Backend</strong> &mdash; so you don't have to guess which upscaler is best for a given machine.</p>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div>Smart Mode runs once at startup. To re-run the selection from code, call <code>RunSmartSelection()</code> on the controller.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          ADAPTIVE RESOLUTION                 -->
+<!-- ============================================ -->
+<section class="section" id="adaptive">
+  <h2><span class="section-icon" style="background:var(--green-dim);color:var(--green)">&#128200;</span> Adaptive Resolution</h2>
+  <p class="section-desc">Hold a target frame rate by continuously nudging the render scale.</p>
+
+  <p>When <strong>Auto-Tune To Target FPS</strong> is on, a governor continuously nudges the internal render scale to <strong>hold your Target FPS</strong>. It is:</p>
+  <ul>
+    <li><strong>CPU/GPU-bound aware</strong> &mdash; it won't lower the render scale when you're CPU-bound (lowering it wouldn't help).</li>
+    <li><strong>Anti-oscillation guarded</strong> &mdash; it avoids hunting back and forth around the target.</li>
+  </ul>
+
+  <pre><code><span class="kw">var</span> c = camera.GetComponent&lt;<span class="tp">UpscaleController</span>&gt;();
+c.autoTuneToTargetFps = <span class="kw">true</span>;
+c.targetFps          = <span class="num">60</span>;   <span class="cm">// 30..240</span>
+c.ApplySettings();<span class="lang-tag">C#</span></code></pre>
+</section>
+
+<!-- ============================================ -->
+<!--          SHARPENING                          -->
+<!-- ============================================ -->
+<section class="section" id="sharpening">
+  <h2><span class="section-icon" style="background:var(--yellow-dim);color:var(--yellow)">&#10024;</span> Sharpening</h2>
+  <p class="section-desc">RCAS after reconstruction, plus an optional extra post-sharpen pass.</p>
+
+  <ul>
+    <li><strong>Sharpness</strong> &mdash; an <strong>RCAS</strong> sharpness amount applied <em>after</em> reconstruction (0&ndash;1).</li>
+    <li><strong>Post-Sharpen</strong> &mdash; an <em>optional extra</em> CAS/RCAS pass, with its own strength, to sharpen temporal or vendor results that you want a bit crisper.</li>
+  </ul>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div>Both controls live on the Upscale Controller and can be driven from code via the matching fields plus <code>ApplySettings()</code>.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          FRAME GENERATION                    -->
+<!-- ============================================ -->
+<section class="section" id="frame-gen">
+  <h2><span class="section-icon" style="background:var(--pink-dim);color:var(--pink)">&#127909;</span> Frame Generation</h2>
+  <p class="section-desc">UpscaleOS ships the motion-vector interpolation and frame-pacing logic &mdash; honestly reported.</p>
+
+  <p>UpscaleOS includes the <strong>motion-vector interpolation</strong> + <strong>even frame-pacing</strong> logic and an <code>IFrameGenPresenter</code> hook. However, <strong>actually presenting synthesized frames needs a platform/swapchain present implementation</strong>, so on the open path the toggle <strong>does not add frames by itself</strong> &mdash; it reports <em>"requested"</em> honestly.</p>
+
+  <div class="callout callout-warn">
+    <span class="callout-icon">&#9888;</span>
+    <div><strong>Vendor frame generation</strong> (DLSS-G / FSR-FG) requires the optional native bridge. Note that <strong>DLSS-G frame generation requires an RTX&nbsp;40-series GPU</strong>.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          MULTI-PIPELINE                      -->
+<!-- ============================================ -->
+<section class="section" id="pipelines">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#127760;</span> Multi-Pipeline (URP / HDRP / Built-in)</h2>
+  <p class="section-desc">One asset, three render pipelines on Unity 6000.0+.</p>
+
+  <h3>URP 17 <span class="tag tag-auto">Primary</span></h3>
+  <p>The primary one-click path. UpscaleOS plugs in as a <code>ScriptableRendererFeature</code> &mdash; the Setup Wizard's <strong>Add UpscaleOS to all URP renderers</strong> adds it for you, and it requests the depth + motion vectors temporal upscalers need.</p>
+
+  <h3>HDRP 17 <span class="tag tag-platform">CustomPass</span></h3>
+  <p>HDRP has no renderer features, so UpscaleOS plugs in as a <code>CustomPass</code>:</p>
+  <div class="steps">
+    <div class="step"><div class="step-content"><strong>Add a Custom Pass Volume</strong><br><code>GameObject &rarr; Volume &rarr; Custom Pass</code>, set its injection point to <strong>Before Post Process</strong>, and add the <strong>Upscale HDRP Pass</strong> to it.</div></div>
+    <div class="step"><div class="step-content"><strong>Pick Quality (and optionally a backend)</strong><br>Set a Quality preset and an optional preferred backend on the pass.</div></div>
+    <div class="step"><div class="step-content"><strong>Pair with HDRP Dynamic Resolution</strong><br>For sub-native rendering, enable <strong>Dynamic Resolution</strong> on the HDRP Asset and the camera; the pass reconstructs the DRS-scaled colour up to display resolution.</div></div>
+  </div>
+
+  <h3>Built-in <span class="tag tag-platform">Driver</span></h3>
+  <p>The Built-in pipeline has a driver based on <code>OnRenderImage</code>.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#128161;</span>
+    <div><strong>UI stays crisp.</strong> The upscale pass injects before post-processing, so UI drawn afterwards is presented at native resolution by default.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          API - SERVICE                       -->
+<!-- ============================================ -->
+<section class="section" id="api-service">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#128217;</span> Scripting API &mdash; UpscaleService</h2>
+  <p class="section-desc">The static entry point. Namespace: <code>UpscaleOS</code>. Code-first usage is fully supported.</p>
+
+  <h3>Common usage</h3>
+  <pre><code><span class="kw">using</span> UpscaleOS;
+
+<span class="cm">// Query the environment</span>
+Debug.Log(<span class="tp">UpscaleService</span>.Gpu);       <span class="cm">// detected vendor / tier / device</span>
+Debug.Log(<span class="tp">UpscaleService</span>.Active);    <span class="cm">// selected backend</span>
+<span class="kw">foreach</span> (<span class="kw">var</span> b <span class="kw">in</span> <span class="tp">UpscaleService</span>.Available) Debug.Log(b);
+
+<span class="cm">// Configure quality + display resolution</span>
+<span class="tp">UpscaleService</span>.Configure(<span class="tp">QualityMode</span>.Quality, <span class="kw">new</span> <span class="tp">Vector2Int</span>(<span class="num">1920</span>, <span class="num">1080</span>));<span class="lang-tag">C#</span></code></pre>
+
+  <h3>Members</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Member</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>UpscaleService.Gpu</code></td><td>The detected GPU (vendor / tier / device).</td></tr>
+      <tr><td><code>UpscaleService.Active</code></td><td>The currently selected backend.</td></tr>
+      <tr><td><code>UpscaleService.Available</code></td><td>Iterable set of backends available on this GPU (<code>foreach</code>).</td></tr>
+      <tr><td><code>UpscaleService.Configure(QualityMode, Vector2Int)</code></td><td>Set the quality mode and display resolution.</td></tr>
+      <tr><td><code>UpscaleService.ExplainSelection()</code></td><td>A per-backend why-chosen / why-rejected trace.</td></tr>
+      <tr><td><code>UpscaleService.ResetHistory()</code></td><td>Flush temporal history &mdash; call on a hard cut / teleport.</td></tr>
+      <tr><td><code>UpscaleService.ActiveRenderStats</code></td><td>Live render-side statistics.</td></tr>
+    </tbody>
+  </table></div>
+
+  <pre><code><span class="cm">// Why did this backend get chosen?</span>
+Debug.Log(<span class="tp">UpscaleService</span>.ExplainSelection());
+
+<span class="cm">// On a camera cut / teleport, drop stale temporal history:</span>
+<span class="tp">UpscaleService</span>.ResetHistory();<span class="lang-tag">C#</span></code></pre>
+</section>
+
+<!-- ============================================ -->
+<!--          API - CONTROLLER                    -->
+<!-- ============================================ -->
+<section class="section" id="api-controller">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128221;</span> Scripting API &mdash; UpscaleController</h2>
+  <p class="section-desc">The component. Add it to a camera; drive it from the inspector or from code.</p>
+
+  <pre><code><span class="kw">var</span> c = camera.gameObject.AddComponent&lt;<span class="tp">UpscaleController</span>&gt;();
+c.quality              = <span class="tp">QualityMode</span>.Performance;
+c.autoTuneToTargetFps  = <span class="kw">true</span>;   <span class="cm">// adaptive render scale to hold the FPS target</span>
+c.ApplySettings();                <span class="cm">// push inspector settings to the runtime</span><span class="lang-tag">C#</span></code></pre>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Member</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>public fields</td><td>All inspector fields from <a href="#controller">The Upscale Controller</a> are public (quality, preferredBackend, smartMode, sharpness, frameGeneration, autoTuneToTargetFps, targetFps, &hellip;).</td></tr>
+      <tr><td><code>ApplySettings()</code></td><td>Push the current inspector settings to the runtime.</td></tr>
+      <tr><td><code>ResetHistory()</code></td><td>Flush temporal history (cut / teleport).</td></tr>
+      <tr><td><code>RunSmartSelection()</code></td><td>Re-run the Smart Mode benchmark + selection.</td></tr>
+      <tr><td><code>Runtime / Stats / ActiveBackend</code></td><td>Accessors for the live runtime, render stats, and the active backend.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Extensibility</h3>
+  <p>Power users can register a custom backend with <code>UpscaleExtensions.RegisterBackend(...)</code> &mdash; though the built-in enum covers the common cases.</p>
+  <pre><code><span class="cm">// Register a custom backend (power-user)</span>
+<span class="tp">UpscaleExtensions</span>.RegisterBackend(<span class="cm">/* your backend */</span>);<span class="lang-tag">C#</span></code></pre>
+</section>
+
+<!-- ============================================ -->
+<!--          API - PRESET                        -->
+<!-- ============================================ -->
+<section class="section" id="api-preset">
+  <h2><span class="section-icon" style="background:var(--green-dim);color:var(--green)">&#128196;</span> Scripting API &mdash; UpscalePreset</h2>
+  <p class="section-desc">The <a href="#presets-workflow">Quality Preset asset</a> type, scriptable.</p>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Member</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>UpscalePreset.ApplyTo(controller)</code></td><td>Apply this preset's values onto a controller.</td></tr>
+      <tr><td><code>UpscalePreset.CaptureFrom(controller)</code></td><td>Capture a controller's current fields into this preset.</td></tr>
+    </tbody>
+  </table></div>
+
+  <pre><code>preset.ApplyTo(controller);       <span class="cm">// standardise a camera's settings</span>
+preset.CaptureFrom(controller);   <span class="cm">// snapshot tuned settings back into the asset</span><span class="lang-tag">C#</span></code></pre>
+</section>
+
+<!-- ============================================ -->
+<!--             TROUBLESHOOTING                  -->
+<!-- ============================================ -->
+<section class="section" id="troubleshooting">
+  <h2><span class="section-icon" style="background:var(--pink-dim);color:var(--pink)">&#128161;</span> Troubleshooting</h2>
+  <p class="section-desc">The issues that come up most, and how to fix them.</p>
+
+  <details open>
+    <summary>Ghosting / smearing behind moving objects</summary>
+    <div class="details-body">
+      <p>Temporal upscalers (UpscaleOS-TU, DLSS, FSR&nbsp;4, XeSS) need correct <strong>motion vectors</strong>. Run <code>Tools &rarr; UpscaleOS &rarr; Validate Motion Vectors</code> to find problems. Custom and vegetation shaders need a <strong>MotionVectors pass</strong> &mdash; without one, animated geometry has no motion data and ghosts.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>No upscaling is happening at all</summary>
+    <div class="details-body">
+      <p>On URP, the <strong>renderer feature isn't added</strong>. Open <code>Tools &rarr; UpscaleOS &rarr; Setup Wizard</code> and click <strong>Add UpscaleOS to all URP renderers</strong>.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>A vendor backend (DLSS / FSR 4 / XeSS) isn't active</summary>
+    <div class="details-body">
+      <p>Its <strong>vendor DLLs / native bridge aren't present</strong>. The <strong>Diagnostics</strong> window shows what's installed. UpscaleOS falls back to the open core &mdash; this is <em>expected</em> until you build the bridge and add the vendor SDK + DLLs.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>HDRP shows no upscaling</summary>
+    <div class="details-body">
+      <p>Add a <strong>Custom Pass Volume</strong> with the <strong>Upscale HDRP Pass</strong> (injection point <strong>Before Post Process</strong>), and enable <strong>Dynamic Resolution</strong> on the HDRP asset + camera. See <a href="#pipelines">Multi-Pipeline</a>.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>The UI looks soft</summary>
+    <div class="details-body">
+      <p>The upscale pass injects <strong>before post-processing</strong> so UI stays crisp by default. If your UI is soft, confirm it is drawn after the upscale pass (e.g. a Screen Space &ndash; Overlay canvas, or post-upscale) rather than inside the upscaled scene buffer.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ============================================ -->
+<!--                  FAQ                         -->
+<!-- ============================================ -->
+<section class="section" id="faq">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#10067;</span> FAQ</h2>
+  <p class="section-desc">Quick answers to the questions that come up most.</p>
+
+  <details open>
+    <summary>Do I need vendor DLLs?</summary>
+    <div class="details-body">
+      <p>No. The <strong>open core works on every GPU with zero DLLs</strong>. The vendor ML paths (DLSS / FSR&nbsp;4 / XeSS) are entirely optional &mdash; you only build the native bridge and add the vendor SDK if you want those specific backends.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Does it work without coding?</summary>
+    <div class="details-body">
+      <p>Yes. Add the <strong>Upscale Controller</strong> component (or use <code>GameObject &rarr; UpscaleOS &rarr; Upscaling Camera</code>), pick a Quality preset, and press Play. No scripting required.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Which Unity version do I need?</summary>
+    <div class="details-body">
+      <p>Unity <strong>6000.0 or newer</strong>.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Which render pipelines are supported?</summary>
+    <div class="details-body">
+      <p><strong>URP</strong> (the one-click path via a renderer feature), <strong>HDRP</strong> (via a CustomPass), and <strong>Built-in</strong> (via a driver).</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Does it support consoles / XR?</summary>
+    <div class="details-body">
+      <p>The open core is portable; vendor and console paths depend on the relevant platform SDKs.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Does Frame Generation actually add frames?</summary>
+    <div class="details-body">
+      <p>On the open path, the toggle reports <em>"requested"</em> but does not add frames by itself &mdash; presenting synthesized frames needs a platform present hook (<code>IFrameGenPresenter</code>). Vendor frame generation (DLSS-G / FSR-FG) requires the optional native bridge, and DLSS-G needs an RTX&nbsp;40-series GPU.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ============================================ -->
+<!--                SUPPORT                       -->
+<!-- ============================================ -->
+<section class="section" id="support">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128236;</span> Support</h2>
+  <p class="section-desc">Need help? We're here for you.</p>
+
+  <div class="card" style="text-align:center;padding:40px 24px;">
+    <div style="font-size:48px;margin-bottom:16px;">&#128231;</div>
+    <h3 style="border:none;margin-top:0;padding:0;text-align:center;">Get in Touch</h3>
+    <p style="color:var(--text-dim);max-width:480px;margin:8px auto 24px;">Bug reports, feature requests, backend/pipeline questions &mdash; reach out and we'll get back to you.</p>
+    <a href="mailto:szekipapa77@gmail.com" style="display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,var(--accent),var(--pink));color:#fff;text-decoration:none;border-radius:var(--radius-sm);font-weight:700;font-size:15px;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+      &#9993; szekipapa77@gmail.com
+    </a>
+    <p style="color:var(--text-dim);font-size:13px;margin-top:16px;">We typically respond within 24&ndash;48 hours.</p>
+  </div>
+
+  <div class="card-grid" style="margin-top:16px;">
+    <div class="card">
+      <div class="card-title">&#128172; Before contacting</div>
+      <ul style="padding-left:20px;color:var(--text-dim);font-size:14px;line-height:1.9;">
+        <li>Check the <a href="#troubleshooting">Troubleshooting</a> section</li>
+        <li>Run <strong>Diagnostics</strong> to see your GPU + available backends</li>
+        <li>Run <strong>Validate Motion Vectors</strong> for ghosting issues</li>
+        <li>Confirm the URP renderer feature is added (Setup Wizard)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">&#128203; Helpful info to include</div>
+      <ul style="padding-left:20px;color:var(--text-dim);font-size:14px;line-height:1.9;">
+        <li>Unity version (e.g. <code>6000.0.30f1</code>)</li>
+        <li>UpscaleOS version (<strong>v1.0</strong>)</li>
+        <li>Render pipeline (URP / HDRP / Built-in)</li>
+        <li>Your GPU + the active backend (from Diagnostics)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout callout-tip" style="margin-top:20px;">
+    <span class="callout-icon">&#11088;</span>
+    <div><strong>Enjoying UpscaleOS?</strong> A review on the Unity Asset Store helps other developers discover the asset and helps us keep improving it. Thank you!</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div style="border-top:1px solid var(--border);padding-top:32px;margin-top:48px;text-align:center;color:var(--text-dim);font-size:13px;">
+  <p>UpscaleOS v1.0 &middot; Built for Unity 6000.0+ &middot; Open core, zero native DLLs</p>
+  <p style="margin-top:8px;">Support: <a href="mailto:szekipapa77@gmail.com" style="color:var(--accent-light);text-decoration:none;">szekipapa77@gmail.com</a></p>
+</div>
+
+</main>
+
+<!-- SCRIPTS -->
+<script>
+// Search functionality
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+const searchOverlay = document.getElementById('searchOverlay');
+
+const sections = [];
+document.querySelectorAll('.section, .hero').forEach(s => {
+  const h2 = s.querySelector('h2');
+  const h1 = s.querySelector('h1');
+  const desc = s.querySelector('.section-desc');
+  const h3s = s.querySelectorAll('h3');
+  const id = s.id || (s.parentElement && s.parentElement.id) || '';
+  if (!id) return;
+  sections.push({
+    id: id,
+    title: h2 ? h2.textContent.trim() : (h1 ? h1.textContent.trim() : ''),
+    desc: desc ? desc.textContent.trim() : '',
+    content: s.textContent.toLowerCase(),
+    h3: Array.from(h3s).map(h => h.textContent.trim())
+  });
+});
+
+searchInput.addEventListener('input', function() {
+  const q = this.value.toLowerCase().trim();
+  if (q.length < 2) {
+    searchResults.classList.remove('visible');
+    searchOverlay.classList.remove('visible');
+    return;
+  }
+  const matches = sections.filter(s => s.content.includes(q)).slice(0, 8);
+  if (matches.length === 0) {
+    searchResults.innerHTML = '<div style="padding:16px;color:var(--text-dim);text-align:center;">No results found</div>';
+  } else {
+    searchResults.innerHTML = matches.map(m => {
+      const matchH3 = m.h3.find(h => h.toLowerCase().includes(q));
+      return '<a href="#' + m.id + '" class="search-item" onclick="closeSearch()">' +
+        '<div class="search-item-section">' + m.title + '</div>' +
+        '<div class="search-item-title">' + (matchH3 || m.desc || m.title) + '</div>' +
+      '</a>';
+    }).join('');
+  }
+  searchResults.classList.add('visible');
+  searchOverlay.classList.add('visible');
+});
+
+function closeSearch() {
+  searchResults.classList.remove('visible');
+  searchOverlay.classList.remove('visible');
+  searchInput.value = '';
+  document.querySelector('.sidebar').classList.remove('open');
+}
+
+searchOverlay.addEventListener('click', closeSearch);
+
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    searchInput.focus();
+  }
+  if (e.key === 'Escape') closeSearch();
+});
+
+// Active sidebar link via IntersectionObserver
+const navLinks = document.querySelectorAll('.sidebar a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector('.sidebar a[href="#' + entry.target.id + '"]');
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -70% 0px', threshold: 0 });
+
+document.querySelectorAll('.section[id], .hero[id]').forEach(s => observer.observe(s));
+
+// Close mobile sidebar on nav click
+navLinks.forEach(link => {
+  link.addEventListener('click', () => {
+    document.querySelector('.sidebar').classList.remove('open');
+  });
+});
+</script>
+
+</body>
+</html>
