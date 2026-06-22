@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Astra Web Platform - Documentation</title>
+<style>
+:root {
+  --bg: #0D0B1A;
+  --bg-card: #161230;
+  --bg-card-hover: #1E1840;
+  --bg-code: #1A1535;
+  --bg-sidebar: #100D20;
+  --text: #e2e2ea;
+  --text-dim: #9088b0;
+  --text-code: #c8c8d8;
+  --accent: #9333EA;
+  --accent-light: #A855F7;
+  --accent-glow: rgba(147,51,234,0.15);
+  --green: #00cec9;
+  --green-dim: rgba(0,206,201,0.12);
+  --yellow: #fdcb6e;
+  --yellow-dim: rgba(253,203,110,0.12);
+  --pink: #EC4899;
+  --pink-dim: rgba(236,72,153,0.12);
+  --orange: #e17055;
+  --orange-dim: rgba(225,112,85,0.12);
+  --blue: #818cf8;
+  --blue-dim: rgba(129,140,248,0.12);
+  --border: #2D2550;
+  --border-light: #3D3560;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --sidebar-w: 280px;
+  --header-h: 64px;
+  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 24px); }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 15px;
+  overflow-x: hidden;
+}
+
+::selection { background: var(--accent); color: #fff; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+/* ---- HEADER ---- */
+.header {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  background: rgba(13,11,26,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  gap: 16px;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.header-logo .dot {
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, #9333EA, #EC4899);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800; color: #fff;
+}
+
+.header-search {
+  flex: 1;
+  max-width: 420px;
+  margin-left: auto;
+  position: relative;
+}
+
+.header-search input {
+  width: 100%;
+  padding: 8px 16px 8px 40px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--font);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.header-search input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.header-search input::placeholder { color: var(--text-dim); }
+
+.header-search .search-icon {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  color: var(--text-dim); font-size: 14px; pointer-events: none;
+}
+
+.header-version {
+  font-size: 12px; color: var(--text-dim);
+  background: var(--bg-card);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.menu-toggle {
+  display: none;
+  background: none; border: none;
+  color: var(--text); font-size: 22px;
+  cursor: pointer; padding: 4px;
+}
+
+/* ---- SIDEBAR ---- */
+.sidebar {
+  position: fixed;
+  top: var(--header-h);
+  left: 0;
+  width: var(--sidebar-w);
+  height: calc(100vh - var(--header-h));
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 20px 0;
+  z-index: 90;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-group { margin-bottom: 8px; }
+
+.sidebar-group-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text-dim);
+  padding: 12px 24px 6px;
+}
+
+.sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 24px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 13.5px;
+  transition: all 0.15s;
+  border-left: 2px solid transparent;
+}
+
+.sidebar a:hover {
+  color: var(--text);
+  background: var(--accent-glow);
+}
+
+.sidebar a.active {
+  color: var(--accent-light);
+  background: var(--accent-glow);
+  border-left-color: var(--accent);
+  font-weight: 600;
+}
+
+.sidebar a .nav-icon {
+  width: 20px;
+  text-align: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* ---- MAIN ---- */
+.main {
+  margin-left: var(--sidebar-w);
+  margin-top: var(--header-h);
+  padding: 40px 48px 80px;
+  max-width: 960px;
+}
+
+/* ---- HERO ---- */
+.hero {
+  padding: 48px 0 40px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 48px;
+}
+
+.hero h1 {
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #fff 0%, #A855F7 40%, #EC4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  font-size: 17px;
+  color: var(--text-dim);
+  max-width: 640px;
+  line-height: 1.7;
+}
+
+.hero-badges {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-purple { background: var(--accent-glow); color: var(--accent-light); border: 1px solid rgba(147,51,234,0.25); }
+.badge-green { background: var(--green-dim); color: var(--green); border: 1px solid rgba(0,206,201,0.25); }
+.badge-yellow { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(253,203,110,0.25); }
+.badge-pink { background: var(--pink-dim); color: var(--pink); border: 1px solid rgba(236,72,153,0.25); }
+.badge-blue { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(129,140,248,0.25); }
+
+/* ---- SECTIONS ---- */
+.section {
+  margin-bottom: 56px;
+  scroll-margin-top: calc(var(--header-h) + 24px);
+}
+
+.section h2 {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section h2 .section-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.section > .section-desc {
+  color: var(--text-dim);
+  margin-bottom: 28px;
+  font-size: 15px;
+}
+
+h3 {
+  font-size: 19px;
+  font-weight: 700;
+  margin-top: 32px;
+  margin-bottom: 12px;
+  color: var(--text);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+h4 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-top: 24px;
+  margin-bottom: 8px;
+  color: var(--accent-light);
+}
+
+p { margin-bottom: 12px; }
+
+ul, ol { padding-left: 22px; margin-bottom: 14px; }
+li { margin-bottom: 4px; }
+
+a { color: var(--accent-light); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---- CARDS ---- */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 16px;
+  transition: border-color 0.2s;
+}
+
+.card:hover { border-color: var(--border-light); }
+
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.mini-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: block;
+  color: inherit;
+}
+
+.mini-card:hover {
+  border-color: var(--accent);
+  background: var(--bg-card-hover);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+.mini-card h4 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  color: var(--text);
+  border: none;
+  padding: 0;
+}
+
+.mini-card p {
+  font-size: 12.5px;
+  color: var(--text-dim);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ---- CODE ---- */
+pre {
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 18px 22px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-code);
+  margin-bottom: 16px;
+  position: relative;
+}
+
+pre .lang-tag {
+  position: absolute;
+  top: 8px; right: 12px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-dim);
+  opacity: 0.6;
+  font-family: var(--font);
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: var(--bg-code);
+  padding: 2px 7px;
+  border-radius: 4px;
+  color: var(--accent-light);
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+.kw { color: #C084FC; }
+.str { color: #c3e88d; }
+.cm { color: #6B5F8A; font-style: italic; }
+.fn { color: #818cf8; }
+.tp { color: #ffcb6b; }
+.num { color: #f78c6c; }
+.op { color: #A78BFA; }
+
+/* ---- TABLES ---- */
+.table-wrap {
+  overflow-x: auto;
+  margin-bottom: 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+thead th {
+  background: var(--bg-code);
+  font-weight: 700;
+  text-align: left;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+}
+
+td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(147,51,234,0.04); }
+
+/* ---- COLLAPSIBLE ---- */
+details {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+
+details[open] { border-color: var(--border-light); }
+
+summary {
+  padding: 14px 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+  list-style: none;
+  transition: color 0.15s;
+}
+
+summary::-webkit-details-marker { display: none; }
+
+summary::before {
+  content: '\25B6';
+  font-size: 10px;
+  color: var(--text-dim);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+details[open] > summary::before { transform: rotate(90deg); }
+
+summary:hover { color: var(--accent-light); }
+
+details .details-body { padding: 0 20px 18px; }
+details .details-body p:first-child { margin-top: 0; }
+
+/* ---- CALLOUT ---- */
+.callout {
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.callout > div { flex: 1; }
+.callout p { margin-bottom: 6px; }
+.callout p:last-child { margin-bottom: 0; }
+
+.callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+.callout-tip { background: var(--green-dim); border: 1px solid rgba(0,206,201,0.2); }
+.callout-tip .callout-icon { color: var(--green); }
+
+.callout-warn { background: var(--yellow-dim); border: 1px solid rgba(253,203,110,0.2); }
+.callout-warn .callout-icon { color: var(--yellow); }
+
+.callout-info { background: var(--blue-dim); border: 1px solid rgba(129,140,248,0.2); }
+.callout-info .callout-icon { color: var(--blue); }
+
+.callout-danger { background: var(--pink-dim); border: 1px solid rgba(236,72,153,0.2); }
+.callout-danger .callout-icon { color: var(--pink); }
+
+/* ---- STEP LIST ---- */
+.steps { counter-reset: step; margin-bottom: 16px; }
+
+.step {
+  display: flex;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  counter-increment: step;
+}
+
+.step:last-child { border-bottom: none; }
+
+.step::before {
+  content: counter(step);
+  width: 28px; height: 28px;
+  background: var(--accent-glow);
+  color: var(--accent-light);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.step-content { flex: 1; }
+.step-content strong { color: var(--text); }
+
+/* ---- FLOW DIAGRAM ---- */
+.flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+}
+
+.flow-node {
+  padding: 8px 16px;
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.flow-arrow {
+  padding: 0 8px;
+  color: var(--text-dim);
+  font-size: 16px;
+}
+
+/* ---- TAGS ---- */
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tag-required { background: var(--pink-dim); color: var(--pink); }
+.tag-optional { background: var(--green-dim); color: var(--green); }
+.tag-auto { background: var(--accent-glow); color: var(--accent-light); }
+.tag-platform { background: var(--yellow-dim); color: var(--yellow); }
+.tag-info { background: var(--blue-dim); color: var(--blue); }
+
+/* ---- SEARCH RESULTS ---- */
+.search-overlay {
+  display: none;
+  position: fixed;
+  top: var(--header-h);
+  left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 95;
+}
+
+.search-results {
+  display: none;
+  position: fixed;
+  top: calc(var(--header-h) + 8px);
+  left: 50%; transform: translateX(-50%);
+  width: 520px;
+  max-width: calc(100vw - 32px);
+  max-height: 60vh;
+  overflow-y: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  z-index: 96;
+  padding: 8px;
+}
+
+.search-results.visible { display: block; }
+.search-overlay.visible { display: block; }
+
+.search-item {
+  display: block;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--text);
+  transition: background 0.1s;
+}
+
+.search-item:hover { background: var(--accent-glow); text-decoration: none; }
+.search-item-section { font-size: 11px; color: var(--accent-light); margin-bottom: 2px; }
+.search-item-title { font-weight: 600; font-size: 14px; }
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; padding: 24px 20px 60px; }
+  .menu-toggle { display: block; }
+  .header-search { max-width: 200px; }
+  .hero h1 { font-size: 28px; }
+  .card-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .header { padding: 0 16px; }
+  .header-version { display: none; }
+  .header-search { max-width: 160px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Toggle menu">&#9776;</button>
+  <a href="#overview" class="header-logo">
+    <div class="dot">A</div>
+    <span>Astra Web Platform</span>
+  </a>
+  <div class="header-search">
+    <span class="search-icon">&#128269;</span>
+    <input type="text" id="searchInput" placeholder="Search docs... (Ctrl+K)" autocomplete="off">
+  </div>
+  <span class="header-version">v1.0 &middot; Unity 6000.0+</span>
+</header>
+
+<!-- SEARCH -->
+<div class="search-overlay" id="searchOverlay"></div>
+<div class="search-results" id="searchResults"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Getting Started</div>
+    <a href="#overview"><span class="nav-icon">&#127968;</span> Overview</a>
+    <a href="#installation"><span class="nav-icon">&#10515;</span> Installation</a>
+    <a href="#quickstart"><span class="nav-icon">&#9889;</span> Quick Start (No Code)</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Core</div>
+    <a href="#how-it-works"><span class="nav-icon">&#9881;</span> How It Works</a>
+    <a href="#webview-component"><span class="nav-icon">&#127760;</span> Astra Web View Component</a>
+    <a href="#engines"><span class="nav-icon">&#129513;</span> Engines &amp; Platforms</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">No-Code &amp; Editor Tools</div>
+    <a href="#editor-tools"><span class="nav-icon">&#128295;</span> Editor Tools (No-Code)</a>
+    <a href="#welcome"><span class="nav-icon">&#128075;</span> Welcome Window</a>
+    <a href="#assets"><span class="nav-icon">&#128193;</span> Assets &amp; Presets</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Advanced</div>
+    <a href="#bridge-policy"><span class="nav-icon">&#128279;</span> Bridge &amp; Policy</a>
+    <a href="#profiles"><span class="nav-icon">&#128100;</span> Profiles</a>
+    <a href="#diagnostics"><span class="nav-icon">&#128202;</span> Diagnostics &amp; Automation</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Reference</div>
+    <a href="#api"><span class="nav-icon">&#128217;</span> Scripting API</a>
+    <a href="#troubleshooting"><span class="nav-icon">&#128161;</span> Troubleshooting</a>
+    <a href="#faq"><span class="nav-icon">&#10067;</span> FAQ</a>
+    <a href="#support"><span class="nav-icon">&#128236;</span> Support</a>
+  </div>
+
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+<!-- ============================================ -->
+<!--                  HERO                        -->
+<!-- ============================================ -->
+<div class="hero" id="overview">
+  <h1>Astra Web Platform</h1>
+  <p>Embed real web pages in Unity &mdash; a managed browser runtime with platform-native adapters (WebGL iframe, Windows WebView2, and scaffolded WKWebView / Android WebView / WebKitGTK), a JavaScript bridge, a security policy layer, profiles, and diagnostics. Add a component, set a URL, press Play.</p>
+  <div class="hero-badges">
+    <span class="badge badge-purple">Unity 6000.0+</span>
+    <span class="badge badge-green">No-code component</span>
+    <span class="badge badge-yellow">WebGL + Windows validated</span>
+    <span class="badge badge-pink">Bridge &middot; Policy &middot; Profiles</span>
+  </div>
+</div>
+
+<section class="section">
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Two ways to drive it.</strong> Add the <strong>Astra Web View</strong> component and configure it entirely in the Inspector (no scripting), or call the managed runtime API (<code>AstraWebRuntime</code>, <code>BrowserManager</code>, <code>BrowserEngineRegistry</code>) from code. The two paths coexist &mdash; the no-code auto-open defers to code when you drive the component yourself.</div>
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#9989;</span>
+    <div><strong>Validated where it can be.</strong> The WebGL iframe adapter and the Windows WebView2 adapter are independently verified to render a real live page (example.com) in a player build. macOS/iOS/Linux/Android adapters ship as build-ready scaffolding and are validated on their own hardware. See <a href="#engines">Engines &amp; Platforms</a>.</div>
+  </div>
+
+  <div class="card-grid">
+    <a class="mini-card" href="#quickstart"><h4>&#9889; Web page in 10 seconds</h4><p>GameObject &rarr; Astra Web Platform &rarr; Astra Web View, set a URL, press Play.</p></a>
+    <a class="mini-card" href="#webview-component"><h4>&#127760; One component</h4><p>URL, engine dropdown, size, policy/profile asset slots, gated auto-open &mdash; all in the Inspector.</p></a>
+    <a class="mini-card" href="#engines"><h4>&#129513; Per-platform engines</h4><p>Automatic picks the best engine per build target; explicit choices map through a factory.</p></a>
+    <a class="mini-card" href="#bridge-policy"><h4>&#128279; Bridge &amp; policy</h4><p>Typed request/response + streaming messages, gated by an allow-list security policy.</p></a>
+    <a class="mini-card" href="#editor-tools"><h4>&#128295; No-code tools</h4><p>Scaffolding menu, custom inspectors with live engine summary, presets, JSON import/export.</p></a>
+    <a class="mini-card" href="#installation"><h4>&#10515; Drop-in install</h4><p>Import, open the Welcome window, add a component. Remove it and nothing is left behind.</p></a>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             INSTALLATION                     -->
+<!-- ============================================ -->
+<section class="section" id="installation">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#10515;</span> Installation</h2>
+  <p class="section-desc">Import once, open the Welcome window, add a component.</p>
+
+  <div class="steps">
+    <div class="step"><div class="step-content"><strong>Import from the Asset Store</strong><br>In <code>Window &rarr; Package Manager &rarr; My Assets</code>, download and import Astra Web Platform. It lands at <code>Assets/AstraWebPlatform/</code>.</div></div>
+    <div class="step"><div class="step-content"><strong>The Welcome window opens automatically</strong><br>On first import the <strong>Welcome / Help</strong> window appears with big buttons to open the docs, the demo scene, and create your first web view. Re-open it any time from <code>Tools &rarr; Astra Web Platform &rarr; Welcome</code>.</div></div>
+    <div class="step"><div class="step-content"><strong>Add a web view</strong><br><code>GameObject &rarr; Astra Web Platform &rarr; Astra Web View</code> (or <code>Add Component &rarr; Astra Web Platform &rarr; Astra Web View</code>).</div></div>
+    <div class="step"><div class="step-content"><strong>Set a URL and press Play</strong><br>In a player build the platform-native engine renders the page; in the Editor the Mock engine is used (expected). For Windows, the WebView2 Evergreen runtime must be installed.</div></div>
+  </div>
+
+  <h3>Requirements</h3>
+  <ul>
+    <li>Unity <strong>6000.0</strong> or newer.</li>
+    <li><strong>Windows</strong> player: the WebView2 Evergreen runtime (preinstalled on Windows 11; bundled with modern Edge).</li>
+    <li><strong>macOS / iOS / Linux / Android</strong> native adapters require their platform binaries &mdash; see the cross-platform build guide and <a href="#engines">Engines &amp; Platforms</a>.</li>
+  </ul>
+
+  <h3>What gets installed</h3>
+  <pre><code><span class="kw">Assets/AstraWebPlatform/</span>
+  Runtime/        <span class="cm">// Browser manager, engines, native adapters, bridge, policy,</span>
+                  <span class="cm">//   profiles, diagnostics, automation, the Astra Web View component</span>
+  Editor/         <span class="cm">// Welcome window, custom inspectors, scaffolding menu, Setup,</span>
+                  <span class="cm">//   Diagnostics, project validation</span>
+  Plugins/        <span class="cm">// WebGL .jslib, Windows WebView2 DLL, iOS/Android sources</span>
+  Demo/           <span class="cm">// a guided, fully interactive showcase scene</span>
+  Documentation/  <span class="cm">// You are here</span>
+  Tests/          <span class="cm">// EditMode + PlayMode (run headless via Unity -runTests)</span><span class="lang-tag">Project</span></code></pre>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Additive, no lock-in.</strong> The no-code component wraps the same runtime the code API uses. Remove the component and your scene is unchanged; nothing is rewritten on disk.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          QUICK START                         -->
+<!-- ============================================ -->
+<section class="section" id="quickstart">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#9889;</span> Quick Start (No Code)</h2>
+  <p class="section-desc">A real web page in your scene without writing a line of code.</p>
+
+  <div class="steps">
+    <div class="step"><div class="step-content"><strong>Create the web view</strong><br><code>GameObject &rarr; Astra Web Platform &rarr; Astra Web View</code>. A sample-populated object drops into the scene (URL <code>https://example.com/</code>, Engine <em>Automatic</em>, Open On Start).</div></div>
+    <div class="step"><div class="step-content"><strong>Set the URL &amp; engine in the Inspector</strong><br>Type your URL. Leave <strong>Engine</strong> on <em>Automatic</em> to use the best engine for the platform, or pick a specific one. The inspector shows whether that engine is available in the current build target.</div></div>
+    <div class="step"><div class="step-content"><strong>(Optional) Assign a Settings asset</strong><br>For a custom security policy/size, create <code>Assets &rarr; Create &rarr; Astra Web Platform &rarr; Settings</code> and drag it into the <strong>Settings Asset</strong> slot. Without one, a sensible default policy that allows your typed URL is used.</div></div>
+    <div class="step"><div class="step-content"><strong>Press Play</strong><br>The page opens through the resolved engine. In a Windows player it renders via WebView2; in a WebGL build via the iframe adapter; in the Editor the Mock engine runs (no visible page, but the full pipeline executes).</div></div>
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#128161;</span>
+    <div><strong>Driving it from code?</strong> Call <code>SuppressAutoOpen()</code> (or set <em>Open On Start</em> off) so the no-code auto-open does not run on top of your own <code>OpenAsync()</code> call. See <a href="#api">Scripting API</a>.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             HOW IT WORKS                     -->
+<!-- ============================================ -->
+<section class="section" id="how-it-works">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#9881;</span> How It Works</h2>
+  <p class="section-desc">From a URL in the Inspector to a rendered page in one build pass.</p>
+
+  <div class="flow">
+    <span class="flow-node">Inspector fields</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">Engine factory</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">Policy check</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">BrowserManager</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">Native adapter</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">Live page</span>
+  </div>
+
+  <ol>
+    <li>The <strong>Astra Web View</strong> component reads its serialized fields (URL, engine, size, policy/profile assets).</li>
+    <li><code>AstraBrowserEngineFactory</code> resolves the engine selection to a concrete <code>IBrowserEngine</code> (falling back to Mock when the requested engine is not available in the current build).</li>
+    <li>The <code>DefaultPolicyEvaluator</code> checks the create + navigation against the <code>BrowserPolicy</code> (origins, bridge channels/types, payload size).</li>
+    <li><code>BrowserManager.CreateAsync</code> creates the browser, initializes it, and navigates to the URL.</li>
+    <li>The platform <strong>native adapter</strong> (WebView2 / WebGL iframe / WKWebView / &hellip;) renders the page; the managed <code>IBrowserInstance</code> exposes navigate / evaluate / dispose.</li>
+  </ol>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Same path, two entry points.</strong> The component calls exactly the runtime types you would use from code &mdash; the no-code layer adds Inspector wiring and a factory, nothing more.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          WEB VIEW COMPONENT                  -->
+<!-- ============================================ -->
+<section class="section" id="webview-component">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#127760;</span> Astra Web View Component</h2>
+  <p class="section-desc">The single no-code component &mdash; every field is in the Inspector with a tooltip.</p>
+
+  <table>
+    <thead><tr><th>Field</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><strong>URL</strong></td><td>The page to open. Allowed by the assigned Settings policy, or (with no Settings) a default that permits this exact URL plus local development.</td></tr>
+      <tr><td><strong>Engine</strong></td><td>Dropdown: <em>Automatic</em>, Mock, Windows WebView2, WebGL Iframe, Apple WebKit, Android WebView, Linux WebKitGTK, CEF Chromium. Automatic picks the best available engine per build.</td></tr>
+      <tr><td><strong>Settings Asset</strong></td><td>Optional. Supplies the security policy and default size. <code>Assets &rarr; Create &rarr; Astra Web Platform &rarr; Settings</code>.</td></tr>
+      <tr><td><strong>Profile Asset</strong></td><td>Optional. Supplies the profile id for cookie/storage isolation.</td></tr>
+      <tr><td><strong>Width / Height</strong></td><td>Used only when no Settings asset is assigned.</td></tr>
+      <tr><td><strong>Rendering Mode</strong></td><td>DocumentProxy (WebGL iframe), NativeOverlay (WebView2/WKWebView/Android), or as the engine requires.</td></tr>
+      <tr><td><strong>Open On Start</strong></td><td>No-code auto-open on Start. Skipped automatically when you drive the component from code.</td></tr>
+      <tr><td><strong>Runtime Status Overlay</strong></td><td>Optional small on-screen status label while learning.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Live engine summary.</strong> As you change the <strong>Engine</strong> dropdown, the Inspector shows the resolved engine id and whether it is available in the current build target, so there are no surprises at Play time.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             ENGINES                          -->
+<!-- ============================================ -->
+<section class="section" id="engines">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#129513;</span> Engines &amp; Platforms</h2>
+  <p class="section-desc">One enum, one factory, the right engine per platform.</p>
+
+  <table>
+    <thead><tr><th>Selection</th><th>Engine id</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>Automatic</td><td>best available</td><td>Picks the platform-native engine, falls back to Mock</td></tr>
+      <tr><td>Mock</td><td><code>astra.mock</code></td><td>Always available (in-memory; renders nothing real)</td></tr>
+      <tr><td>WebGL Iframe</td><td><code>astra.webgl-iframe</code></td><td><strong>Validated</strong> &mdash; renders a real cross-origin page in a WebGL build</td></tr>
+      <tr><td>Windows WebView2</td><td><code>astra.webview2</code></td><td><strong>Validated</strong> &mdash; renders + reads back a real page in a Windows player</td></tr>
+      <tr><td>Apple WebKit</td><td><code>astra.webkit</code></td><td>Scaffolded (macOS/iOS/visionOS) &mdash; validate on Apple hardware</td></tr>
+      <tr><td>Android WebView</td><td><code>astra.android-webview</code></td><td>Scaffolded &mdash; validate on a device</td></tr>
+      <tr><td>Linux WebKitGTK</td><td><code>astra.webkitgtk</code></td><td>Scaffolded &mdash; build the .so, validate on Linux</td></tr>
+      <tr><td>CEF Chromium</td><td><code>astra.cef</code></td><td>Capability-gated (requires the ASTRA_CEF define + binary)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#9989;</span>
+    <div><strong>Editor uses Mock by design.</strong> Real native engines are gated to player builds (<code>!UNITY_EDITOR</code>). In the Editor, Automatic and any native selection resolve to Mock so play-in-editor never throws &mdash; the real engine activates in the matching build.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          EDITOR TOOLS (NO-CODE)              -->
+<!-- ============================================ -->
+<section class="section" id="editor-tools">
+  <h2><span class="section-icon" style="background:var(--green-dim);color:var(--green)">&#128295;</span> Editor Tools (No-Code)</h2>
+  <p class="section-desc">Everything a non-coder needs is reachable by clicking &mdash; this is a headline capability.</p>
+
+  <div class="card-grid">
+    <div class="card"><div class="card-title">&#10133; Scaffolding menu</div><p><code>GameObject &rarr; Astra Web Platform &rarr; Astra Web View</code> drops a ready, sample-populated component into the scene with full Undo.</p></div>
+    <div class="card"><div class="card-title">&#128396; Custom inspector</div><p>The Astra Web View inspector groups Setup vs Behavior, shows a live engine-availability summary, and has Open / Close / Create-asset buttons.</p></div>
+    <div class="card"><div class="card-title">&#128193; Asset create menu</div><p><code>Assets &rarr; Create &rarr; Astra Web Platform &rarr; &hellip;</code> for Settings, Browser Profile, Auth Provider, Automation Script, and Plugin Manifest.</p></div>
+    <div class="card"><div class="card-title">&#128295; Setup &amp; validation</div><p><code>Tools &rarr; Astra Web Platform &rarr; Setup</code> creates default assets/samples and runs project validation; <code>Diagnostics</code> shows runtime events.</p></div>
+  </div>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Headless CI entry.</strong> The package validates from the command line (<code>Unity -runTests</code> for EditMode/PlayMode, and a project-validation method) so it can be gated in automation.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          WELCOME WINDOW                      -->
+<!-- ============================================ -->
+<section class="section" id="welcome">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128075;</span> Welcome Window</h2>
+  <p class="section-desc">A friendly front door that gets you productive in a minute.</p>
+
+  <ul>
+    <li>Auto-opens once the first time the asset is in the project (suppressed in batch/CI).</li>
+    <li>Big buttons: Open Documentation, Open the Demo Scene, Create your first Astra Web View, Open Setup &amp; Validation.</li>
+    <li>A "Get started in 3 steps" list, requirements, and the support contact.</li>
+    <li>Dismissible via the "Show this window on startup" toggle, and re-openable any time from <code>Tools &rarr; Astra Web Platform &rarr; Welcome</code>.</li>
+  </ul>
+</section>
+
+<!-- ============================================ -->
+<!--          ASSETS & PRESETS                    -->
+<!-- ============================================ -->
+<section class="section" id="assets">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128193;</span> Assets &amp; Presets</h2>
+  <p class="section-desc">Configuration lives in ScriptableObjects you can create, share, and version.</p>
+
+  <table>
+    <thead><tr><th>Asset</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Settings</strong></td><td>Security policy (allowed origins, bridge channels/types, payload cap, local-HTTP) + default size. Custom inspector adds presets and JSON export/import.</td></tr>
+      <tr><td><strong>Browser Profile</strong></td><td>Profile id, display name, persistence mode, user agent &mdash; for cookie/storage isolation.</td></tr>
+      <tr><td><strong>Auth Provider</strong></td><td>OAuth/OIDC provider configuration for the auth workflows.</td></tr>
+      <tr><td><strong>Automation Script</strong></td><td>A sequence of browser/bridge commands for the automation runner.</td></tr>
+      <tr><td><strong>Plugin Manifest</strong></td><td>Declares optional native plugin packaging.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#128161;</span>
+    <div><strong>Settings presets.</strong> The Settings inspector has one-click <em>Allow Local Development</em> and <em>Production (HTTPS only)</em> presets, plus Export/Import JSON &mdash; the import analog for an asset that has no tabular/CSV data.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          BRIDGE & POLICY                     -->
+<!-- ============================================ -->
+<section class="section" id="bridge-policy">
+  <h2><span class="section-icon" style="background:var(--pink-dim);color:var(--pink)">&#128279;</span> Bridge &amp; Policy</h2>
+  <p class="section-desc">Talk to the page safely, behind an allow-list policy.</p>
+
+  <p>The <code>BridgeBus</code> carries typed request/response and chunked streaming messages between Unity and the page. Every message is evaluated by the <code>DefaultPolicyEvaluator</code> against the <code>BrowserPolicy</code>:</p>
+  <ul>
+    <li><strong>Allowed origins</strong> &mdash; navigation and bridge origins must match (scheme/host/port, or a scheme prefix like <code>astra:</code>).</li>
+    <li><strong>Allowed bridge channels / types</strong> &mdash; an allow-list (<code>*</code> permits all).</li>
+    <li><strong>Max payload bytes</strong> &mdash; oversized messages are rejected.</li>
+    <li><strong>Local HTTP</strong> &mdash; opt-in for <code>http://localhost</code> / <code>127.0.0.1</code> during development.</li>
+  </ul>
+
+  <pre><code><span class="kw">var</span> policy = BrowserPolicy.<span class="fn">AllowLocalDevelopment</span>();
+policy.AllowedOrigins.<span class="fn">Add</span>(<span class="str">"https://example.com"</span>);
+<span class="kw">var</span> options = <span class="kw">new</span> <span class="tp">BrowserCreateOptions</span> { InitialUrl = <span class="str">"https://example.com/"</span>, Policy = policy };<span class="lang-tag">C#</span></code></pre>
+</section>
+
+<!-- ============================================ -->
+<!--          PROFILES                            -->
+<!-- ============================================ -->
+<section class="section" id="profiles">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128100;</span> Profiles</h2>
+  <p class="section-desc">Isolate cookies and storage per profile.</p>
+  <p>A <strong>Browser Profile</strong> asset (or a <code>ProfileId</code> in code) keys cookie and storage state. Assign one to the Astra Web View component's <em>Profile Asset</em> slot, or create profiles in code through <code>AstraWebRuntime.Profiles</code>. Persistence modes range from in-memory to file-backed.</p>
+</section>
+
+<!-- ============================================ -->
+<!--          DIAGNOSTICS                          -->
+<!-- ============================================ -->
+<section class="section" id="diagnostics">
+  <h2><span class="section-icon" style="background:var(--yellow-dim);color:var(--yellow)">&#128202;</span> Diagnostics &amp; Automation</h2>
+  <p class="section-desc">See what happened, and replay sequences.</p>
+  <ul>
+    <li><strong>Diagnostics</strong> &mdash; every browser/bridge/policy event is recorded to a diagnostics sink. Open <code>Tools &rarr; Astra Web Platform &rarr; Diagnostics</code>, or export a support bundle.</li>
+    <li><strong>Automation</strong> &mdash; the automation runner executes a sequence of create/navigate/evaluate/bridge commands; author them as an <strong>Automation Script</strong> asset.</li>
+    <li><strong>Visual Scripting</strong> &mdash; browser and workflow units are provided for Unity Visual Scripting.</li>
+  </ul>
+</section>
+
+<!-- ============================================ -->
+<!--          SCRIPTING API                       -->
+<!-- ============================================ -->
+<section class="section" id="api">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128217;</span> Scripting API</h2>
+  <p class="section-desc">The code-first path &mdash; unchanged and fully supported.</p>
+
+  <pre><code><span class="cm">// No-code component, driven from code (auto-open defers to you):</span>
+<span class="kw">var</span> view = gameObject.<span class="fn">GetComponent</span>&lt;<span class="tp">AstraWebViewComponent</span>&gt;();
+view.<span class="fn">SuppressAutoOpen</span>();
+<span class="kw">await</span> view.<span class="fn">OpenAsync</span>(<span class="str">"https://example.com/"</span>);
+
+<span class="cm">// Or the raw runtime:</span>
+<span class="kw">var</span> engine = <span class="tp">AstraBrowserEngineFactory</span>.<span class="fn">ResolveEngine</span>(
+    <span class="tp">AstraBrowserEngineSelection</span>.Automatic, <span class="kw">out</span> <span class="kw">var</span> id, <span class="kw">out</span> _, <span class="kw">out</span> _);
+<span class="kw">var</span> manager = <span class="kw">new</span> <span class="tp">BrowserManager</span>(engine, <span class="tp">AstraWebRuntime</span>.Diagnostics,
+    <span class="tp">AstraWebRuntime</span>.Profiles, <span class="kw">new</span> <span class="tp">DefaultPolicyEvaluator</span>(<span class="tp">AstraWebRuntime</span>.Diagnostics));
+<span class="kw">var</span> browser = <span class="kw">await</span> manager.<span class="fn">CreateAsync</span>(<span class="kw">new</span> <span class="tp">BrowserCreateOptions</span> { InitialUrl = <span class="str">"https://example.com/"</span> });
+<span class="kw">string</span> title = <span class="kw">await</span> browser.<span class="fn">EvaluateScriptAsync</span>(<span class="str">"document.title"</span>, <span class="kw">default</span>);<span class="lang-tag">C#</span></code></pre>
+
+  <table>
+    <thead><tr><th>Type</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td><code>AstraWebViewComponent</code></td><td>No-code MonoBehaviour: <code>OpenAsync</code>, <code>RebuildAsync</code>, <code>CloseAsync</code>, <code>SuppressAutoOpen</code>, <code>Browser</code>, <code>ResolvedEngineId</code>.</td></tr>
+      <tr><td><code>AstraBrowserEngineFactory</code></td><td><code>ResolveEngine</code> / <code>EngineIdFor</code> / <code>IsAvailable</code> for the engine enum.</td></tr>
+      <tr><td><code>BrowserManager</code></td><td><code>CreateAsync</code>, <code>DisposeAsync</code> &mdash; lifecycle + policy + profiles.</td></tr>
+      <tr><td><code>BrowserEngineRegistry</code></td><td>The full engine catalog and descriptors.</td></tr>
+      <tr><td><code>IBrowserInstance</code></td><td><code>NavigateAsync</code>, <code>EvaluateScriptAsync</code>, <code>LoadHtmlAsync</code>, <code>DisposeAsync</code>.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============================================ -->
+<!--          TROUBLESHOOTING                     -->
+<!-- ============================================ -->
+<section class="section" id="troubleshooting">
+  <h2><span class="section-icon" style="background:var(--orange-dim);color:var(--orange)">&#128161;</span> Troubleshooting</h2>
+  <p class="section-desc">The common bumps and their fixes.</p>
+
+  <details><summary>The page does not open / "Navigation origin is not allowed"</summary><p>The URL's origin is not permitted by the policy. With no Settings asset, the component auto-allows the exact URL you typed; if you assigned a Settings asset, add the origin to its Allowed Origins (or use the <em>Allow Local Development</em> preset for testing).</p></details>
+  <details><summary>The engine shows "astra.mock" in the Editor</summary><p>Expected. Native engines are gated to player builds. Build for the target platform (or use WebGL/Windows) to see the real engine. The Inspector's engine summary tells you what will be used.</p></details>
+  <details><summary>Windows player shows nothing</summary><p>Install the WebView2 Evergreen runtime (preinstalled on Windows 11; otherwise download it from Microsoft). Confirm <code>AstraWebView2.dll</code> is packaged under <code>&lt;Player&gt;_Data/Plugins/x86_64/</code>.</p></details>
+  <details><summary>macOS / iOS / Linux / Android do not render</summary><p>These adapters require their platform binaries. Build the native plugin per the cross-platform build guide and validate on the device; until then those engines resolve to Mock.</p></details>
+  <details><summary>Console warnings about native toolchain</summary><p>Project validation reports missing CMake / cl.exe / WebView2 SDK as warnings &mdash; they only matter when you build desktop native plugins yourself and do not affect using the prebuilt WebGL/Windows adapters.</p></details>
+</section>
+
+<!-- ============================================ -->
+<!--          FAQ                                 -->
+<!-- ============================================ -->
+<section class="section" id="faq">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#10067;</span> FAQ</h2>
+
+  <details><summary>Do I need to write any code?</summary><p>No. Add the Astra Web View component (or use the GameObject menu), set a URL, pick an engine, press Play. Code is fully supported but optional.</p></details>
+  <details><summary>Will the no-code component override my code?</summary><p>No. The auto-open is gated: it defers when you call <code>SuppressAutoOpen()</code>/<code>OpenAsync()</code> or turn off <em>Open On Start</em>.</p></details>
+  <details><summary>Which platforms render real pages today?</summary><p>WebGL and Windows are independently validated. The other adapters are build-ready scaffolding to be validated on their hardware.</p></details>
+  <details><summary>Can I evaluate JavaScript / call into the page?</summary><p>Yes &mdash; <code>IBrowserInstance.EvaluateScriptAsync</code>, plus the typed bridge for request/response and streaming messages.</p></details>
+  <details><summary>Does removing the component change my project?</summary><p>No. It is additive; nothing is written to disk on your behalf.</p></details>
+</section>
+
+<!-- ============================================ -->
+<!--          SUPPORT                             -->
+<!-- ============================================ -->
+<section class="section" id="support">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128236;</span> Support</h2>
+  <p class="section-desc">Need help? We're here for you.</p>
+
+  <div class="card" style="text-align:center;padding:40px 24px;">
+    <div style="font-size:48px;margin-bottom:16px;">&#128231;</div>
+    <h3 style="border:none;margin-top:0;padding:0;text-align:center;">Get in Touch</h3>
+    <p style="color:var(--text-dim);max-width:480px;margin:8px auto 24px;">Bug reports, feature requests, integration questions &mdash; reach out and we'll get back to you.</p>
+    <a href="mailto:szekipapa77@gmail.com" style="display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,var(--accent),var(--pink));color:#fff;text-decoration:none;border-radius:var(--radius-sm);font-weight:700;font-size:15px;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+      &#9993; szekipapa77@gmail.com
+    </a>
+    <p style="color:var(--text-dim);font-size:13px;margin-top:16px;">We typically respond within 24&ndash;48 hours.</p>
+  </div>
+
+  <div class="card-grid" style="margin-top:16px;">
+    <div class="card">
+      <div class="card-title">&#128172; Before contacting</div>
+      <ul style="padding-left:20px;color:var(--text-dim);font-size:14px;line-height:1.9;">
+        <li>Check the <a href="#troubleshooting">Troubleshooting</a> section</li>
+        <li>Open <strong>Tools &rarr; Astra Web Platform &rarr; Diagnostics</strong></li>
+        <li>Confirm the <strong>Astra Web View</strong> component is on the object</li>
+        <li>Check the Console for policy/engine messages</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">&#128203; Helpful info to include</div>
+      <ul style="padding-left:20px;color:var(--text-dim);font-size:14px;line-height:1.9;">
+        <li>Unity version (e.g. <code>6000.0.30f1</code>)</li>
+        <li>Astra Web Platform version (<strong>v1.0</strong>)</li>
+        <li>Target platform (WebGL / Windows / &hellip;) and engine selection</li>
+        <li>The URL you're loading + any Console messages</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout callout-tip" style="margin-top:20px;">
+    <span class="callout-icon">&#11088;</span>
+    <div><strong>Enjoying Astra Web Platform?</strong> A review on the Unity Asset Store helps other developers discover the asset and helps us keep improving it. Thank you!</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div style="border-top:1px solid var(--border);padding-top:32px;margin-top:48px;text-align:center;color:var(--text-dim);font-size:13px;">
+  <p>Astra Web Platform v1.0 &middot; Built for Unity 6000.0+ &middot; WebGL + Windows native adapters validated</p>
+  <p style="margin-top:8px;">Support: <a href="mailto:szekipapa77@gmail.com" style="color:var(--accent-light);text-decoration:none;">szekipapa77@gmail.com</a></p>
+</div>
+
+</main>
+<!-- SCRIPTS -->
+<script>
+// Search functionality
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+const searchOverlay = document.getElementById('searchOverlay');
+
+const sections = [];
+document.querySelectorAll('.section, .hero').forEach(s => {
+  const h2 = s.querySelector('h2');
+  const h1 = s.querySelector('h1');
+  const desc = s.querySelector('.section-desc');
+  const h3s = s.querySelectorAll('h3');
+  const id = s.id || (s.parentElement && s.parentElement.id) || '';
+  if (!id) return;
+  sections.push({
+    id: id,
+    title: h2 ? h2.textContent.trim() : (h1 ? h1.textContent.trim() : ''),
+    desc: desc ? desc.textContent.trim() : '',
+    content: s.textContent.toLowerCase(),
+    h3: Array.from(h3s).map(h => h.textContent.trim())
+  });
+});
+
+searchInput.addEventListener('input', function() {
+  const q = this.value.toLowerCase().trim();
+  if (q.length < 2) {
+    searchResults.classList.remove('visible');
+    searchOverlay.classList.remove('visible');
+    return;
+  }
+  const matches = sections.filter(s => s.content.includes(q)).slice(0, 8);
+  if (matches.length === 0) {
+    searchResults.innerHTML = '<div style="padding:16px;color:var(--text-dim);text-align:center;">No results found</div>';
+  } else {
+    searchResults.innerHTML = matches.map(m => {
+      const matchH3 = m.h3.find(h => h.toLowerCase().includes(q));
+      return '<a href="#' + m.id + '" class="search-item" onclick="closeSearch()">' +
+        '<div class="search-item-section">' + m.title + '</div>' +
+        '<div class="search-item-title">' + (matchH3 || m.desc || m.title) + '</div>' +
+      '</a>';
+    }).join('');
+  }
+  searchResults.classList.add('visible');
+  searchOverlay.classList.add('visible');
+});
+
+function closeSearch() {
+  searchResults.classList.remove('visible');
+  searchOverlay.classList.remove('visible');
+  searchInput.value = '';
+  document.querySelector('.sidebar').classList.remove('open');
+}
+
+searchOverlay.addEventListener('click', closeSearch);
+
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    searchInput.focus();
+  }
+  if (e.key === 'Escape') closeSearch();
+});
+
+// Active sidebar link via IntersectionObserver
+const navLinks = document.querySelectorAll('.sidebar a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector('.sidebar a[href="#' + entry.target.id + '"]');
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -70% 0px', threshold: 0 });
+
+document.querySelectorAll('.section[id], .hero[id]').forEach(s => observer.observe(s));
+
+// Close mobile sidebar on nav click
+navLinks.forEach(link => {
+  link.addEventListener('click', () => {
+    document.querySelector('.sidebar').classList.remove('open');
+  });
+});
+</script>
+
+</body>
+</html>
