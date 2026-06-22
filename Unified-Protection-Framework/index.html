@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UPF - Unified Protection Framework - Documentation</title>
+<style>
+:root {
+  --bg: #0D0B1A;
+  --bg-card: #161230;
+  --bg-card-hover: #1E1840;
+  --bg-code: #1A1535;
+  --bg-sidebar: #100D20;
+  --text: #e2e2ea;
+  --text-dim: #9088b0;
+  --text-code: #c8c8d8;
+  --accent: #9333EA;
+  --accent-light: #A855F7;
+  --accent-glow: rgba(147,51,234,0.15);
+  --green: #00cec9;
+  --green-dim: rgba(0,206,201,0.12);
+  --yellow: #fdcb6e;
+  --yellow-dim: rgba(253,203,110,0.12);
+  --pink: #EC4899;
+  --pink-dim: rgba(236,72,153,0.12);
+  --orange: #e17055;
+  --orange-dim: rgba(225,112,85,0.12);
+  --blue: #818cf8;
+  --blue-dim: rgba(129,140,248,0.12);
+  --border: #2D2550;
+  --border-light: #3D3560;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --sidebar-w: 280px;
+  --header-h: 64px;
+  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 24px); }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 15px;
+  overflow-x: hidden;
+}
+
+::selection { background: var(--accent); color: #fff; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+/* ---- HEADER ---- */
+.header {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  background: rgba(13,11,26,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  gap: 16px;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.header-logo .dot {
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, #9333EA, #EC4899);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800; color: #fff;
+}
+
+.header-search {
+  flex: 1;
+  max-width: 420px;
+  margin-left: auto;
+  position: relative;
+}
+
+.header-search input {
+  width: 100%;
+  padding: 8px 16px 8px 40px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--font);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.header-search input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.header-search input::placeholder { color: var(--text-dim); }
+
+.header-search .search-icon {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  color: var(--text-dim); font-size: 14px; pointer-events: none;
+}
+
+.header-version {
+  font-size: 12px; color: var(--text-dim);
+  background: var(--bg-card);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.menu-toggle {
+  display: none;
+  background: none; border: none;
+  color: var(--text); font-size: 22px;
+  cursor: pointer; padding: 4px;
+}
+
+/* ---- SIDEBAR ---- */
+.sidebar {
+  position: fixed;
+  top: var(--header-h);
+  left: 0;
+  width: var(--sidebar-w);
+  height: calc(100vh - var(--header-h));
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 20px 0;
+  z-index: 90;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-group { margin-bottom: 8px; }
+
+.sidebar-group-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text-dim);
+  padding: 12px 24px 6px;
+}
+
+.sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 24px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 13.5px;
+  transition: all 0.15s;
+  border-left: 2px solid transparent;
+}
+
+.sidebar a:hover {
+  color: var(--text);
+  background: var(--accent-glow);
+}
+
+.sidebar a.active {
+  color: var(--accent-light);
+  background: var(--accent-glow);
+  border-left-color: var(--accent);
+  font-weight: 600;
+}
+
+.sidebar a .nav-icon {
+  width: 20px;
+  text-align: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* ---- MAIN ---- */
+.main {
+  margin-left: var(--sidebar-w);
+  margin-top: var(--header-h);
+  padding: 40px 48px 80px;
+  max-width: 960px;
+}
+
+/* ---- HERO ---- */
+.hero {
+  padding: 48px 0 40px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 48px;
+}
+
+.hero h1 {
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #fff 0%, #A855F7 40%, #EC4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  font-size: 17px;
+  color: var(--text-dim);
+  max-width: 640px;
+  line-height: 1.7;
+}
+
+.hero-badges {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-purple { background: var(--accent-glow); color: var(--accent-light); border: 1px solid rgba(147,51,234,0.25); }
+.badge-green { background: var(--green-dim); color: var(--green); border: 1px solid rgba(0,206,201,0.25); }
+.badge-yellow { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(253,203,110,0.25); }
+.badge-pink { background: var(--pink-dim); color: var(--pink); border: 1px solid rgba(236,72,153,0.25); }
+.badge-blue { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(129,140,248,0.25); }
+
+/* ---- SECTIONS ---- */
+.section {
+  margin-bottom: 56px;
+  scroll-margin-top: calc(var(--header-h) + 24px);
+}
+
+.section h2 {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section h2 .section-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.section > .section-desc {
+  color: var(--text-dim);
+  margin-bottom: 28px;
+  font-size: 15px;
+}
+
+h3 {
+  font-size: 19px;
+  font-weight: 700;
+  margin-top: 32px;
+  margin-bottom: 12px;
+  color: var(--text);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+h4 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-top: 24px;
+  margin-bottom: 8px;
+  color: var(--accent-light);
+}
+
+p { margin-bottom: 12px; }
+
+ul, ol { padding-left: 22px; margin-bottom: 14px; }
+li { margin-bottom: 4px; }
+
+a { color: var(--accent-light); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---- CARDS ---- */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 16px;
+  transition: border-color 0.2s;
+}
+
+.card:hover { border-color: var(--border-light); }
+
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.mini-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: block;
+  color: inherit;
+}
+
+.mini-card:hover {
+  border-color: var(--accent);
+  background: var(--bg-card-hover);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+.mini-card h4 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  color: var(--text);
+  border: none;
+  padding: 0;
+}
+
+.mini-card p {
+  font-size: 12.5px;
+  color: var(--text-dim);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ---- CODE ---- */
+pre {
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 18px 22px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-code);
+  margin-bottom: 16px;
+  position: relative;
+}
+
+pre .lang-tag {
+  position: absolute;
+  top: 8px; right: 12px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-dim);
+  opacity: 0.6;
+  font-family: var(--font);
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: var(--bg-code);
+  padding: 2px 7px;
+  border-radius: 4px;
+  color: var(--accent-light);
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+.kw { color: #C084FC; }
+.str { color: #c3e88d; }
+.cm { color: #6B5F8A; font-style: italic; }
+.fn { color: #818cf8; }
+.tp { color: #ffcb6b; }
+.num { color: #f78c6c; }
+.op { color: #A78BFA; }
+
+/* ---- TABLES ---- */
+.table-wrap {
+  overflow-x: auto;
+  margin-bottom: 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+thead th {
+  background: var(--bg-code);
+  font-weight: 700;
+  text-align: left;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+}
+
+td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(147,51,234,0.04); }
+
+/* ---- COLLAPSIBLE ---- */
+details {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+
+details[open] { border-color: var(--border-light); }
+
+summary {
+  padding: 14px 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+  list-style: none;
+  transition: color 0.15s;
+}
+
+summary::-webkit-details-marker { display: none; }
+
+summary::before {
+  content: '\25B6';
+  font-size: 10px;
+  color: var(--text-dim);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+details[open] > summary::before { transform: rotate(90deg); }
+
+summary:hover { color: var(--accent-light); }
+
+details .details-body { padding: 0 20px 18px; }
+details .details-body p:first-child { margin-top: 0; }
+
+/* ---- CALLOUT ---- */
+.callout {
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.callout > div { flex: 1; }
+.callout p { margin-bottom: 6px; }
+.callout p:last-child { margin-bottom: 0; }
+
+.callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+.callout-tip { background: var(--green-dim); border: 1px solid rgba(0,206,201,0.2); }
+.callout-tip .callout-icon { color: var(--green); }
+
+.callout-warn { background: var(--yellow-dim); border: 1px solid rgba(253,203,110,0.2); }
+.callout-warn .callout-icon { color: var(--yellow); }
+
+.callout-info { background: var(--blue-dim); border: 1px solid rgba(129,140,248,0.2); }
+.callout-info .callout-icon { color: var(--blue); }
+
+.callout-danger { background: var(--pink-dim); border: 1px solid rgba(236,72,153,0.2); }
+.callout-danger .callout-icon { color: var(--pink); }
+
+/* ---- STEP LIST ---- */
+.steps { counter-reset: step; margin-bottom: 16px; }
+
+.step {
+  display: flex;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  counter-increment: step;
+}
+
+.step:last-child { border-bottom: none; }
+
+.step::before {
+  content: counter(step);
+  width: 28px; height: 28px;
+  background: var(--accent-glow);
+  color: var(--accent-light);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.step-content { flex: 1; }
+.step-content strong { color: var(--text); }
+
+/* ---- FLOW DIAGRAM ---- */
+.flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+}
+
+.flow-node {
+  padding: 8px 16px;
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.flow-arrow {
+  padding: 0 8px;
+  color: var(--text-dim);
+  font-size: 16px;
+}
+
+/* ---- TAGS ---- */
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tag-required { background: var(--pink-dim); color: var(--pink); }
+.tag-optional { background: var(--green-dim); color: var(--green); }
+.tag-auto { background: var(--accent-glow); color: var(--accent-light); }
+.tag-platform { background: var(--yellow-dim); color: var(--yellow); }
+.tag-info { background: var(--blue-dim); color: var(--blue); }
+
+/* ---- SEARCH RESULTS ---- */
+.search-overlay {
+  display: none;
+  position: fixed;
+  top: var(--header-h);
+  left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 95;
+}
+
+.search-results {
+  display: none;
+  position: fixed;
+  top: calc(var(--header-h) + 8px);
+  left: 50%; transform: translateX(-50%);
+  width: 520px;
+  max-width: calc(100vw - 32px);
+  max-height: 60vh;
+  overflow-y: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  z-index: 96;
+  padding: 8px;
+}
+
+.search-results.visible { display: block; }
+.search-overlay.visible { display: block; }
+
+.search-item {
+  display: block;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--text);
+  transition: background 0.1s;
+}
+
+.search-item:hover { background: var(--accent-glow); text-decoration: none; }
+.search-item-section { font-size: 11px; color: var(--accent-light); margin-bottom: 2px; }
+.search-item-title { font-weight: 600; font-size: 14px; }
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; padding: 24px 20px 60px; }
+  .menu-toggle { display: block; }
+  .header-search { max-width: 200px; }
+  .hero h1 { font-size: 28px; }
+  .card-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .header { padding: 0 16px; }
+  .header-version { display: none; }
+  .header-search { max-width: 160px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Toggle menu">&#9776;</button>
+  <a href="#overview" class="header-logo">
+    <div class="dot">U</div>
+    <span>UPF</span>
+  </a>
+  <div class="header-search">
+    <span class="search-icon">&#128269;</span>
+    <input type="text" id="searchInput" placeholder="Search docs... (Ctrl+K)" autocomplete="off">
+  </div>
+  <span class="header-version">v1.0.0 &middot; Unity 6000.0+</span>
+</header>
+
+<!-- SEARCH -->
+<div class="search-overlay" id="searchOverlay"></div>
+<div class="search-results" id="searchResults"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Getting Started</div>
+    <a href="#overview"><span class="nav-icon">&#127968;</span> Overview</a>
+    <a href="#installation"><span class="nav-icon">&#10515;</span> Installation</a>
+    <a href="#quickstart"><span class="nav-icon">&#9889;</span> Quick Start</a>
+    <a href="#how-it-works"><span class="nav-icon">&#9881;</span> How It Works</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Protection Layers</div>
+    <a href="#obfuscation"><span class="nav-icon">&#128272;</span> Code Obfuscation</a>
+    <a href="#encryption"><span class="nav-icon">&#128273;</span> Encryption &amp; Secure Save</a>
+    <a href="#assets"><span class="nav-icon">&#128230;</span> Asset / Addressables</a>
+    <a href="#integrity"><span class="nav-icon">&#129463;</span> Runtime Integrity</a>
+    <a href="#anti-tamper"><span class="nav-icon">&#128737;</span> Anti-Tamper</a>
+    <a href="#licensing"><span class="nav-icon">&#128179;</span> Licensing &amp; Trials</a>
+    <a href="#il2cpp"><span class="nav-icon">&#9881;</span> IL2CPP</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">No-Code Tools</div>
+    <a href="#editor-tools"><span class="nav-icon">&#128295;</span> Editor Tools / No-Code</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Reference</div>
+    <a href="#api"><span class="nav-icon">&#128217;</span> Scripting API</a>
+    <a href="#security-model"><span class="nav-icon">&#9888;</span> Security Model &amp; Limits</a>
+    <a href="#troubleshooting"><span class="nav-icon">&#128161;</span> Troubleshooting</a>
+    <a href="#faq"><span class="nav-icon">&#10067;</span> FAQ</a>
+    <a href="#support"><span class="nav-icon">&#128236;</span> Support</a>
+  </div>
+
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+<!-- ============================================ -->
+<!--                  HERO                        -->
+<!-- ============================================ -->
+<div class="hero" id="overview">
+  <h1>Unified Protection Framework</h1>
+  <p>A defense-in-depth toolkit for Unity: managed-code obfuscation, authenticated encryption, secure saves, protected assets, runtime integrity, anti-tamper signals and offline licensing &mdash; configured from a single profile, driven from a no-code dashboard, and automatable headlessly for CI.</p>
+  <div class="hero-badges">
+    <span class="badge badge-purple">Unity 6000.0 (Unity 6)+</span>
+    <span class="badge badge-green">Mono + IL2CPP standalone</span>
+    <span class="badge badge-yellow">No-code editor layer</span>
+    <span class="badge badge-pink">Defense-in-depth</span>
+  </div>
+</div>
+
+<section class="section">
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>One profile, many layers.</strong> A single <code>UpfProtectionProfile</code> asset drives every layer &mdash; obfuscation, encryption, asset protection, integrity, IL2CPP and licensing. Pick a one-click preset (<strong>Safe / Balanced / Aggressive</strong>), then build a protected player from a menu item, the Dashboard, or a headless batch command.</div>
+  </div>
+
+  <div class="callout callout-warn">
+    <span class="callout-icon">&#9888;</span>
+    <div><strong>Honest by design.</strong> UPF raises the cost of casual inspection and tampering &mdash; it does <em>not</em> make a client build immune to reverse engineering. Client-side keys can be extracted and runtime-decrypted data can be captured from memory. See <a href="#security-model">Security Model &amp; Limits</a> before you ship.</div>
+  </div>
+
+  <div class="card-grid">
+    <a class="mini-card" href="#quickstart"><h4>&#9889; Protect in minutes</h4><p>Open the Dashboard, pick a preset, click <strong>Analyze</strong>, then <strong>Build Protected Player</strong>.</p></a>
+    <a class="mini-card" href="#editor-tools"><h4>&#128295; No code required</h4><p>Welcome window, profile presets, and a drop-on <strong>Protection Guardian</strong> component with UnityEvents.</p></a>
+    <a class="mini-card" href="#obfuscation"><h4>&#128272; Managed obfuscation</h4><p>Conservative Cecil rewriting: rename private members, encrypt strings &amp; constants &mdash; for Mono <em>and</em> IL2CPP.</p></a>
+    <a class="mini-card" href="#encryption"><h4>&#128273; Authenticated crypto</h4><p>AES-256 + HMAC-SHA-256 secure saves, encrypted config and protected files.</p></a>
+    <a class="mini-card" href="#integrity"><h4>&#129463; Signed integrity</h4><p>RSA-signed manifest verified at startup against a shipped trust anchor.</p></a>
+    <a class="mini-card" href="#api"><h4>&#128217; Runtime API</h4><p>Clean services: <code>UpfCryptoService</code>, <code>UpfSecureSaveService</code>, <code>UpfLicenseService</code> and more.</p></a>
+  </div>
+
+  <p>This guide starts with installation and a quick start, explains the build-to-runtime flow, then documents each protection layer, the <a href="#editor-tools">no-code editor tools</a>, the <a href="#api">scripting API</a>, and finally an honest <a href="#security-model">security model</a> and reference.</p>
+</section>
+
+<!-- ============================================ -->
+<!--             INSTALLATION                     -->
+<!-- ============================================ -->
+<section class="section" id="installation">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#10515;</span> Installation</h2>
+  <p class="section-desc">Import the package, open the Welcome window, create a profile.</p>
+
+  <div class="steps">
+    <div class="step"><div class="step-content"><strong>Import from the Asset Store</strong><br>In <code>Window &rarr; Package Manager &rarr; My Assets</code>, download and import UPF. It lands at <code>Assets/UPF/</code>.</div></div>
+    <div class="step"><div class="step-content"><strong>The Welcome window opens automatically</strong><br>On first import the <strong>Welcome to UPF</strong> window appears once. Re-open it any time from <code>Window &rarr; UPF &rarr; Welcome</code> or <code>Tools &rarr; UPF &rarr; Welcome</code>.</div></div>
+    <div class="step"><div class="step-content"><strong>Create a Protection Profile</strong><br><code>Tools &rarr; UPF &rarr; Create or Select Protection Profile</code> creates <code>Assets/UPFProfiles/DefaultUPFProfile.asset</code> and selects it. Pick a preset in the Inspector.</div></div>
+    <div class="step"><div class="step-content"><strong>Open the Dashboard</strong><br><code>Tools &rarr; UPF &rarr; Dashboard</code> &mdash; analyze your project, dry-run, validate and build, all from one window.</div></div>
+  </div>
+
+  <h3>Requirements</h3>
+  <ul>
+    <li>Unity <strong>6000.0 (Unity 6)</strong> or newer. Developed and validated against <code>6000.0.62f1</code>.</li>
+    <li><strong>Mono and IL2CPP</strong> standalone builds both receive the managed-assembly obfuscation pass.</li>
+    <li><strong>Addressables</strong> (<code>com.unity.addressables</code>) only if you use the Addressables protection bridge &mdash; the base package does not require it.</li>
+  </ul>
+
+  <h3>What gets installed</h3>
+  <pre><code><span class="kw">Assets/UPF/</span>
+  Runtime/        <span class="cm">// UpfCryptoService, secure save, licensing, integrity,</span>
+                  <span class="cm">//   anti-tamper, asset loaders, Protection Guardian component</span>
+  Editor/         <span class="cm">// Welcome, Dashboard, menus, profile + presets, batch commands</span>
+  Samples/        <span class="cm">// secure saves, licensing, integrity, Addressables, anti-tamper</span>
+  Demo/           <span class="cm">// UPF_InteractiveDemo.unity - a runtime feature showcase</span>
+  Documentation/  <span class="cm">// You are here (Documentation.html + the .md guides)</span>
+  Tests/          <span class="cm">// EditMode + PlayMode (run headless via -runTests)</span><span class="lang-tag">Project</span></code></pre>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Nothing is rewritten in your source tree.</strong> Obfuscation runs against a <em>staged copy</em> of your compiled assemblies during a protected build. Your original scripts and project assets are never modified in place.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             QUICK START                      -->
+<!-- ============================================ -->
+<section class="section" id="quickstart">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#9889;</span> Quick Start</h2>
+  <p class="section-desc">From a fresh import to a protected build, the short path.</p>
+
+  <div class="steps">
+    <div class="step"><div class="step-content"><strong>Open the Dashboard</strong><br><code>Tools &rarr; UPF &rarr; Dashboard</code>. Select or create a protection profile at the top.</div></div>
+    <div class="step"><div class="step-content"><strong>Check the active target</strong><br>The dashboard shows your active Build Target Group / Build Target and which platform override (if any) resolves for it.</div></div>
+    <div class="step"><div class="step-content"><strong>Click <em>Analyze</em></strong><br>UPF scans for reflection, serialization, UnityEvents, scenes, prefabs, Addressables, PlayerPrefs and IL2CPP settings, and writes a report. Fix any strict findings and add preserve rules where flagged.</div></div>
+    <div class="step"><div class="step-content"><strong>Click <em>Dry Run</em></strong><br>See exactly what obfuscation <em>would</em> rename and encrypt &mdash; without modifying a build. Review the report in the profile's report folder.</div></div>
+    <div class="step"><div class="step-content"><strong>Click <em>Build Protected Player</em></strong><br>Obfuscation + a signed integrity manifest are applied per the active profile. Output goes to <code>Builds/UPFProtected/&lt;target&gt;</code>; the report goes to <code>Artifacts/UPF</code>.</div></div>
+    <div class="step"><div class="step-content"><strong>(Optional) Add a runtime guardian</strong><br>Drop the <strong>UPF Protection Guardian</strong> component into your scene for no-code runtime anti-tamper. See <a href="#editor-tools">Editor Tools</a>.</div></div>
+  </div>
+
+  <h4>Headless equivalent</h4>
+  <pre><code><span class="cm"># Dry-run protection against a specific profile</span>
+Unity.exe -batchmode -quit -projectPath . <span class="op">\</span>
+  -executeMethod <span class="tp">UPF.Editor.Batch.DryRun</span> <span class="op">\</span>
+  -upfProfile Assets/UPFProfiles/DefaultUPFProfile.asset<span class="lang-tag">PowerShell</span></code></pre>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#128161;</span>
+    <div><strong>Ship checklist.</strong> Before distribution, run <code>UPF.Editor.Batch.ValidatePackage</code> and <code>UPF.Editor.Batch.FinalAudit</code>, set a real asset-encryption secret (not the development password), and confirm reports show no strict blockers.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             HOW IT WORKS                     -->
+<!-- ============================================ -->
+<section class="section" id="how-it-works">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#9881;</span> How It Works</h2>
+  <p class="section-desc">Protection is configured once, applied at build time, and verified at runtime.</p>
+
+  <div class="flow">
+    <span class="flow-node">Configure profile</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">Analyze / Dry Run</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">Build Protected Player</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">Ship</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">Runtime guardian verifies</span>
+  </div>
+
+  <ol>
+    <li><strong>Configure</strong> a <code>UpfProtectionProfile</code>: choose a preset, set encryption keys and integrity/licensing options. Platform overrides resolve automatically per Build Target.</li>
+    <li><strong>Analyze / Dry Run</strong> the project so you know what will be renamed/encrypted and which symbols need preserve rules &mdash; before you commit to a build.</li>
+    <li><strong>Build</strong> a protected player. For both Mono and IL2CPP the managed-assembly obfuscation pass runs against staged assemblies; a signed integrity manifest is generated and a public-key trust anchor is shipped in <code>upf-runtime-protection.json</code>.</li>
+    <li><strong>Ship</strong> the player. The private signing key is written only to the report/artifacts folder &mdash; never into the player.</li>
+    <li><strong>At runtime</strong>, <code>UpfRuntimeProtectionBootstrap</code> (or the no-code <strong>Protection Guardian</strong>) verifies the signed manifest and runs anti-tamper checks, then applies the configured <code>UpfIntegrityResponse</code> (e.g. fail-closed quit, warn, or a custom callback).</li>
+  </ol>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Under IL2CPP, obfuscation runs <em>before</em> Unity converts IL to C++.</strong> The <code>UpfScriptDllPostProcessor</code> (an <code>IPostBuildPlayerScriptDLLs</code> hook) obfuscates staged user assemblies in place, so renamed private members and constant transforms propagate into the native binary and into <code>global-metadata.dat</code>. See <a href="#il2cpp">IL2CPP</a>.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          CODE OBFUSCATION                    -->
+<!-- ============================================ -->
+<section class="section" id="obfuscation">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128272;</span> Code Obfuscation</h2>
+  <p class="section-desc">Conservative managed-assembly rewriting that preserves Unity serialization and reflection.</p>
+
+  <p>UPF's <code>UpfCecilManagedProtector</code> performs a conservative rewrite of eligible user assemblies during a protected build. The current pass:</p>
+  <ul>
+    <li>renames private, non&ndash;Unity-sensitive symbols;</li>
+    <li>encrypts string literals (a reversible anti-grep measure, decoded at runtime by <code>UpfStringProtector</code>);</li>
+    <li>encodes supported numeric constants;</li>
+    <li>optionally inserts conservative control-flow / dead-code noise in methods without exception handlers;</li>
+    <li>writes a name mapping to <code>UPF_Mapping.csv</code> for support diagnostics.</li>
+  </ul>
+
+  <h3>Presets and renaming modes</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Mode</th><th>What it does</th><th>Strict mode</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag tag-optional">Safe</span></td><td>Renames private members only; preserves all Unity serialization / reflection. Safest default.</td><td>Off</td></tr>
+      <tr><td><span class="tag tag-auto">Balanced</span></td><td>Broader renaming with string + constant encryption, still conservative around Unity. Recommended for most projects.</td><td>Off</td></tr>
+      <tr><td><span class="tag tag-required">Aggressive</span></td><td>Maximum renaming plus control-flow noise and strict-mode validation. Test thoroughly before shipping.</td><td>On</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Preserve &amp; exclude rules</h3>
+  <p>When the scanner flags a string-based reflection target, a serialized DTO, or a public API, add it to the profile:</p>
+  <ul>
+    <li><code>obfuscation.preserveNamePatterns</code> &mdash; names matching these wildcard patterns are never renamed (e.g. <code>MyNamespace.*</code>, <code>*Settings</code>, <code>System.Void Namespace.Type::Method()</code>). Supports <code>*</code> and <code>?</code>.</li>
+    <li><code>obfuscation.excludeAssemblyPatterns</code> &mdash; whole assemblies skipped entirely (e.g. <code>Assembly-CSharp</code>, <code>ThirdParty.*</code>).</li>
+  </ul>
+
+  <h3>Decoding obfuscated stack traces</h3>
+  <p><code>UpfStackTraceMapper</code> reads <code>UPF_Mapping.csv</code> and restores original symbol names in player logs for support. Run it headlessly:</p>
+  <pre><code>Unity.exe -batchmode -quit -projectPath . <span class="op">\</span>
+  -executeMethod <span class="tp">UPF.Editor.Batch.DecodeStackTrace</span> <span class="op">\</span>
+  -upfMapping Artifacts/UPF/UPF_Mapping.csv <span class="op">\</span>
+  -upfStackTraceInput player.log -upfStackTraceOutput decoded.txt<span class="lang-tag">PowerShell</span></code></pre>
+
+  <div class="callout callout-warn">
+    <span class="callout-icon">&#9888;</span>
+    <div><strong>Keep <code>UPF_Mapping.csv</code> private.</strong> It maps obfuscated names back to your originals &mdash; never include it in a distributed package. Obfuscation is conservative around Unity messages, compiler-generated code and methods with exception handlers; it is not a guarantee against reverse engineering.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          ENCRYPTION & SECURE SAVE            -->
+<!-- ============================================ -->
+<section class="section" id="encryption">
+  <h2><span class="section-icon" style="background:var(--green-dim);color:var(--green)">&#128273;</span> Encryption &amp; Secure Save</h2>
+  <p class="section-desc">Authenticated encryption containers: AES-256-CBC for confidentiality, HMAC-SHA-256 for integrity.</p>
+
+  <p>The core primitive is <code>UpfCryptoService</code>, which protects/unprotects byte arrays. Higher-level services build on it: secure saves, encrypted config TextAssets, and encrypted files / StreamingAssets. Wrong keys, wrong context, or tampered payloads fail authentication by design.</p>
+
+  <h3>Secure saves</h3>
+  <pre><code><span class="kw">using</span> UPF.Runtime;
+
+<span class="kw">var</span> service = <span class="kw">new</span> <span class="tp">UpfSecureSaveService</span>(crypto);
+service.Save(<span class="str">"slot1"</span>, <span class="kw">new</span> SampleSave { level = <span class="num">3</span>, playerName = <span class="str">"Player"</span> });
+
+<span class="kw">var</span> loaded = service.Load&lt;SampleSave&gt;(<span class="str">"slot1"</span>);
+<span class="kw">if</span> (loaded.Success) {
+    <span class="cm">// use loaded.Value</span>
+}<span class="lang-tag">C#</span></code></pre>
+
+  <h3>Encrypted config / TextAssets</h3>
+  <p>Encrypt a config file from the menu (<code>Tools &rarr; UPF &rarr; Encrypt Asset File...</code>) or headlessly, then load it at runtime:</p>
+  <pre><code><span class="cm">// Encrypt a config TextAsset (batch)</span>
+Unity.exe -batchmode -quit -projectPath . <span class="op">\</span>
+  -executeMethod <span class="tp">UPF.Editor.Batch.ProtectTextAsset</span> <span class="op">\</span>
+  -upfInputTextAsset Assets/Game/Config/config.json <span class="op">\</span>
+  -upfOutputTextAsset Assets/Game/Config/protected-config.bytes <span class="op">\</span>
+  -upfTextAssetContext config<span class="lang-tag">PowerShell</span></code></pre>
+  <pre><code><span class="cm">// Load &amp; decrypt at runtime</span>
+<span class="kw">var</span> loader = <span class="kw">new</span> <span class="tp">UpfEncryptedConfigService</span>(crypto, <span class="str">"config"</span>);
+<span class="tp">UpfResult</span>&lt;<span class="kw">string</span>&gt; json = loader.LoadJson(protectedConfigTextAsset, <span class="str">"config-key"</span>);<span class="lang-tag">C#</span></code></pre>
+
+  <h3>Key provisioning</h3>
+  <p><code>UpfProtectionProfile.CreateAssetCrypto(requireSecureKey)</code> is the production factory for asset / config encryption. It resolves the key from out-of-repo sources in priority order:</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Priority</th><th>Source</th><th>Profile field</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Environment variable (e.g. injected by CI)</td><td><code>encryption.productionKeyEnvVar</code> (default <code>UPF_ASSET_KEY</code>)</td></tr>
+      <tr><td>2</td><td>External key file</td><td><code>encryption.productionKeyFilePath</code></td></tr>
+      <tr><td>3</td><td>Development password (local only)</td><td><code>encryption.developmentPassword</code></td></tr>
+    </tbody>
+  </table></div>
+  <p>When <code>requireSecureKey</code> is <code>true</code> (release / strict builds), UPF <em>throws</em> rather than encrypt with the default placeholder password. <code>CreateDevelopmentCrypto()</code> remains for local work and transparently honours the same production sources when present.</p>
+
+  <h3>Platform secure storage</h3>
+  <p><code>UpfPlatformSecureStorageProvider</code> backs key material with OS keystores where available &mdash; <strong>Android Keystore</strong> (<code>UpfAndroidKeystoreStorage.java</code>, AES/GCM), <strong>iOS/tvOS Keychain</strong> (<code>UpfAppleKeychain.mm</code>) &mdash; with an editor/unsupported fallback.</p>
+
+  <div class="callout callout-danger">
+    <span class="callout-icon">&#9888;</span>
+    <div><strong>Client-side keys can be extracted by skilled attackers, and runtime-decrypted data can be captured from memory.</strong> Treat encryption as one defense layer, not absolute secrecy. Never store server secrets in a client build. Production key plugins must be validated on real target devices and OS versions.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          ASSET / ADDRESSABLES                -->
+<!-- ============================================ -->
+<section class="section" id="assets">
+  <h2><span class="section-icon" style="background:var(--yellow-dim);color:var(--yellow)">&#128230;</span> Asset / Addressables Protection</h2>
+  <p class="section-desc">Encrypt StreamingAssets, AssetBundles and local Addressables bundles &mdash; decrypted transparently at load.</p>
+
+  <h3>What you can protect</h3>
+  <div class="card-grid">
+    <div class="card"><div class="card-title">&#128193; StreamingAssets</div><p style="color:var(--text-dim);font-size:13.5px;margin:0;">Encrypt files in <code>StreamingAssets</code> and load them via <code>UpfEncryptedFileService.LoadStreamingAsset(...)</code>.</p></div>
+    <div class="card"><div class="card-title">&#128230; AssetBundles</div><p style="color:var(--text-dim);font-size:13.5px;margin:0;">Encrypt bundle payloads; <code>UpfEncryptedAssetBundleLoader</code> decrypts and loads them through Unity's memory loading API.</p></div>
+    <div class="card"><div class="card-title">&#128279; Addressables</div><p style="color:var(--text-dim);font-size:13.5px;margin:0;">Encrypt local generated bundle files; <code>UpfAddressablesRuntimeBridge</code> decrypts them transparently behind Addressables.</p></div>
+  </div>
+
+  <h3>Protecting Addressables content</h3>
+  <p>Configure your Addressables groups, then run protection (from the Dashboard's <strong>Addressables</strong> button or headlessly):</p>
+  <pre><code>Unity.exe -batchmode -quit -projectPath . <span class="op">\</span>
+  -executeMethod <span class="tp">UPF.Editor.Batch.ProtectAddressables</span> <span class="op">\</span>
+  -upfProfile Assets/UPFProfiles/DefaultUPFProfile.asset<span class="lang-tag">PowerShell</span></code></pre>
+
+  <h3>Runtime bridge</h3>
+  <p><code>UpfAddressablesRuntimeBridge.Install(...)</code> registers an <code>InternalIdTransformFunc</code>. For local protected bundle files it decrypts the UPF payload into a temporary cache file and returns that plaintext cache path to the AssetBundle provider; remote URLs and unsupported schemes pass through unchanged. Install it <em>before</em> your first Addressables load:</p>
+  <pre><code><span class="kw">using</span> UPF.Runtime;
+
+bridge = <span class="tp">UpfAddressablesRuntimeBridge</span>.Install(
+    <span class="kw">new</span> <span class="tp">UpfCryptoService</span>(<span class="kw">new</span> <span class="tp">StaticUpfKeyProvider</span>(rootMaterial, keyId)),
+    context: <span class="str">"addressables"</span>);
+
+<span class="cm">// Then use Addressables.LoadAssetAsync normally - decryption is transparent.</span><span class="lang-tag">C#</span></code></pre>
+
+  <div class="callout callout-warn">
+    <span class="callout-icon">&#9888;</span>
+    <div><strong>Remote content needs its own flow.</strong> Remote Addressables URLs, Android <code>jar:</code> paths and custom providers are not covered by the local bridge &mdash; use <code>UpfRemoteContentService</code> / <code>UpfRemoteContentManifest</code> for signed, hash-verified remote content. Note: AssetBundle and Addressables content can still be captured after it is loaded into memory.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          RUNTIME INTEGRITY                   -->
+<!-- ============================================ -->
+<section class="section" id="integrity">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#129463;</span> Runtime Integrity</h2>
+  <p class="section-desc">A signed manifest, verified at startup against a trust anchor shipped in the build.</p>
+
+  <p>Protected builds <strong>sign the integrity manifest by default</strong>. If no automation private key is configured, the build auto-generates an RSA-2048 keypair, signs the manifest, embeds the public key in a shipped <code>upf-runtime-protection.json</code>, and writes the private key only to the report / artifacts folder &mdash; never into the player.</p>
+
+  <h3>Verification at startup</h3>
+  <ul>
+    <li><code>UpfRuntimeProtectionGuard.Evaluate(config, rootDataPath)</code> verifies the signed manifest (and optionally runs anti-tamper) and returns a <code>UpfRuntimeProtectionReport</code> with no side effects &mdash; fully testable.</li>
+    <li><code>UpfRuntimeProtectionBootstrap</code> is an opt-in <code>RuntimeInitializeOnLoadMethod</code> that, in a shipped player, loads <code>upf-runtime-protection.json</code> and enforces the configured <code>UpfIntegrityResponse</code> (e.g. fail-closed <code>Application.Quit</code>). It is a no-op in the editor and when no config is shipped.</li>
+    <li>Subscribe to <code>UpfRuntimeProtectionBootstrap.ProtectionEvaluated</code> for custom handling.</li>
+  </ul>
+
+  <h3>Lower-level service</h3>
+  <pre><code><span class="kw">using</span> UPF.Runtime;
+
+<span class="kw">var</span> service = <span class="kw">new</span> <span class="tp">UpfIntegrityService</span>(manifest, root);
+<span class="tp">UpfResult</span> result = service.VerifyAll();
+<span class="kw">if</span> (!result.Success) {
+    <span class="cm">// react per your policy</span>
+}<span class="lang-tag">C#</span></code></pre>
+
+  <p><code>UpfBuildFingerprint</code> records product, Unity, build, manifest and profile identifiers; <code>UpfBuildFingerprintVerifier</code> checks the hash of that canonical payload for runtime or support diagnostics.</p>
+
+  <div class="callout callout-warn">
+    <span class="callout-icon">&#9888;</span>
+    <div><strong>Re-sign after every legitimate content update.</strong> Editing a file and recomputing its hash no longer passes &mdash; but the trust anchor itself ships in the player, so a binary-level attacker can still patch out the check or replace the anchor. This raises the cost of tampering; it does not make it impossible.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          ANTI-TAMPER                         -->
+<!-- ============================================ -->
+<section class="section" id="anti-tamper">
+  <h2><span class="section-icon" style="background:var(--pink-dim);color:var(--pink)">&#128737;</span> Anti-Tamper</h2>
+  <p class="section-desc">Local tamper / debugging signals you respond to with your own policy.</p>
+
+  <p><code>UpfAntiTamperService</code> emits local signals: managed debugger detection, Android root / Apple jailbreak indicator checks (where platform APIs permit), and memory canaries. You decide the response in your project. Repeated identical signals are throttled (<code>SignalResponseInterval</code>), and <code>DevelopmentBypass</code> is forced off in release player builds.</p>
+
+  <pre><code><span class="kw">using</span> UPF.Runtime;
+
+<span class="kw">var</span> service = <span class="kw">new</span> <span class="tp">UpfAntiTamperService</span>();
+service.SignalRaised += signal =&gt; Debug.LogWarning($<span class="str">"Signal: {signal.Kind} {signal.Message}"</span>);
+service.RegisterMemoryCanary(<span class="str">"session-start"</span>);
+
+<span class="tp">UpfResult</span> result = service.EvaluateNow();<span class="lang-tag">C#</span></code></pre>
+
+  <h3>Watched values</h3>
+  <p><code>RegisterWatchedValue(id, sampler)</code> monitors integrator-supplied bytes &mdash; a snapshot of real game state such as currency or health &mdash; and raises a <code>ProtectedValueTamper</code> signal when they change in memory. Call <code>RebaselineWatchedValue(id)</code> after a legitimate change.</p>
+  <pre><code>service.RegisterWatchedValue(<span class="str">"gold"</span>, () =&gt; BitConverter.GetBytes(player.Gold));
+<span class="cm">// ...after a legitimate purchase:</span>
+service.RebaselineWatchedValue(<span class="str">"gold"</span>);<span class="lang-tag">C#</span></code></pre>
+
+  <div class="callout callout-warn">
+    <span class="callout-icon">&#9888;</span>
+    <div><strong>Not a complete anti-cheat product.</strong> These signals do not make runtime memory impossible to inspect or patch, and anti-debugging / environment checks can false-positive. Do not rely on a canary as a sole enforcement mechanism, and never substitute these for server authority. The no-code <a href="#editor-tools">Protection Guardian</a> wraps this service for zero-code use.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          LICENSING & TRIALS                  -->
+<!-- ============================================ -->
+<section class="section" id="licensing">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128179;</span> Licensing &amp; Trials</h2>
+  <p class="section-desc">Offline signed-token validation and a rollback-resistant trial window.</p>
+
+  <h3>Offline license validation</h3>
+  <p><code>UpfLicenseService</code> validates offline RSA-signed tokens and optional feature entitlements:</p>
+  <pre><code><span class="kw">using</span> UPF.Runtime;
+
+<span class="kw">var</span> token = JsonUtility.FromJson&lt;<span class="tp">UpfLicenseToken</span>&gt;(tokenJson);
+<span class="kw">var</span> service = <span class="kw">new</span> <span class="tp">UpfLicenseService</span>(productId, publicKeyXml);
+<span class="kw">var</span> result = service.Validate(token, requiredFeature: <span class="str">"core"</span>);
+<span class="kw">if</span> (result.IsValid) {
+    <span class="cm">// entitlement granted</span>
+}<span class="lang-tag">C#</span></code></pre>
+  <p>For server-activated licensing, <code>UpfHttpLicenseProvider</code> has a secure constructor overload <code>(endpoint, productId, publicKeyXml, deviceBindingProvider)</code> that verifies the signed token <em>locally</em> and ignores the server's self-reported state, defeating a MITM/proxy that simply returns "valid". Set <code>CertificateHandlerFactory</code> to pin the activation server's certificate. <code>UpfDeviceBinding</code> creates privacy-aware hashed device bindings.</p>
+
+  <h3>Offline trials</h3>
+  <p><code>UpfTrialService</code> enforces an offline trial window (the runtime consumer of <code>licensing.trialDays</code>). It records the trial start in authenticated secure storage and measures elapsed time against <code>UpfMonotonicTimeAnchor</code>, a rollback-resistant clock that persists the highest observed time &mdash; so moving the device clock backwards cannot extend the trial (it reports <code>ClockTampered</code>).</p>
+  <pre><code><span class="kw">var</span> trial = <span class="kw">new</span> <span class="tp">UpfTrialService</span>(storage, trialDays: <span class="num">14</span>);
+<span class="tp">UpfTrialStatus</span> status = trial.Evaluate();
+<span class="cm">// status.IsActive, status.IsExpired, status.RemainingDays, status.ClockTampered</span><span class="lang-tag">C#</span></code></pre>
+
+  <div class="callout callout-warn">
+    <span class="callout-icon">&#9888;</span>
+    <div><strong>Trials reset on a reinstall.</strong> Clearing app data or reinstalling resets the trial &mdash; a documented client-side limitation. Treat trials as a friction / licensing signal, not a hard entitlement boundary, and back real entitlements with a server or platform store.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          IL2CPP                              -->
+<!-- ============================================ -->
+<section class="section" id="il2cpp">
+  <h2><span class="section-icon" style="background:var(--orange-dim);color:var(--orange)">&#9881;</span> IL2CPP</h2>
+  <p class="section-desc">The managed obfuscation pass runs before IL is converted to C++, so protection reaches the native binary.</p>
+
+  <p>For IL2CPP standalone builds, the <code>UpfScriptDllPostProcessor</code> (an <code>IPostBuildPlayerScriptDLLs</code> hook, gated by <code>obfuscation.protectIl2CppBeforeConversion</code>) obfuscates the staged user assemblies <strong>before</strong> <code>il2cpp.exe</code> transpiles them. As a result, renamed private members and constant transforms propagate into the native binary and into <code>global-metadata.dat</code> (verified: protected names are present in the shipped metadata; the original private method / field names are not). UPF's own assemblies (<code>UPF.*</code>) and editor-only assemblies are intentionally excluded.</p>
+
+  <h3>Validation &amp; metadata shadow</h3>
+  <p><code>UpfIl2CppValidator</code> reports the active scripting backend and scans build outputs for <code>global-metadata.dat</code>, metadata size / hash, and common native-binary artifacts. When metadata is found it can create an encrypted <strong>metadata shadow</strong> (<code>global-metadata.dat.upfshadow</code> + a JSON descriptor) for evidence / escrow / tamper-response workflows. It is a validation / fallback workflow &mdash; it does not rewrite Unity-generated native C++ or replace <code>global-metadata.dat</code> in place.</p>
+  <pre><code><span class="cm"># Validate an IL2CPP player build output</span>
+Unity.exe -batchmode -quit -projectPath . <span class="op">\</span>
+  -executeMethod <span class="tp">UPF.Editor.Batch.ValidateIl2Cpp</span> <span class="op">\</span>
+  -upfBuildOutput Builds/UPFProtected/Windows/ProtectedGame.exe<span class="lang-tag">PowerShell</span></code></pre>
+
+  <div class="callout callout-warn">
+    <span class="callout-icon">&#9888;</span>
+    <div><strong>IL2CPP is not an obfuscator by itself, and some residuals remain.</strong> Public type names are kept for Unity serialization; compiler-generated state-machine / iterator types (<code>&lt;Method&gt;d__N</code>) retain the original method name as a substring; and MonoScript source-file paths may remain in metadata. Always run a real IL2CPP player build on each supported platform and validate against the actual output.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          EDITOR TOOLS / NO-CODE             -->
+<!-- ============================================ -->
+<section class="section" id="editor-tools">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128295;</span> Editor Tools / No-Code</h2>
+  <p class="section-desc">A headline capability: protect your game without writing a single line of code.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#9989;</span>
+    <div><strong>Three steps to protect your game.</strong> 1) Create a Protection Profile and pick a preset. 2) (Optional) add the Protection Guardian component for runtime anti-tamper. 3) <code>Tools &rarr; UPF &rarr; Build Protected Player</code> &mdash; or use the Dashboard / headless commands.</div>
+  </div>
+
+  <h3>Welcome window</h3>
+  <p>A first-run onboarding window opens automatically once per project (never in batch / CI) and is re-openable from <code>Window &rarr; UPF &rarr; Welcome</code>. It links straight to Documentation, the Dashboard, profile creation, dropping a Protection Guardian into the scene, and the demo scene &mdash; plus the requirements and support contact.</p>
+
+  <h3>Protection Profile &amp; one-click presets</h3>
+  <p>The <code>UpfProtectionProfile</code> ScriptableObject is the single source of truth for every layer. Create it via <code>Assets &rarr; Create &rarr; UPF &rarr; Protection Profile</code> or <code>Tools &rarr; UPF &rarr; Create or Select Protection Profile</code>. Its custom Inspector adds:</p>
+  <ul>
+    <li><strong>Quick Setup Presets</strong> &mdash; one click for <strong>Safe</strong>, <strong>Balanced</strong> or <strong>Aggressive</strong>, each setting a coherent group of obfuscation + strict-mode flags. The full flag catalog stays editable below (nothing is hidden from power users).</li>
+    <li><strong>Key-status callout</strong> &mdash; warns clearly if asset encryption is still using the default development password, so you can't accidentally ship insecure ciphertext (release / strict builds refuse the default).</li>
+    <li>Shortcut buttons to <strong>Open UPF Dashboard</strong> and <strong>Open Welcome / Help</strong>.</li>
+  </ul>
+
+  <h3>Protection Guardian component</h3>
+  <p>The star of the no-code layer. Add it via <code>Add Component &rarr; UPF &rarr; UPF Protection Guardian</code> or <code>GameObject &rarr; UPF &rarr; Protection Guardian</code>. Drop it on a GameObject, choose a response, tick the checks you want, and wire UnityEvents &mdash; no code.</p>
+
+  <h4>Inspector fields</h4>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Field</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><code>checkOnStart</code></td><td>Run the configured checks automatically on <code>Start</code>. Turn off to trigger checks yourself (e.g. from a UI Button calling <code>EvaluateNow()</code>).</td></tr>
+      <tr><td><code>deferToBuildProtection</code></td><td>If a protected build already enforces a runtime-protection config at startup, skip re-verifying the manifest here to avoid double enforcement (anti-tamper still runs).</td></tr>
+      <tr><td><code>runAntiTamper</code></td><td>Run UPF's debugger / environment anti-tamper checks. Works with no extra setup.</td></tr>
+      <tr><td><code>repeatIntervalSeconds</code></td><td>Seconds between repeated checks while the game runs. <code>0</code> = check only once.</td></tr>
+      <tr><td><code>verifyIntegrityManifest</code></td><td><span class="tag tag-info">Advanced</span> Verify a signed integrity manifest that shipped with a protected build (leave off unless you produced one).</td></tr>
+      <tr><td><code>manifestRelativePath</code></td><td>File name (relative to the player data folder) of the signed manifest (default <code>upf-integrity-manifest.json</code>).</td></tr>
+      <tr><td><code>publicKeyXml</code></td><td>RSA public key (XML) the manifest signature is verified against &mdash; the trust anchor.</td></tr>
+      <tr><td><code>requireSignature</code></td><td>Reject a manifest that is unsigned or signed with the wrong key.</td></tr>
+      <tr><td><code>failureResponse</code></td><td>What to do when a check fails: <code>ReportOnly</code>, <code>WarnUser</code>, <code>DisableProtectedFeature</code>, <code>CustomCallback</code> or <code>FailClosed</code>.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h4>UnityEvents (no code required)</h4>
+  <ul>
+    <li><code>OnVerified</code> &mdash; invoked when all configured checks pass. Wire it to enable gameplay, hide a warning, etc.</li>
+    <li><code>OnTamperDetected (string)</code> &mdash; invoked with a failure message when a check fails. Wire it to your warning panel, a save-disable, or any custom reaction.</li>
+  </ul>
+  <p>You can also call <code>EvaluateNow()</code> from a Button's OnClick, and read <code>LastResultPassed</code> / <code>LastMessage</code>.</p>
+
+  <h3>Tools &raquo; UPF menus</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Menu item</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td><code>Tools &rarr; UPF &rarr; Welcome</code></td><td>Open the onboarding / help window.</td></tr>
+      <tr><td><code>Tools &rarr; UPF &rarr; Dashboard</code></td><td>Open the protection dashboard (below).</td></tr>
+      <tr><td><code>Tools &rarr; UPF &rarr; Create or Select Protection Profile</code></td><td>Create / select the default profile asset and ping it.</td></tr>
+      <tr><td><code>Tools &rarr; UPF &rarr; Build Protected Player</code></td><td>Build a protected player for the active target to <code>Builds/UPFProtected/&lt;target&gt;</code>.</td></tr>
+      <tr><td><code>Tools &rarr; UPF &rarr; Encrypt Asset File...</code></td><td>Pick a file in <code>Assets/</code> and write an encrypted <code>-protected.bytes</code> next to it.</td></tr>
+      <tr><td><code>Tools &rarr; UPF &rarr; Open Documentation</code></td><td>Open this documentation in your browser.</td></tr>
+      <tr><td><code>Tools &rarr; UPF &rarr; Open Demo Scene</code></td><td>Open <code>UPF_InteractiveDemo.unity</code>.</td></tr>
+      <tr><td><code>GameObject &rarr; UPF &rarr; Protection Guardian</code></td><td>Add a Protection Guardian to the open scene.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>The Dashboard</h3>
+  <p><code>Tools &rarr; UPF &rarr; Dashboard</code> is a one-window control surface that calls the same backend as the headless commands. It shows the active profile, target and resolved platform override, and groups buttons into:</p>
+  <ul>
+    <li><strong>Profile</strong> &mdash; select / export / import a profile (JSON for versioned CI presets) and <strong>Generate Manifest Keys</strong>.</li>
+    <li><strong>Workflow</strong> &mdash; <code>Analyze</code>, <code>Dry Run</code>, <code>Validate</code>, and <strong>Build Protected Player</strong>.</li>
+    <li><strong>Content protection</strong> &mdash; StreamingAssets, AssetBundles, Addressables, IL2CPP validation, IL2CPP Shadow, Samples.</li>
+    <li><strong>Release</strong> &mdash; Prepare Release Package, Platform Matrix, Asset Store Readiness, Validate Package, Final Audit, Open Reports.</li>
+    <li><strong>Headless Commands</strong> &mdash; ready-to-copy batchmode command strings for every workflow, for CI.</li>
+    <li><strong>Reports</strong> &mdash; open / reveal the latest Markdown reports from the profile's report folder.</li>
+  </ul>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Dashboard actions modify project assets / build outputs.</strong> Manifest private keys generated from the dashboard are written to the report artifact directory by default &mdash; for production, store signing keys in CI secrets, use version control, and review the generated reports before release.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             SCRIPTING API                    -->
+<!-- ============================================ -->
+<section class="section" id="api">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#128217;</span> Scripting API</h2>
+  <p class="section-desc">The runtime surface lives in the <code>UPF.Runtime</code> namespace. Every service returns a <code>UpfResult</code> / <code>UpfResult&lt;T&gt;</code> with a <code>.Success</code> flag and an <code>.Issue</code> on failure.</p>
+
+  <h3>Core types</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Type</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>UpfCryptoService</code></td><td><code>Protect(byte[], keyId, context, associatedData)</code> / <code>Unprotect(...)</code> &mdash; authenticated AES-256 + HMAC.</td></tr>
+      <tr><td><code>UpfSecureSaveService</code></td><td><code>Save&lt;T&gt;(slot, data)</code> / <code>Load&lt;T&gt;(slot)</code> / <code>SaveJson</code> / <code>LoadJson</code> / <code>Exists</code> / <code>Delete</code>.</td></tr>
+      <tr><td><code>UpfEncryptedConfigService</code></td><td><code>LoadJson(TextAsset, keyId)</code> / <code>Load&lt;T&gt;(TextAsset, keyId)</code> for encrypted config assets.</td></tr>
+      <tr><td><code>UpfEncryptedFileService</code></td><td><code>LoadFile(...)</code>, <code>LoadStreamingAsset(...)</code>, <code>LoadStreamingAssetText(...)</code>.</td></tr>
+      <tr><td><code>UpfIntegrityService</code></td><td><code>VerifyAll(requireSignature)</code>, <code>VerifyManifestSignature(...)</code>, <code>VerifyEntry(...)</code>.</td></tr>
+      <tr><td><code>UpfRuntimeProtectionGuard.Evaluate(config, rootDataPath)</code></td><td>Side-effect-free manifest + anti-tamper evaluation returning a <code>UpfRuntimeProtectionReport</code>.</td></tr>
+      <tr><td><code>UpfLicenseService</code></td><td><code>Validate(token, requiredFeature)</code> &mdash; offline RSA-signed token validation.</td></tr>
+      <tr><td><code>UpfTrialService</code></td><td><code>Evaluate()</code> &rarr; <code>UpfTrialStatus</code> (<code>IsActive</code>, <code>IsExpired</code>, <code>RemainingDays</code>, <code>ClockTampered</code>); <code>Reset()</code>.</td></tr>
+      <tr><td><code>UpfAntiTamperService</code></td><td><code>EvaluateNow()</code>, <code>RegisterMemoryCanary(id)</code>, <code>RegisterWatchedValue(id, sampler)</code>, <code>RebaselineWatchedValue(id)</code>; event <code>SignalRaised</code>.</td></tr>
+      <tr><td><code>UpfProtectionGuardian</code></td><td>No-code MonoBehaviour: <code>EvaluateNow()</code>, <code>OnVerified</code> / <code>OnTamperDetected</code> UnityEvents.</td></tr>
+      <tr><td><code>UpfEncryptedAssetBundleLoader</code></td><td><code>LoadFromFile(encryptedPath, completed)</code> &mdash; decrypt + load a protected bundle.</td></tr>
+      <tr><td><code>UpfAddressablesRuntimeBridge</code></td><td><code>Install(crypto, cacheRoot, context)</code> / <code>Uninstall()</code> &mdash; transparent Addressables decryption.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Building a crypto service</h3>
+  <pre><code><span class="kw">using</span> UPF.Runtime;
+
+<span class="kw">var</span> key = <span class="tp">UpfCryptoKey</span>.FromPassword(<span class="str">"sample"</span>, password,
+    <span class="tp">UpfBytes</span>.Utf8(Application.identifier), <span class="str">"sample-save"</span>);
+
+<span class="kw">var</span> crypto = <span class="kw">new</span> <span class="tp">UpfCryptoService</span>(
+    <span class="kw">new</span> <span class="tp">StaticUpfKeyProvider</span>(
+        <span class="tp">UpfBytes</span>.Combine(key.EncryptionKey, key.AuthenticationKey), <span class="str">"sample"</span>));
+
+<span class="kw">var</span> sealed_ = crypto.Protect(plaintext, <span class="str">"sample"</span>, <span class="str">"sample-save"</span>);
+<span class="kw">var</span> opened = crypto.Unprotect(sealed_.Value, <span class="str">"sample-save"</span>, <span class="kw">null</span>, <span class="str">"sample"</span>);<span class="lang-tag">C#</span></code></pre>
+
+  <h3>UpfIntegrityResponse enum</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Value</th><th>Behaviour on failure</th></tr></thead>
+    <tbody>
+      <tr><td><code>ReportOnly</code></td><td>Log only, continue normally.</td></tr>
+      <tr><td><code>WarnUser</code></td><td>Log a warning, continue.</td></tr>
+      <tr><td><code>DisableProtectedFeature</code></td><td>Disable protected features.</td></tr>
+      <tr><td><code>CustomCallback</code></td><td>Hand the result entirely to your callback / UnityEvent.</td></tr>
+      <tr><td><code>FailClosed</code></td><td>Quit the application immediately.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ============================================ -->
+<!--          SECURITY MODEL & LIMITS             -->
+<!-- ============================================ -->
+<section class="section" id="security-model">
+  <h2><span class="section-icon" style="background:var(--yellow-dim);color:var(--yellow)">&#9888;</span> Security Model &amp; Limits</h2>
+  <p class="section-desc">Read this before you ship. UPF is honest about what it can and cannot do.</p>
+
+  <p><strong>UPF is a defense-in-depth toolkit.</strong> Client-side protections raise the cost of casual inspection and tampering, but they do not make a client build immune to reverse engineering. A determined attacker can inspect memory after decryption, patch local checks, dump runtime data, or analyze native binaries.</p>
+
+  <h3>What UPF does not do</h3>
+  <ul>
+    <li><strong>Client-side keys can be extracted</strong> by skilled attackers, and runtime-decrypted data can be captured from memory.</li>
+    <li>The signed integrity manifest's <strong>trust anchor ships in the player</strong>, so a binary-level attacker can still patch out the check or replace the anchor.</li>
+    <li><strong>Offline trials reset</strong> when app data is cleared or the app is reinstalled (clock rollback is resisted, reinstall is not).</li>
+    <li>Constant encryption currently covers direct <code>ldc.i4</code>, <code>ldc.i4.s</code>, <code>ldc.r4</code> and <code>ldc.r8</code> instructions &mdash; not array initializers, serialized fields, shader data, or native constants.</li>
+    <li>Control-flow noise is limited to branch / dead-code insertion in methods without exception handlers &mdash; not commercial control-flow flattening.</li>
+    <li>Anti-debugging and environment checks can false-positive; WebGL secure-storage and anti-tamper options are limited.</li>
+    <li>AssetBundle and Addressables content can be captured after runtime load. IL2CPP is not an obfuscator by itself.</li>
+    <li>UPF does not replace server-authoritative multiplayer security.</li>
+  </ul>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#9989;</span>
+    <div><strong>Use it alongside the right architecture.</strong> Pair UPF with server-authoritative multiplayer, secure backend validation, platform-store licensing, CI-managed signing keys, and clear key-rotation processes. Provision asset-encryption and signing keys from outside the repository (CI environment variable or external key file) &mdash; the default development password is rejected by release / strict readiness validation.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             TROUBLESHOOTING                  -->
+<!-- ============================================ -->
+<section class="section" id="troubleshooting">
+  <h2><span class="section-icon" style="background:var(--pink-dim);color:var(--pink)">&#128161;</span> Troubleshooting</h2>
+  <p class="section-desc">The issues that come up most, and how to fix them.</p>
+
+  <details open>
+    <summary>Protected build fails / breaks after renaming</summary>
+    <div class="details-body">
+      <p>Run <code>Analyze</code> in the Dashboard and review the reflection, <code>UnityEvent</code>, animation-event and serialization findings. Add <code>obfuscation.preserveNamePatterns</code> entries for string-based references and serialized DTOs, or start from the <strong>Safe</strong> preset and widen gradually. A <strong>Dry Run</strong> shows exactly what would change before you build.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>A secure save can't be loaded</summary>
+    <div class="details-body">
+      <p>Confirm the key id, context and associated data match what was used to write the save. Tampered or mismatched saves fail authentication by design. If you renamed a protected asset used as associated data, regenerate it.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Integrity / manifest validation fails after a content patch</summary>
+    <div class="details-body">
+      <p>Regenerate and re-sign the integrity manifest after every legitimate content update. A changed file with a recomputed hash will fail until the signed manifest is rebuilt.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>A batchmode command doesn't run right after import</summary>
+    <div class="details-body">
+      <p>Unity performs a script-compilation pass first after an <code>.asmdef</code> or package change. Wait for compilation to finish, then run the command again.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Addressables protection is skipped</summary>
+    <div class="details-body">
+      <p>Install the Addressables package and configure protected groups first. UPF does not require Addressables for the base package; protection runs only when Addressables is present and configured.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>An obfuscated stack trace is unreadable</summary>
+    <div class="details-body">
+      <p>Decode it with <code>UPF.Editor.Batch.DecodeStackTrace</code> using the <code>UPF_Mapping.csv</code> produced by the protected build. Keep that mapping file private and out of distributed packages.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ============================================ -->
+<!--                  FAQ                         -->
+<!-- ============================================ -->
+<section class="section" id="faq">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#10067;</span> FAQ</h2>
+  <p class="section-desc">Quick answers to the questions that come up most.</p>
+
+  <details open>
+    <summary>Do I need to write code to use UPF?</summary>
+    <div class="details-body">
+      <p>No. Create a profile, pick a preset, and build from <code>Tools &rarr; UPF &rarr; Build Protected Player</code> or the Dashboard. For runtime protection, drop the <strong>UPF Protection Guardian</strong> component on a GameObject and wire its <code>OnVerified</code> / <code>OnTamperDetected</code> UnityEvents &mdash; entirely no-code. The <a href="#api">scripting API</a> is there when you want it.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Does UPF guarantee my game can't be cracked?</summary>
+    <div class="details-body">
+      <p>No, and we won't claim otherwise. UPF is defense-in-depth: it raises the cost of casual inspection and tampering. Client-side keys can be extracted and decrypted data can be read from memory. See <a href="#security-model">Security Model &amp; Limits</a>.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Which Unity versions and backends are supported?</summary>
+    <div class="details-body">
+      <p>Unity 6000.0 (Unity 6) or newer, developed and validated against 6000.0.62f1. Both Mono and IL2CPP standalone builds receive the managed-assembly obfuscation pass.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Does obfuscation break Unity serialization or reflection?</summary>
+    <div class="details-body">
+      <p>The pass is conservative around Unity serialization, reflection, Unity messages, compiler-generated code and methods with exception handlers. Run <code>Analyze</code> first and add preserve rules for anything the scanner flags (string-based reflection, serialized DTOs, public API names).</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Can I run UPF in CI without opening the editor UI?</summary>
+    <div class="details-body">
+      <p>Yes. Every workflow is available as a <code>UPF.Editor.Batch.*</code> command (Analyze, DryRun, ProtectBuild, ProtectAddressables, ValidatePackage, FinalAudit and more). The Dashboard shows copy-ready command strings, and a player self-test (<code>-upfSelfTest</code>) writes a <code>RESULT=PASS/FAIL</code> file for pipelines.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>How do I provision a production encryption key?</summary>
+    <div class="details-body">
+      <p>Set the environment variable named by <code>encryption.productionKeyEnvVar</code> (default <code>UPF_ASSET_KEY</code>) in CI, or point <code>encryption.productionKeyFilePath</code> at an external key file. Release / strict builds refuse the default development password. Keep all keys and the mapping CSV out of version control.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Is there a demo I can play?</summary>
+    <div class="details-body">
+      <p>Yes &mdash; open <code>Assets/UPF/Demo/Scenes/UPF_InteractiveDemo.unity</code> (or <code>Tools &rarr; UPF &rarr; Open Demo Scene</code>) for a runtime feature showcase, plus the <code>Assets/UPF/Samples</code> scripts for secure saves, licensing, integrity, Addressables and anti-tamper.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ============================================ -->
+<!--                SUPPORT                       -->
+<!-- ============================================ -->
+<section class="section" id="support">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128236;</span> Support</h2>
+  <p class="section-desc">Need help? We're here for you.</p>
+
+  <div class="card" style="text-align:center;padding:40px 24px;">
+    <div style="font-size:48px;margin-bottom:16px;">&#128231;</div>
+    <h3 style="border:none;margin-top:0;padding:0;text-align:center;">Get in Touch</h3>
+    <p style="color:var(--text-dim);max-width:480px;margin:8px auto 24px;">Bug reports, feature requests, protection &amp; build questions &mdash; reach out and we'll get back to you.</p>
+    <a href="mailto:szekipapa77@gmail.com" style="display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,var(--accent),var(--pink));color:#fff;text-decoration:none;border-radius:var(--radius-sm);font-weight:700;font-size:15px;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+      &#9993; szekipapa77@gmail.com
+    </a>
+    <p style="color:var(--text-dim);font-size:13px;margin-top:16px;">We typically respond within 24&ndash;48 hours.</p>
+  </div>
+
+  <div class="card-grid" style="margin-top:16px;">
+    <div class="card">
+      <div class="card-title">&#128172; Before contacting</div>
+      <ul style="padding-left:20px;color:var(--text-dim);font-size:14px;line-height:1.9;">
+        <li>Check the <a href="#troubleshooting">Troubleshooting</a> section</li>
+        <li>Run <code>Analyze</code> and review the report findings</li>
+        <li>Decode obfuscated stack traces with <code>UPF_Mapping.csv</code></li>
+        <li>Check the Console and the latest report in <code>Artifacts/UPF</code></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">&#128203; Helpful info to include</div>
+      <ul style="padding-left:20px;color:var(--text-dim);font-size:14px;line-height:1.9;">
+        <li>Unity version (e.g. <code>6000.0.62f1</code>)</li>
+        <li>UPF version (<strong>v1.0.0</strong>)</li>
+        <li>Scripting backend (Mono / IL2CPP) and target</li>
+        <li>The preset / profile settings and a relevant report</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout callout-tip" style="margin-top:20px;">
+    <span class="callout-icon">&#11088;</span>
+    <div><strong>Enjoying UPF?</strong> A review on the Unity Asset Store helps other developers discover the asset and helps us keep improving it. Thank you!</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div style="border-top:1px solid var(--border);padding-top:32px;margin-top:48px;text-align:center;color:var(--text-dim);font-size:13px;">
+  <p>UPF &mdash; Unified Protection Framework v1.0.0 &middot; Built for Unity 6000.0 (Unity 6)+ &middot; Mono + IL2CPP standalone &middot; Defense-in-depth, not absolute protection</p>
+  <p style="margin-top:8px;">Support: <a href="mailto:szekipapa77@gmail.com" style="color:var(--accent-light);text-decoration:none;">szekipapa77@gmail.com</a></p>
+</div>
+
+</main>
+
+<!-- SCRIPTS -->
+<script>
+// Search functionality
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+const searchOverlay = document.getElementById('searchOverlay');
+
+const sections = [];
+document.querySelectorAll('.section, .hero').forEach(s => {
+  const h2 = s.querySelector('h2');
+  const h1 = s.querySelector('h1');
+  const desc = s.querySelector('.section-desc');
+  const h3s = s.querySelectorAll('h3');
+  const id = s.id || (s.parentElement && s.parentElement.id) || '';
+  if (!id) return;
+  sections.push({
+    id: id,
+    title: h2 ? h2.textContent.trim() : (h1 ? h1.textContent.trim() : ''),
+    desc: desc ? desc.textContent.trim() : '',
+    content: s.textContent.toLowerCase(),
+    h3: Array.from(h3s).map(h => h.textContent.trim())
+  });
+});
+
+searchInput.addEventListener('input', function() {
+  const q = this.value.toLowerCase().trim();
+  if (q.length < 2) {
+    searchResults.classList.remove('visible');
+    searchOverlay.classList.remove('visible');
+    return;
+  }
+  const matches = sections.filter(s => s.content.includes(q)).slice(0, 8);
+  if (matches.length === 0) {
+    searchResults.innerHTML = '<div style="padding:16px;color:var(--text-dim);text-align:center;">No results found</div>';
+  } else {
+    searchResults.innerHTML = matches.map(m => {
+      const matchH3 = m.h3.find(h => h.toLowerCase().includes(q));
+      return '<a href="#' + m.id + '" class="search-item" onclick="closeSearch()">' +
+        '<div class="search-item-section">' + m.title + '</div>' +
+        '<div class="search-item-title">' + (matchH3 || m.desc || m.title) + '</div>' +
+      '</a>';
+    }).join('');
+  }
+  searchResults.classList.add('visible');
+  searchOverlay.classList.add('visible');
+});
+
+function closeSearch() {
+  searchResults.classList.remove('visible');
+  searchOverlay.classList.remove('visible');
+  searchInput.value = '';
+  document.querySelector('.sidebar').classList.remove('open');
+}
+
+searchOverlay.addEventListener('click', closeSearch);
+
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    searchInput.focus();
+  }
+  if (e.key === 'Escape') closeSearch();
+});
+
+// Active sidebar link via IntersectionObserver
+const navLinks = document.querySelectorAll('.sidebar a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector('.sidebar a[href="#' + entry.target.id + '"]');
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -70% 0px', threshold: 0 });
+
+document.querySelectorAll('.section[id], .hero[id]').forEach(s => observer.observe(s));
+
+// Close mobile sidebar on nav click
+navLinks.forEach(link => {
+  link.addEventListener('click', () => {
+    document.querySelector('.sidebar').classList.remove('open');
+  });
+});
+</script>
+
+</body>
+</html>
