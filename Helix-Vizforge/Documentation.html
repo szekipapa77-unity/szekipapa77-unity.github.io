@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Helix Vizforge - Documentation</title>
+<style>
+:root {
+  --bg: #0D0B1A;
+  --bg-card: #161230;
+  --bg-card-hover: #1E1840;
+  --bg-code: #1A1535;
+  --bg-sidebar: #100D20;
+  --text: #e2e2ea;
+  --text-dim: #9088b0;
+  --text-code: #c8c8d8;
+  --accent: #9333EA;
+  --accent-light: #A855F7;
+  --accent-glow: rgba(147,51,234,0.15);
+  --green: #00cec9;
+  --green-dim: rgba(0,206,201,0.12);
+  --yellow: #fdcb6e;
+  --yellow-dim: rgba(253,203,110,0.12);
+  --pink: #EC4899;
+  --pink-dim: rgba(236,72,153,0.12);
+  --orange: #e17055;
+  --orange-dim: rgba(225,112,85,0.12);
+  --blue: #818cf8;
+  --blue-dim: rgba(129,140,248,0.12);
+  --border: #2D2550;
+  --border-light: #3D3560;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --sidebar-w: 280px;
+  --header-h: 64px;
+  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 24px); }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 15px;
+  overflow-x: hidden;
+}
+
+::selection { background: var(--accent); color: #fff; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+/* ---- HEADER ---- */
+.header {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  background: rgba(13,11,26,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  gap: 16px;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.header-logo .dot {
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, #9333EA, #EC4899);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800; color: #fff;
+}
+
+.header-search {
+  flex: 1;
+  max-width: 420px;
+  margin-left: auto;
+  position: relative;
+}
+
+.header-search input {
+  width: 100%;
+  padding: 8px 16px 8px 40px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--font);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.header-search input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.header-search input::placeholder { color: var(--text-dim); }
+
+.header-search .search-icon {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  color: var(--text-dim); font-size: 14px; pointer-events: none;
+}
+
+.header-version {
+  font-size: 12px; color: var(--text-dim);
+  background: var(--bg-card);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.menu-toggle {
+  display: none;
+  background: none; border: none;
+  color: var(--text); font-size: 22px;
+  cursor: pointer; padding: 4px;
+}
+
+/* ---- SIDEBAR ---- */
+.sidebar {
+  position: fixed;
+  top: var(--header-h);
+  left: 0;
+  width: var(--sidebar-w);
+  height: calc(100vh - var(--header-h));
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 20px 0;
+  z-index: 90;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-group { margin-bottom: 8px; }
+
+.sidebar-group-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text-dim);
+  padding: 12px 24px 6px;
+}
+
+.sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 24px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 13.5px;
+  transition: all 0.15s;
+  border-left: 2px solid transparent;
+}
+
+.sidebar a:hover {
+  color: var(--text);
+  background: var(--accent-glow);
+}
+
+.sidebar a.active {
+  color: var(--accent-light);
+  background: var(--accent-glow);
+  border-left-color: var(--accent);
+  font-weight: 600;
+}
+
+.sidebar a .nav-icon {
+  width: 20px;
+  text-align: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* ---- MAIN ---- */
+.main {
+  margin-left: var(--sidebar-w);
+  margin-top: var(--header-h);
+  padding: 40px 48px 80px;
+  max-width: 960px;
+}
+
+/* ---- HERO ---- */
+.hero {
+  padding: 48px 0 40px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 48px;
+}
+
+.hero h1 {
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #fff 0%, #A855F7 40%, #EC4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  font-size: 17px;
+  color: var(--text-dim);
+  max-width: 640px;
+  line-height: 1.7;
+}
+
+.hero-badges {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-purple { background: var(--accent-glow); color: var(--accent-light); border: 1px solid rgba(147,51,234,0.25); }
+.badge-green { background: var(--green-dim); color: var(--green); border: 1px solid rgba(0,206,201,0.25); }
+.badge-yellow { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(253,203,110,0.25); }
+.badge-pink { background: var(--pink-dim); color: var(--pink); border: 1px solid rgba(236,72,153,0.25); }
+.badge-blue { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(129,140,248,0.25); }
+
+/* ---- SECTIONS ---- */
+.section {
+  margin-bottom: 56px;
+  scroll-margin-top: calc(var(--header-h) + 24px);
+}
+
+.section h2 {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section h2 .section-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.section > .section-desc {
+  color: var(--text-dim);
+  margin-bottom: 28px;
+  font-size: 15px;
+}
+
+h3 {
+  font-size: 19px;
+  font-weight: 700;
+  margin-top: 32px;
+  margin-bottom: 12px;
+  color: var(--text);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+h4 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-top: 24px;
+  margin-bottom: 8px;
+  color: var(--accent-light);
+}
+
+p { margin-bottom: 12px; }
+
+ul, ol { padding-left: 22px; margin-bottom: 14px; }
+li { margin-bottom: 4px; }
+
+a { color: var(--accent-light); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---- CARDS ---- */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 16px;
+  transition: border-color 0.2s;
+}
+
+.card:hover { border-color: var(--border-light); }
+
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.mini-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: block;
+  color: inherit;
+}
+
+.mini-card:hover {
+  border-color: var(--accent);
+  background: var(--bg-card-hover);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+.mini-card h4 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  color: var(--text);
+  border: none;
+  padding: 0;
+}
+
+.mini-card p {
+  font-size: 12.5px;
+  color: var(--text-dim);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ---- CODE ---- */
+pre {
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 18px 22px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-code);
+  margin-bottom: 16px;
+  position: relative;
+}
+
+pre .lang-tag {
+  position: absolute;
+  top: 8px; right: 12px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-dim);
+  opacity: 0.6;
+  font-family: var(--font);
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: var(--bg-code);
+  padding: 2px 7px;
+  border-radius: 4px;
+  color: var(--accent-light);
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+.kw { color: #C084FC; }
+.str { color: #c3e88d; }
+.cm { color: #6B5F8A; font-style: italic; }
+.fn { color: #818cf8; }
+.tp { color: #ffcb6b; }
+.num { color: #f78c6c; }
+.op { color: #A78BFA; }
+
+/* ---- TABLES ---- */
+.table-wrap {
+  overflow-x: auto;
+  margin-bottom: 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+thead th {
+  background: var(--bg-code);
+  font-weight: 700;
+  text-align: left;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+}
+
+td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(147,51,234,0.04); }
+
+/* ---- COLLAPSIBLE ---- */
+details {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+
+details[open] { border-color: var(--border-light); }
+
+summary {
+  padding: 14px 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+  list-style: none;
+  transition: color 0.15s;
+}
+
+summary::-webkit-details-marker { display: none; }
+
+summary::before {
+  content: '\25B6';
+  font-size: 10px;
+  color: var(--text-dim);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+details[open] > summary::before { transform: rotate(90deg); }
+
+summary:hover { color: var(--accent-light); }
+
+details .details-body { padding: 0 20px 18px; }
+details .details-body p:first-child { margin-top: 0; }
+
+/* ---- CALLOUT ---- */
+.callout {
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.callout > div { flex: 1; }
+.callout p { margin-bottom: 6px; }
+.callout p:last-child { margin-bottom: 0; }
+
+.callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+.callout-tip { background: var(--green-dim); border: 1px solid rgba(0,206,201,0.2); }
+.callout-tip .callout-icon { color: var(--green); }
+
+.callout-warn { background: var(--yellow-dim); border: 1px solid rgba(253,203,110,0.2); }
+.callout-warn .callout-icon { color: var(--yellow); }
+
+.callout-info { background: var(--blue-dim); border: 1px solid rgba(129,140,248,0.2); }
+.callout-info .callout-icon { color: var(--blue); }
+
+.callout-danger { background: var(--pink-dim); border: 1px solid rgba(236,72,153,0.2); }
+.callout-danger .callout-icon { color: var(--pink); }
+
+/* ---- STEP LIST ---- */
+.steps { counter-reset: step; margin-bottom: 16px; }
+
+.step {
+  display: flex;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  counter-increment: step;
+}
+
+.step:last-child { border-bottom: none; }
+
+.step::before {
+  content: counter(step);
+  width: 28px; height: 28px;
+  background: var(--accent-glow);
+  color: var(--accent-light);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.step-content { flex: 1; }
+.step-content strong { color: var(--text); }
+
+/* ---- FLOW DIAGRAM ---- */
+.flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+}
+
+.flow-node {
+  padding: 8px 16px;
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.flow-arrow {
+  padding: 0 8px;
+  color: var(--text-dim);
+  font-size: 16px;
+}
+
+/* ---- TAGS ---- */
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tag-required { background: var(--pink-dim); color: var(--pink); }
+.tag-optional { background: var(--green-dim); color: var(--green); }
+.tag-auto { background: var(--accent-glow); color: var(--accent-light); }
+.tag-platform { background: var(--yellow-dim); color: var(--yellow); }
+.tag-info { background: var(--blue-dim); color: var(--blue); }
+
+/* ---- SEARCH RESULTS ---- */
+.search-overlay {
+  display: none;
+  position: fixed;
+  top: var(--header-h);
+  left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 95;
+}
+
+.search-results {
+  display: none;
+  position: fixed;
+  top: calc(var(--header-h) + 8px);
+  left: 50%; transform: translateX(-50%);
+  width: 520px;
+  max-width: calc(100vw - 32px);
+  max-height: 60vh;
+  overflow-y: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  z-index: 96;
+  padding: 8px;
+}
+
+.search-results.visible { display: block; }
+.search-overlay.visible { display: block; }
+
+.search-item {
+  display: block;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--text);
+  transition: background 0.1s;
+}
+
+.search-item:hover { background: var(--accent-glow); text-decoration: none; }
+.search-item-section { font-size: 11px; color: var(--accent-light); margin-bottom: 2px; }
+.search-item-title { font-weight: 600; font-size: 14px; }
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; padding: 24px 20px 60px; }
+  .menu-toggle { display: block; }
+  .header-search { max-width: 200px; }
+  .hero h1 { font-size: 28px; }
+  .card-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .header { padding: 0 16px; }
+  .header-version { display: none; }
+  .header-search { max-width: 160px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Toggle menu">&#9776;</button>
+  <a href="#overview" class="header-logo">
+    <div class="dot">H</div>
+    <span>Helix Vizforge</span>
+  </a>
+  <div class="header-search">
+    <span class="search-icon">&#128269;</span>
+    <input type="text" id="searchInput" placeholder="Search docs... (Ctrl+K)" autocomplete="off">
+  </div>
+  <span class="header-version">v1.0 &middot; Unity 6.0+</span>
+</header>
+
+<!-- SEARCH -->
+<div class="search-overlay" id="searchOverlay"></div>
+<div class="search-results" id="searchResults"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Getting Started</div>
+    <a href="#overview"><span class="nav-icon">&#127968;</span> Overview</a>
+    <a href="#installation"><span class="nav-icon">&#10515;</span> Installation</a>
+    <a href="#quickstart-nocode"><span class="nav-icon">&#128433;</span> Quick Start: No Code</a>
+    <a href="#quickstart-code"><span class="nav-icon">&#9889;</span> Quick Start: Code</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Charts</div>
+    <a href="#chart-catalog"><span class="nav-icon">&#128202;</span> Chart Catalog</a>
+    <a href="#render-backends"><span class="nav-icon">&#127912;</span> Render Backends</a>
+    <a href="#scales"><span class="nav-icon">&#128208;</span> Scales &amp; Axes</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Data &amp; Styling</div>
+    <a href="#data"><span class="nav-icon">&#128451;</span> Datasets &amp; Import</a>
+    <a href="#theming"><span class="nav-icon">&#127216;</span> Theming &amp; Palettes</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Editor Tools</div>
+    <a href="#no-code"><span class="nav-icon">&#128432;</span> No-Code Workflow</a>
+    <a href="#editor-tools"><span class="nav-icon">&#128295;</span> Wizard &amp; Assets</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Advanced</div>
+    <a href="#scientific"><span class="nav-icon">&#128300;</span> Scientific</a>
+    <a href="#financial"><span class="nav-icon">&#128181;</span> Financial</a>
+    <a href="#bi"><span class="nav-icon">&#128200;</span> BI &amp; Dashboards</a>
+    <a href="#telemetry"><span class="nav-icon">&#128225;</span> Telemetry &amp; Interaction</a>
+    <a href="#export"><span class="nav-icon">&#128190;</span> Export</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Reference</div>
+    <a href="#api"><span class="nav-icon">&#128217;</span> Scripting API</a>
+    <a href="#troubleshooting"><span class="nav-icon">&#128161;</span> Troubleshooting</a>
+    <a href="#faq"><span class="nav-icon">&#10067;</span> FAQ</a>
+    <a href="#support"><span class="nav-icon">&#128236;</span> Support</a>
+  </div>
+
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+<!-- HERO -->
+<div class="hero" id="overview">
+  <h1>Helix Vizforge</h1>
+  <p>A Unity-native data-visualization platform &mdash; 28 + 2D chart types and 3D, three render backends from one geometry pipeline, plus scientific, financial, BI and telemetry tooling. Use it from code, or build a complete chart entirely in the Inspector with no scripts.</p>
+  <div class="hero-badges">
+    <span class="badge badge-purple">Unity 6.0+</span>
+    <span class="badge badge-green">Pure C# &middot; No dependencies</span>
+    <span class="badge badge-yellow">28 + 3D chart types</span>
+    <span class="badge badge-pink">No-code + Code</span>
+    <span class="badge badge-blue">UGUI / UI Toolkit / World-space</span>
+  </div>
+</div>
+
+<section class="section">
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Two ways to use it, one package.</strong> Add a <strong>ChartView</strong> component, pick a type, drop in a dataset asset and choose columns &mdash; a full chart with <em>no code</em>. Or drive the same engine from a fluent C# API. The Inspector path never overrides values you set in code.</div>
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#9989;</span>
+    <div><strong>One geometry pipeline, three render backends.</strong> Every chart is tessellated once into a backend-neutral draw list, then drawn through <strong>UGUI</strong>, <strong>UI Toolkit</strong> or <strong>world-space</strong> (3D / XR) &mdash; identical pixels. See <a href="#render-backends">Render Backends</a>.</div>
+  </div>
+
+  <div class="card-grid">
+    <a class="mini-card" href="#quickstart-nocode"><h4>&#128433; Chart in 30 seconds, no code</h4><p>Add ChartView, pick a type, drop a dataset, choose columns. Live preview, zero scripts.</p></a>
+    <a class="mini-card" href="#chart-catalog"><h4>&#128202; 28 + 3D chart types</h4><p>Line family, bars, radial, statistical, relational, financial and 3D &mdash; one component.</p></a>
+    <a class="mini-card" href="#render-backends"><h4>&#127912; Three backends</h4><p>UGUI, UI Toolkit and world-space from a single tessellation core.</p></a>
+    <a class="mini-card" href="#data"><h4>&#128451; CSV / JSON import</h4><p>Columnar datasets with transforms; CSV import auto-detects the delimiter.</p></a>
+    <a class="mini-card" href="#scientific"><h4>&#128300; Science &amp; finance</h4><p>Curve fits with R&sup2;, FFT, contours, candlesticks, SMA/EMA/RSI/MACD.</p></a>
+    <a class="mini-card" href="#export"><h4>&#128190; Export &amp; WebGL</h4><p>PNG / SVG / CSV / JSON export, managed-only and WebGL-friendly.</p></a>
+  </div>
+
+  <p>New here? Start with the <a href="#installation">Installation</a> and the <a href="#quickstart-nocode">no-code quick start</a>. Prefer code? Jump to the <a href="#quickstart-code">code quick start</a> or the <a href="#api">Scripting API</a>.</p>
+</section>
+
+<!-- INSTALLATION -->
+<section class="section" id="installation">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#10515;</span> Installation</h2>
+  <p class="section-desc">Import once, add a component (or open the welcome window). No setup wizard required.</p>
+
+  <div class="steps">
+    <div class="step"><div class="step-content"><strong>Import from the Asset Store</strong><br>In <code>Window &rarr; Package Manager &rarr; My Assets</code>, download and import Helix Vizforge. It lands at <code>Assets/Helix/</code>.</div></div>
+    <div class="step"><div class="step-content"><strong>Open the welcome window</strong><br>It opens automatically the first time. Re-open it any time from <code>Window &rarr; Helix Vizforge &rarr; Welcome</code> for one-click links to the docs, the demo and the Chart Wizard.</div></div>
+    <div class="step"><div class="step-content"><strong>Add a chart</strong><br><code>GameObject &rarr; Helix Vizforge &rarr; Chart (Line)</code> drops a Canvas + ChartView into the scene, ready to configure.</div></div>
+    <div class="step"><div class="step-content"><strong>Explore the demo</strong><br>Open <code>Assets/Helix/Demo/Scenes/HelixVizforge_InteractiveDemo.unity</code> and press Play to browse every feature hands-on.</div></div>
+  </div>
+
+  <h3>Requirements</h3>
+  <ul>
+    <li>Unity <strong>6.0 LTS</strong> (<code>6000.0</code> or newer).</li>
+    <li><strong>URP</strong> recommended for world-space / 3D charts; <strong>Built-in</strong> works for screen-space charts.</li>
+    <li><strong>UGUI</strong> (<code>com.unity.ugui</code>) &mdash; the default chart surface renders on a Canvas.</li>
+    <li><strong>No third-party dependencies.</strong> CSV/JSON parsing, statistics, FFT, regression and SVG/PNG export are all in-package.</li>
+  </ul>
+
+  <h3>What gets installed</h3>
+  <pre><code><span class="kw">Assets/Helix/</span>
+  Runtime/        <span class="cm">// Core, Data, Viz pipeline, Charts (28 + 3D generators),</span>
+                  <span class="cm">//   Rendering (UGui / UIToolkit / WorldSpace), Theme, Scales,</span>
+                  <span class="cm">//   Scientific, Financial, Analytics, BI, Telemetry, Interaction, Export</span>
+  Editor/         <span class="cm">// Welcome window, Chart Wizard, ChartView / Dataset / Theme inspectors</span>
+  Demos/          <span class="cm">// the interactive showcase scene (every feature, module by module)</span>
+  Documentation/  <span class="cm">// You are here</span>
+  Tests/          <span class="cm">// EditMode + PlayMode (run headless via Unity -runTests)</span><span class="lang-tag">Project</span></code></pre>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>No lock-in.</strong> A chart is a regular GameObject with a <code>ChartView</code> component. Remove it and nothing is rewritten on disk.</div>
+  </div>
+</section>
+
+<!-- QUICK START - NO CODE -->
+<section class="section" id="quickstart-nocode">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128433;</span> Quick Start: No Code</h2>
+  <p class="section-desc">A complete, data-bound chart from the Inspector &mdash; no scripts.</p>
+
+  <div class="steps">
+    <div class="step"><div class="step-content"><strong>Create a dataset</strong><br><code>Assets &rarr; Create &rarr; Helix &rarr; Dataset</code>, then click <strong>Import CSV&hellip;</strong> in its inspector and pick a file. The delimiter (comma / semicolon / tab) is auto-detected and column types are inferred.</div></div>
+    <div class="step"><div class="step-content"><strong>Add a chart</strong><br><code>GameObject &rarr; Helix Vizforge &rarr; Chart (Line)</code> &mdash; this creates a Canvas and a <strong>ChartView</strong>.</div></div>
+    <div class="step"><div class="step-content"><strong>Pick a type and the data</strong><br>In the ChartView inspector set <strong>Chart Type</strong> (Bar, Pie, Line&hellip;) and drag your dataset asset into the <strong>Data</strong> slot.</div></div>
+    <div class="step"><div class="step-content"><strong>Choose the columns</strong><br>The <strong>X / Category</strong> and <strong>Y / Value</strong> fields become dropdowns listing your dataset's columns. Pick them &mdash; the chart previews live in the Scene/Game view.</div></div>
+    <div class="step"><div class="step-content"><strong>(Optional) Theme it</strong><br>Create a Theme (<code>Assets &rarr; Create &rarr; Helix &rarr; Theme</code>), pick a preset, and drop it into the <strong>Theme</strong> slot. Press Play &mdash; the chart builds itself.</div></div>
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#128161;</span>
+    <div>The full catalog beyond the dropdown (heatmap, sankey, candlestick, 3D, &hellip;) is available in code via <code>ChartView.Chart(new SomeGenerator{&hellip;})</code>. See <a href="#chart-catalog">Chart Catalog</a>.</div>
+  </div>
+</section>
+
+<!-- QUICK START - CODE -->
+<section class="section" id="quickstart-code">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#9889;</span> Quick Start: Code</h2>
+  <p class="section-desc">The same engine via a fluent builder &mdash; data, type, axes, theme, render.</p>
+
+  <pre><code><span class="kw">using</span> UnityEngine;
+<span class="kw">using</span> Helix.Data;
+<span class="kw">using</span> Helix.Charts;
+<span class="kw">using</span> Helix.Theming;
+
+<span class="kw">public sealed class</span> <span class="tp">FirstChart</span> : <span class="tp">MonoBehaviour</span>
+{
+    <span class="kw">void</span> <span class="fn">Start</span>()
+    {
+        <span class="cm">// A Canvas to draw on (Screen Space - Overlay).</span>
+        <span class="kw">var</span> canvas = <span class="kw">new</span> <span class="fn">GameObject</span>(<span class="str">"Canvas"</span>, <span class="kw">typeof</span>(<span class="tp">Canvas</span>),
+            <span class="kw">typeof</span>(<span class="tp">UnityEngine.UI.CanvasScaler</span>), <span class="kw">typeof</span>(<span class="tp">UnityEngine.UI.GraphicRaycaster</span>))
+            .<span class="fn">GetComponent</span>&lt;<span class="tp">Canvas</span>&gt;();
+        canvas.renderMode = <span class="tp">RenderMode</span>.ScreenSpaceOverlay;
+
+        <span class="cm">// Some data, built inline.</span>
+        <span class="kw">var</span> data = <span class="tp">Dataset</span>.<span class="fn">Inline</span>(<span class="str">"sales"</span>)
+            .<span class="fn">Numbers</span>(<span class="str">"x"</span>, <span class="num">0</span>, <span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>)
+            .<span class="fn">Numbers</span>(<span class="str">"y"</span>, <span class="num">42</span>, <span class="num">55</span>, <span class="num">38</span>, <span class="num">61</span>, <span class="num">47</span>, <span class="num">58</span>);
+
+        <span class="cm">// data -&gt; bar -&gt; axes -&gt; theme -&gt; render.</span>
+        <span class="tp">ChartView</span>.<span class="fn">Create</span>(canvas.transform, <span class="str">"My Chart"</span>)
+            .<span class="fn">WithData</span>(data)
+            .<span class="fn">Bar</span>(<span class="str">"x"</span>, <span class="str">"y"</span>)
+            .<span class="fn">Axes</span>(<span class="kw">true</span>)
+            .<span class="fn">Themed</span>(<span class="tp">Theme</span>.<span class="fn">Dark</span>())
+            .<span class="fn">Build</span>();   <span class="cm">// Build() calls Render() for you.</span>
+    }
+}<span class="lang-tag">C#</span></code></pre>
+
+  <p>Swap <code>.Bar(&hellip;)</code> for <code>.Line</code>, <code>.Scatter</code>, <code>.Area</code>, <code>.Spline</code>, <code>.Step</code> or <code>.Sparkline</code>; for any other type use <code>.Chart(new PieGenerator{ YColumn = "y" })</code>. See the <a href="#api">Scripting API</a>.</p>
+</section>
+
+<!-- CHART CATALOG -->
+<section class="section" id="chart-catalog">
+  <h2><span class="section-icon" style="background:var(--yellow-dim);color:var(--yellow)">&#128202;</span> Chart Catalog</h2>
+  <p class="section-desc">28 two-dimensional chart types plus three 3D types, all from one ChartView.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Family</th><th>Types</th><th>Bind</th></tr></thead>
+      <tbody>
+        <tr><td>Line</td><td>Line, Area, Spline, Step, Sparkline</td><td>X + Y</td></tr>
+        <tr><td>Bar</td><td>Bar, Horizontal Bar, Stacked, Grouped, Waterfall, Funnel</td><td>X + Y (or value columns)</td></tr>
+        <tr><td>Radial</td><td>Pie, Donut, Radar, Polar, Sunburst</td><td>value (Y)</td></tr>
+        <tr><td>Statistical</td><td>Histogram, Box Plot, Violin, Heatmap, Gauge, Progress</td><td>value / grid</td></tr>
+        <tr><td>Relational</td><td>Parallel Coords, Treemap, Sankey, Timeline, Gantt</td><td>specialized</td></tr>
+        <tr><td>Financial</td><td>Candlestick (+ OHLC / Volume / indicators)</td><td>OHLC</td></tr>
+        <tr><td>3D</td><td>Bar3D, Scatter3D, Surface3D</td><td>grid / XYZ</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div>Cartesian types (line family, bars, scatter) share <code>XColumn</code> / <code>YColumn</code>; multi-series bars take <code>ValueColumns</code>; radial types read the value from <code>YColumn</code>. The Inspector dropdown covers the 15 most common; the rest are one line of code with <code>.Chart(&hellip;)</code>.</div>
+  </div>
+</section>
+
+<!-- RENDER BACKENDS -->
+<section class="section" id="render-backends">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#127912;</span> Render Backends</h2>
+  <p class="section-desc">One tessellation core, three ways to draw &mdash; the same chart, identical pixels.</p>
+
+  <div class="flow">
+    <span class="flow-node">Dataset</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">Generator</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">DrawList (tessellated)</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">UGUI / UI Toolkit / World-space</span>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Backend</th><th>Surface</th><th>Use for</th></tr></thead>
+      <tbody>
+        <tr><td>UGUI <span class="tag tag-auto">default</span></td><td><code>UGuiChartSurface</code></td><td>Classic Canvas UI; auto-attached by ChartView.</td></tr>
+        <tr><td>UI Toolkit</td><td><code>VizforgeChartElement</code></td><td>Unity's modern retained-mode UI (UI Documents).</td></tr>
+        <tr><td>World-space</td><td><code>WorldSpaceChartSurface</code></td><td>Charts in the 3D scene or an XR rig (true depth).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#128161;</span>
+    <div>The <strong>Render Backends</strong> module in the demo scene draws one chart through all three at once. Competing Unity charting assets target a single backend.</div>
+  </div>
+</section>
+
+<!-- SCALES -->
+<section class="section" id="scales">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#128208;</span> Scales &amp; Axes</h2>
+  <p class="section-desc">Linear, log, symlog, time and band scales with automatic, formatter-driven ticks.</p>
+
+  <ul>
+    <li><strong>Scales:</strong> <code>LinearScale</code>, <code>LogScale</code>, <code>SymlogScale</code> (spans zero), <code>TimeScale</code>, <code>BandScale</code> (categorical), power.</li>
+    <li><strong>Formatters:</strong> plain number, SI-prefix (k / M), currency, percent, date-time &mdash; chosen automatically per scale, or set explicitly.</li>
+    <li><strong>Axes:</strong> toggle X / Y axes, gridlines and tick labels independently on <code>ChartView</code> (<code>DrawAxes</code>, <code>ShowXAxis</code>, <code>ShowYAxis</code>, <code>ShowGrid</code>, <code>ShowAxisLabels</code>).</li>
+  </ul>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div>For simple charts you don't construct scales at all &mdash; ChartView auto-scales to the data extent. Build a <code>LogScale</code>/<code>TimeScale</code> by hand only when you need a non-default domain.</div>
+  </div>
+</section>
+
+<!-- DATA -->
+<section class="section" id="data">
+  <h2><span class="section-icon" style="background:var(--green-dim);color:var(--green)">&#128451;</span> Datasets &amp; Import</h2>
+  <p class="section-desc">A columnar data model with transforms and CSV / JSON import.</p>
+
+  <h3>Dataset</h3>
+  <p>A <code>Dataset</code> is a set of co-indexed typed columns (<code>DataSeries</code>): numbers, categories, text, booleans and time. Build one inline, import it, or author a <strong>Dataset asset</strong>.</p>
+  <pre><code><span class="kw">var</span> ds = <span class="tp">Dataset</span>.<span class="fn">Inline</span>(<span class="str">"sales"</span>)
+    .<span class="fn">Categories</span>(<span class="str">"month"</span>, <span class="str">"Jan"</span>, <span class="str">"Feb"</span>, <span class="str">"Mar"</span>)
+    .<span class="fn">Numbers</span>(<span class="str">"sales"</span>, <span class="num">42</span>, <span class="num">55</span>, <span class="num">38</span>);<span class="lang-tag">C#</span></code></pre>
+
+  <h3>CSV / JSON import</h3>
+  <p>Use the <strong>Dataset asset</strong> inspector's <strong>Import CSV</strong> button, or in code:</p>
+  <pre><code><span class="tp">Dataset</span> a = <span class="tp">CsvImporter</span>.<span class="fn">Parse</span>(csvText);   <span class="cm">// delimiter auto-detected</span>
+<span class="tp">Dataset</span> b = <span class="tp">JsonImporter</span>.<span class="fn">ParseRecords</span>(jsonText);<span class="lang-tag">C#</span></code></pre>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#9989;</span>
+    <div><strong>Locale-friendly CSV.</strong> <code>CsvImporter.Parse</code> auto-detects the separator (comma, <strong>semicolon</strong>, tab or pipe) from the header &mdash; so spreadsheets exported in locales that use <code>;</code> import correctly with no configuration. Pass an explicit delimiter to force one.</div>
+  </div>
+
+  <h3>Transforms</h3>
+  <p>Chain non-destructive transforms over a dataset: <code>FilterTransform</code>, <code>SortTransform</code>, <code>AggregateTransform</code>, <code>BinTransform</code>, map and join. Each returns a new dataset.</p>
+</section>
+
+<!-- THEMING -->
+<section class="section" id="theming">
+  <h2><span class="section-icon" style="background:var(--pink-dim);color:var(--pink)">&#127216;</span> Theming &amp; Palettes</h2>
+  <p class="section-desc">Design-token themes, series palettes and accessibility helpers.</p>
+
+  <ul>
+    <li><strong>Presets:</strong> <code>Theme.Dark()</code>, <code>Light()</code>, <code>Scientific()</code>, <code>Financial()</code>, <code>HighContrast()</code>, <code>ColorBlindSafe()</code> (Okabe&ndash;Ito).</li>
+    <li><strong>Theme asset:</strong> <code>Assets &rarr; Create &rarr; Helix &rarr; Theme</code> &mdash; pick a preset, edit tokens (background, surface, axis, grid, text, stroke widths) and series colors in the inspector, then drop it into a ChartView's <strong>Theme</strong> slot.</li>
+    <li><strong>Accessibility:</strong> a WCAG contrast read-out and a color-blind-safe palette ship in the box.</li>
+  </ul>
+</section>
+
+<!-- NO CODE -->
+<section class="section" id="no-code">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128432;</span> No-Code Workflow</h2>
+  <p class="section-desc">Everything a chart needs, configured by clicking.</p>
+
+  <p>The <strong>ChartView</strong> inspector has two parts:</p>
+  <ul>
+    <li><strong>Chart Setup</strong> &mdash; a <strong>Chart Type</strong> dropdown, <strong>Data</strong> (Dataset asset) and <strong>Theme</strong> (Theme asset) slots, <strong>X / Y</strong> column pickers sourced from the assigned dataset, a value-columns list for stacked/grouped bars, and <strong>Auto-build on Play</strong>.</li>
+    <li><strong>Axes &amp; Animation</strong> &mdash; draw-axes toggle (with per-axis / gridline / tick-label sub-toggles) and a reveal slider.</li>
+  </ul>
+  <p>Changing any field rebuilds and re-renders <strong>live</strong> in the Scene/Game view; a <strong>Rebuild / Preview</strong> button forces a refresh. At runtime the chart builds itself on <code>Start</code>.</p>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Code and clicks coexist.</strong> If you set <code>Data</code>, <code>Generator</code> or <code>Theme</code> in code, the inspector path defers to it and never overrides your values.</div>
+  </div>
+</section>
+
+<!-- EDITOR TOOLS -->
+<section class="section" id="editor-tools">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128295;</span> Wizard &amp; Assets</h2>
+  <p class="section-desc">Menus and inspectors that scaffold and author without code.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Menu</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td>Window &rarr; Helix Vizforge &rarr; Welcome</td><td>The onboarding window (links to docs, demo, wizard).</td></tr>
+        <tr><td>Window &rarr; Helix Vizforge &rarr; Chart Wizard</td><td>Scaffold a chart with sample data into the scene.</td></tr>
+        <tr><td>GameObject &rarr; Helix Vizforge &rarr; Chart (Line)</td><td>Drop a Canvas + ChartView in one click.</td></tr>
+        <tr><td>Assets &rarr; Create &rarr; Helix &rarr; Dataset</td><td>A Dataset asset with a CSV import button.</td></tr>
+        <tr><td>Assets &rarr; Create &rarr; Helix &rarr; Theme</td><td>A Theme asset with preset buttons and a swatch preview.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SCIENTIFIC -->
+<section class="section" id="scientific">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#128300;</span> Scientific</h2>
+  <p class="section-desc">Fitting, smoothing, spectra and statistical overlays.</p>
+  <ul>
+    <li><strong>Curve fits</strong> with R&sup2;: linear, polynomial, exponential, power, logarithmic.</li>
+    <li><strong>Smoothing:</strong> moving-average and Savitzky&ndash;Golay.</li>
+    <li><strong>FFT</strong> power spectrum (radix-2), <strong>marching-squares contours</strong>, <strong>confidence bands</strong> and <strong>error bars</strong>.</li>
+    <li><strong>Analytics:</strong> k-means clustering, exponential / linear forecasting, cohort retention.</li>
+  </ul>
+</section>
+
+<!-- FINANCIAL -->
+<section class="section" id="financial">
+  <h2><span class="section-icon" style="background:var(--green-dim);color:var(--green)">&#128181;</span> Financial</h2>
+  <p class="section-desc">Price views and the standard technical indicators.</p>
+  <ul>
+    <li><strong>Price:</strong> candlestick, OHLC bars, volume.</li>
+    <li><strong>Indicators:</strong> SMA, EMA, Bollinger bands, RSI, MACD.</li>
+  </ul>
+</section>
+
+<!-- BI -->
+<section class="section" id="bi">
+  <h2><span class="section-icon" style="background:var(--yellow-dim);color:var(--yellow)">&#128200;</span> BI &amp; Dashboards</h2>
+  <p class="section-desc">Pivot, KPIs, drill-down and cross-filtered dashboards.</p>
+  <ul>
+    <li><strong>Pivot tables</strong> with Sum / Mean / Min / Max / Count (and more).</li>
+    <li><strong>KPI scorecards</strong> with value, target, delta and on-target state.</li>
+    <li><strong>Drill-down</strong> through dimension levels and <strong>cross-filter</strong> that drops rows from the rendered geometry.</li>
+  </ul>
+</section>
+
+<!-- TELEMETRY -->
+<section class="section" id="telemetry">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128225;</span> Telemetry &amp; Interaction</h2>
+  <p class="section-desc">Live data and pointer interaction.</p>
+  <ul>
+    <li><strong>Telemetry:</strong> allocation-free ring-buffer time series, a <code>TelemetryHub</code> with sources (FPS, frame time, memory) and edge-triggered threshold alerts.</li>
+    <li><strong>Interaction:</strong> pan/zoom view windows, pointer hit-testing, tooltips and a selection model.</li>
+  </ul>
+</section>
+
+<!-- EXPORT -->
+<section class="section" id="export">
+  <h2><span class="section-icon" style="background:var(--orange-dim);color:var(--orange)">&#128190;</span> Export</h2>
+  <p class="section-desc">Headless, dependency-free export to images, vectors and data.</p>
+  <ul>
+    <li><strong>PNG</strong> (CPU rasterizer with a built-in bitmap font) and <strong>SVG</strong> (vector).</li>
+    <li><strong>CSV</strong> and <strong>JSON</strong> data export.</li>
+    <li>Managed-only and <strong>WebGL-compatible</strong>; on WebGL, saves trigger a browser download.</li>
+  </ul>
+</section>
+
+<!-- API -->
+<section class="section" id="api">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128217;</span> Scripting API</h2>
+  <p class="section-desc">The few entry points you'll use most.</p>
+
+  <h3>ChartView</h3>
+  <pre><code><span class="cm">// Fluent builder</span>
+<span class="tp">ChartView</span>.<span class="fn">Create</span>(parent)
+    .<span class="fn">WithData</span>(ds)
+    .<span class="fn">Line</span>(<span class="str">"x"</span>, <span class="str">"y"</span>)        <span class="cm">// or .Bar / .Scatter / .Area / .Spline / .Step</span>
+    .<span class="fn">Chart</span>(<span class="kw">new</span> <span class="tp">PieGenerator</span>{ YColumn = <span class="str">"y"</span> })  <span class="cm">// any catalog type</span>
+    .<span class="fn">Axes</span>(<span class="kw">true</span>)
+    .<span class="fn">Themed</span>(<span class="tp">Theme</span>.<span class="fn">Dark</span>())
+    .<span class="fn">Build</span>();
+
+<span class="cm">// No-code: build from inspector fields (data asset + kind + columns)</span>
+view.<span class="fn">RebuildFromInspector</span>();
+<span class="tp">IGeometryGenerator</span> g = <span class="tp">ChartView</span>.<span class="fn">GeneratorFor</span>(<span class="tp">ChartKind</span>.Bar, <span class="str">"x"</span>, <span class="str">"y"</span>, <span class="kw">null</span>);<span class="lang-tag">C#</span></code></pre>
+
+  <div class="card-grid">
+    <div class="card"><div class="card-title">Data</div><p style="color:var(--text-dim);font-size:13px;margin:0;"><code>Dataset</code>, <code>DataSeries</code>, <code>CsvImporter</code>, <code>JsonImporter</code>, <code>DatasetAsset</code>, transforms.</p></div>
+    <div class="card"><div class="card-title">Theming</div><p style="color:var(--text-dim);font-size:13px;margin:0;"><code>Theme</code>, <code>Palette</code>, <code>ThemeAsset</code>, design tokens, contrast.</p></div>
+    <div class="card"><div class="card-title">Generators</div><p style="color:var(--text-dim);font-size:13px;margin:0;"><code>IGeometryGenerator</code>, <code>ChartGeneratorBase</code> and 30 + concrete types.</p></div>
+    <div class="card"><div class="card-title">Surfaces</div><p style="color:var(--text-dim);font-size:13px;margin:0;"><code>IRenderSurface</code>: UGUI, UI Toolkit, world-space.</p></div>
+  </div>
+</section>
+
+<!-- TROUBLESHOOTING -->
+<section class="section" id="troubleshooting">
+  <h2><span class="section-icon" style="background:var(--yellow-dim);color:var(--yellow)">&#128161;</span> Troubleshooting</h2>
+  <p class="section-desc">The usual first checks.</p>
+
+  <details>
+    <summary>My chart is blank</summary>
+    <div class="details-body">
+      <p>Confirm the ChartView is under a <strong>Canvas</strong> and has a non-zero size. With a data asset, make sure the <strong>X / Y columns</strong> point at real columns (use the dropdowns). In code, confirm you called <code>.Build()</code> / <code>Render()</code> and that the column names match your dataset &mdash; a misspelled column logs a Console warning ("column not found").</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>My CSV imported as one column</summary>
+    <div class="details-body">
+      <p>That happens when the separator isn't a comma. Helix auto-detects comma / semicolon / tab / pipe from the header &mdash; re-import and it will split correctly. If you parse in code, you can pass an explicit delimiter to <code>CsvImporter.Parse</code>.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>The chart doesn't update when I change data</summary>
+    <div class="details-body">
+      <p>Rendering is explicit: call <code>view.Render()</code> after changing data in code (the inspector does this for you on every change). In the no-code path, <strong>Auto-build on Play</strong> rebuilds on <code>Start</code>.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>World-space / 3D chart is blank in a headless build</summary>
+    <div class="details-body">
+      <p>World-space surfaces render through a camera into a texture and need a GPU at runtime &mdash; they don't produce pixels under <code>-nographics</code>. They work in the editor and in player builds.</p>
+    </div>
+  </details>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#10067;</span> FAQ</h2>
+  <p class="section-desc">Common questions.</p>
+
+  <details>
+    <summary>Do I have to write code?</summary>
+    <div class="details-body"><p>No. Add a ChartView, pick a type, assign a Dataset asset and choose columns &mdash; the chart builds and renders itself. Code is optional for advanced cases.</p></div>
+  </details>
+  <details>
+    <summary>Does it work on WebGL / mobile?</summary>
+    <div class="details-body"><p>Yes. The pipeline is managed-only (no Burst/Jobs required) and WebGL-compatible; the demo ships a verified WebGL build.</p></div>
+  </details>
+  <details>
+    <summary>Any third-party dependencies?</summary>
+    <div class="details-body"><p>None. CSV/JSON parsing, statistics, FFT, regression and SVG/PNG export are all implemented in-package.</p></div>
+  </details>
+  <details>
+    <summary>Can I add my own chart type?</summary>
+    <div class="details-body"><p>Yes &mdash; implement <code>IGeometryGenerator</code> (or derive <code>ChartGeneratorBase</code>) and pass it to <code>ChartView.Chart(&hellip;)</code>. The extensibility SDK covers custom generators, scales and transforms.</p></div>
+  </details>
+</section>
+
+<!-- SUPPORT -->
+<section class="section" id="support">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128236;</span> Support</h2>
+  <p class="section-desc">Need help? We're here for you.</p>
+
+  <div class="card" style="text-align:center;padding:40px 24px;">
+    <div style="font-size:48px;margin-bottom:16px;">&#128231;</div>
+    <h3 style="border:none;margin-top:0;padding:0;text-align:center;">Get in Touch</h3>
+    <p style="color:var(--text-dim);max-width:480px;margin:8px auto 24px;">Bug reports, feature requests, charting or data questions &mdash; reach out and we'll get back to you.</p>
+    <a href="mailto:szekipapa77@gmail.com" style="display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,var(--accent),var(--pink));color:#fff;text-decoration:none;border-radius:var(--radius-sm);font-weight:700;font-size:15px;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+      &#9993; szekipapa77@gmail.com
+    </a>
+    <p style="color:var(--text-dim);font-size:13px;margin-top:16px;">We typically respond within 24&ndash;48 hours.</p>
+  </div>
+
+  <div class="card-grid" style="margin-top:16px;">
+    <div class="card">
+      <div class="card-title">&#128172; Before contacting</div>
+      <ul style="padding-left:20px;color:var(--text-dim);font-size:14px;line-height:1.9;">
+        <li>Check the <a href="#troubleshooting">Troubleshooting</a> section</li>
+        <li>Confirm the chart is under a <strong>Canvas</strong> with a non-zero size</li>
+        <li>Verify the <strong>column names</strong> match your dataset</li>
+        <li>Check the Console for any parse / "column not found" messages</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">&#128203; Helpful info to include</div>
+      <ul style="padding-left:20px;color:var(--text-dim);font-size:14px;line-height:1.9;">
+        <li>Unity version (e.g. <code>6000.0.30f1</code>)</li>
+        <li>Helix Vizforge version (<strong>v1.0</strong>)</li>
+        <li>Render pipeline (Built-in / URP / HDRP)</li>
+        <li>The chart type + a small sample dataset</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout callout-tip" style="margin-top:20px;">
+    <span class="callout-icon">&#11088;</span>
+    <div><strong>Enjoying Helix Vizforge?</strong> A review on the Unity Asset Store helps other developers discover the asset and helps us keep improving it. Thank you!</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div style="border-top:1px solid var(--border);padding-top:32px;margin-top:48px;text-align:center;color:var(--text-dim);font-size:13px;">
+  <p>Helix Vizforge v1.0 &middot; Built for Unity 6.0+ &middot; Pure C#, no dependencies</p>
+  <p style="margin-top:8px;">Support: <a href="mailto:szekipapa77@gmail.com" style="color:var(--accent-light);text-decoration:none;">szekipapa77@gmail.com</a></p>
+</div>
+
+</main>
+
+<!-- SCRIPTS -->
+<script>
+// Search functionality
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+const searchOverlay = document.getElementById('searchOverlay');
+
+const sections = [];
+document.querySelectorAll('.section, .hero').forEach(s => {
+  const h2 = s.querySelector('h2');
+  const h1 = s.querySelector('h1');
+  const desc = s.querySelector('.section-desc');
+  const h3s = s.querySelectorAll('h3');
+  const id = s.id || (s.parentElement && s.parentElement.id) || '';
+  if (!id) return;
+  sections.push({
+    id: id,
+    title: h2 ? h2.textContent.trim() : (h1 ? h1.textContent.trim() : ''),
+    desc: desc ? desc.textContent.trim() : '',
+    content: s.textContent.toLowerCase(),
+    h3: Array.from(h3s).map(h => h.textContent.trim())
+  });
+});
+
+searchInput.addEventListener('input', function() {
+  const q = this.value.toLowerCase().trim();
+  if (q.length < 2) {
+    searchResults.classList.remove('visible');
+    searchOverlay.classList.remove('visible');
+    return;
+  }
+  const matches = sections.filter(s => s.content.includes(q)).slice(0, 8);
+  if (matches.length === 0) {
+    searchResults.innerHTML = '<div style="padding:16px;color:var(--text-dim);text-align:center;">No results found</div>';
+  } else {
+    searchResults.innerHTML = matches.map(m => {
+      const matchH3 = m.h3.find(h => h.toLowerCase().includes(q));
+      return '<a href="#' + m.id + '" class="search-item" onclick="closeSearch()">' +
+        '<div class="search-item-section">' + m.title + '</div>' +
+        '<div class="search-item-title">' + (matchH3 || m.desc || m.title) + '</div>' +
+      '</a>';
+    }).join('');
+  }
+  searchResults.classList.add('visible');
+  searchOverlay.classList.add('visible');
+});
+
+function closeSearch() {
+  searchResults.classList.remove('visible');
+  searchOverlay.classList.remove('visible');
+  searchInput.value = '';
+  document.querySelector('.sidebar').classList.remove('open');
+}
+
+searchOverlay.addEventListener('click', closeSearch);
+
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    searchInput.focus();
+  }
+  if (e.key === 'Escape') closeSearch();
+});
+
+// Active sidebar link via IntersectionObserver
+const navLinks = document.querySelectorAll('.sidebar a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector('.sidebar a[href="#' + entry.target.id + '"]');
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -70% 0px', threshold: 0 });
+
+document.querySelectorAll('.section[id], .hero[id]').forEach(s => observer.observe(s));
+
+// Close mobile sidebar on nav click
+navLinks.forEach(link => {
+  link.addEventListener('click', () => {
+    document.querySelector('.sidebar').classList.remove('open');
+  });
+});
+</script>
+
+</body>
+</html>
