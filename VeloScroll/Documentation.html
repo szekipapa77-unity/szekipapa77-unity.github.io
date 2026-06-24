@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VeloScroll - Documentation</title>
+<style>
+:root {
+  --bg: #0B1018;
+  --bg-card: #121A26;
+  --bg-card-hover: #18222F;
+  --bg-code: #0F1722;
+  --bg-sidebar: #0A0F17;
+  --text: #e4e8ef;
+  --text-dim: #8694a8;
+  --text-code: #c6d0de;
+  --accent: #1FB6C8;
+  --accent-light: #4FD4E4;
+  --accent-glow: rgba(31,182,200,0.14);
+  --green: #34d399;
+  --green-dim: rgba(52,211,153,0.12);
+  --yellow: #fbbf61;
+  --yellow-dim: rgba(251,191,97,0.12);
+  --pink: #f472b6;
+  --pink-dim: rgba(244,114,182,0.12);
+  --orange: #fb923c;
+  --orange-dim: rgba(251,146,60,0.12);
+  --blue: #60a5fa;
+  --blue-dim: rgba(96,165,250,0.12);
+  --border: #1F2A39;
+  --border-light: #2C3A4D;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --sidebar-w: 280px;
+  --header-h: 64px;
+  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 24px); }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 15px;
+  overflow-x: hidden;
+}
+
+::selection { background: var(--accent); color: #04121a; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+/* ---- HEADER ---- */
+.header {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  background: rgba(11,16,24,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  gap: 16px;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.header-logo .dot {
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, #1FB6C8, #60a5fa);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800; color: #04121a;
+}
+
+.header-search {
+  flex: 1;
+  max-width: 420px;
+  margin-left: auto;
+  position: relative;
+}
+
+.header-search input {
+  width: 100%;
+  padding: 8px 16px 8px 40px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--font);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.header-search input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.header-search input::placeholder { color: var(--text-dim); }
+
+.header-search .search-icon {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  color: var(--text-dim); font-size: 14px; pointer-events: none;
+}
+
+.header-version {
+  font-size: 12px; color: var(--text-dim);
+  background: var(--bg-card);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.menu-toggle {
+  display: none;
+  background: none; border: none;
+  color: var(--text); font-size: 22px;
+  cursor: pointer; padding: 4px;
+}
+
+/* ---- SIDEBAR ---- */
+.sidebar {
+  position: fixed;
+  top: var(--header-h);
+  left: 0;
+  width: var(--sidebar-w);
+  height: calc(100vh - var(--header-h));
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 20px 0;
+  z-index: 90;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-group { margin-bottom: 8px; }
+
+.sidebar-group-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text-dim);
+  padding: 12px 24px 6px;
+}
+
+.sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 24px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 13.5px;
+  transition: all 0.15s;
+  border-left: 2px solid transparent;
+}
+
+.sidebar a:hover {
+  color: var(--text);
+  background: var(--accent-glow);
+}
+
+.sidebar a.active {
+  color: var(--accent-light);
+  background: var(--accent-glow);
+  border-left-color: var(--accent);
+  font-weight: 600;
+}
+
+.sidebar a .nav-icon {
+  width: 20px;
+  text-align: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* ---- MAIN ---- */
+.main {
+  margin-left: var(--sidebar-w);
+  margin-top: var(--header-h);
+  padding: 40px 48px 80px;
+  max-width: 960px;
+}
+
+/* ---- HERO ---- */
+.hero {
+  padding: 48px 0 40px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 48px;
+}
+
+.hero h1 {
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #fff 0%, #4FD4E4 45%, #60a5fa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  font-size: 17px;
+  color: var(--text-dim);
+  max-width: 660px;
+  line-height: 1.7;
+}
+
+.hero-badges {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-accent { background: var(--accent-glow); color: var(--accent-light); border: 1px solid rgba(31,182,200,0.25); }
+.badge-green { background: var(--green-dim); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.badge-yellow { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(251,191,97,0.25); }
+.badge-pink { background: var(--pink-dim); color: var(--pink); border: 1px solid rgba(244,114,182,0.25); }
+.badge-blue { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(96,165,250,0.25); }
+
+/* ---- SECTIONS ---- */
+.section {
+  margin-bottom: 56px;
+  scroll-margin-top: calc(var(--header-h) + 24px);
+}
+
+.section h2 {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section h2 .section-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.section > .section-desc {
+  color: var(--text-dim);
+  margin-bottom: 28px;
+  font-size: 15px;
+}
+
+h3 {
+  font-size: 19px;
+  font-weight: 700;
+  margin-top: 32px;
+  margin-bottom: 12px;
+  color: var(--text);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+h4 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-top: 24px;
+  margin-bottom: 8px;
+  color: var(--accent-light);
+}
+
+p { margin-bottom: 12px; }
+
+ul, ol { padding-left: 22px; margin-bottom: 14px; }
+li { margin-bottom: 4px; }
+
+a { color: var(--accent-light); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---- CARDS ---- */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 16px;
+  transition: border-color 0.2s;
+}
+
+.card:hover { border-color: var(--border-light); }
+
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.mini-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: block;
+  color: inherit;
+}
+
+.mini-card:hover {
+  border-color: var(--accent);
+  background: var(--bg-card-hover);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+.mini-card h4 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  color: var(--text);
+  border: none;
+  padding: 0;
+}
+
+.mini-card p {
+  font-size: 12.5px;
+  color: var(--text-dim);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ---- CODE ---- */
+pre {
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 18px 22px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-code);
+  margin-bottom: 16px;
+  position: relative;
+}
+
+pre .lang-tag {
+  position: absolute;
+  top: 8px; right: 12px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-dim);
+  opacity: 0.6;
+  font-family: var(--font);
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: var(--bg-code);
+  padding: 2px 7px;
+  border-radius: 4px;
+  color: var(--accent-light);
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+.kw { color: #5FD4E4; }
+.str { color: #a5e887; }
+.cm { color: #5A6B82; font-style: italic; }
+.fn { color: #60a5fa; }
+.tp { color: #fbbf61; }
+.num { color: #fb923c; }
+.op { color: #7FC8E8; }
+
+/* ---- TABLES ---- */
+.table-wrap {
+  overflow-x: auto;
+  margin-bottom: 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+thead th {
+  background: var(--bg-code);
+  font-weight: 700;
+  text-align: left;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+}
+
+td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(31,182,200,0.04); }
+
+/* ---- COLLAPSIBLE ---- */
+details {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+
+details[open] { border-color: var(--border-light); }
+
+summary {
+  padding: 14px 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+  list-style: none;
+  transition: color 0.15s;
+}
+
+summary::-webkit-details-marker { display: none; }
+
+summary::before {
+  content: '\25B6';
+  font-size: 10px;
+  color: var(--text-dim);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+details[open] > summary::before { transform: rotate(90deg); }
+
+summary:hover { color: var(--accent-light); }
+
+details .details-body { padding: 0 20px 18px; }
+details .details-body p:first-child { margin-top: 0; }
+
+/* ---- CALLOUT ---- */
+.callout {
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.callout > div { flex: 1; }
+.callout p { margin-bottom: 6px; }
+.callout p:last-child { margin-bottom: 0; }
+
+.callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+.callout-tip { background: var(--green-dim); border: 1px solid rgba(52,211,153,0.2); }
+.callout-tip .callout-icon { color: var(--green); }
+
+.callout-warn { background: var(--yellow-dim); border: 1px solid rgba(251,191,97,0.2); }
+.callout-warn .callout-icon { color: var(--yellow); }
+
+.callout-info { background: var(--blue-dim); border: 1px solid rgba(96,165,250,0.2); }
+.callout-info .callout-icon { color: var(--blue); }
+
+.callout-danger { background: var(--pink-dim); border: 1px solid rgba(244,114,182,0.2); }
+.callout-danger .callout-icon { color: var(--pink); }
+
+/* ---- STEP LIST ---- */
+.steps { counter-reset: step; margin-bottom: 16px; }
+
+.step {
+  display: flex;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  counter-increment: step;
+}
+
+.step:last-child { border-bottom: none; }
+
+.step::before {
+  content: counter(step);
+  width: 28px; height: 28px;
+  background: var(--accent-glow);
+  color: var(--accent-light);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.step-content { flex: 1; }
+.step-content strong { color: var(--text); }
+
+/* ---- FLOW DIAGRAM ---- */
+.flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+}
+
+.flow-node {
+  padding: 8px 16px;
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.flow-arrow {
+  padding: 0 8px;
+  color: var(--text-dim);
+  font-size: 16px;
+}
+
+/* ---- TAGS ---- */
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tag-required { background: var(--pink-dim); color: var(--pink); }
+.tag-optional { background: var(--green-dim); color: var(--green); }
+.tag-auto { background: var(--accent-glow); color: var(--accent-light); }
+.tag-platform { background: var(--yellow-dim); color: var(--yellow); }
+.tag-info { background: var(--blue-dim); color: var(--blue); }
+
+/* ---- SEARCH RESULTS ---- */
+.search-overlay {
+  display: none;
+  position: fixed;
+  top: var(--header-h);
+  left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 95;
+}
+
+.search-results {
+  display: none;
+  position: fixed;
+  top: calc(var(--header-h) + 8px);
+  left: 50%; transform: translateX(-50%);
+  width: 520px;
+  max-width: calc(100vw - 32px);
+  max-height: 60vh;
+  overflow-y: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  z-index: 96;
+  padding: 8px;
+}
+
+.search-results.visible { display: block; }
+.search-overlay.visible { display: block; }
+
+.search-item {
+  display: block;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--text);
+  transition: background 0.1s;
+}
+
+.search-item:hover { background: var(--accent-glow); text-decoration: none; }
+.search-item-section { font-size: 11px; color: var(--accent-light); margin-bottom: 2px; }
+.search-item-title { font-weight: 600; font-size: 14px; }
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; padding: 24px 20px 60px; }
+  .menu-toggle { display: block; }
+  .header-search { max-width: 200px; }
+  .hero h1 { font-size: 28px; }
+  .card-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .header { padding: 0 16px; }
+  .header-version { display: none; }
+  .header-search { max-width: 160px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Toggle menu">&#9776;</button>
+  <a href="#overview" class="header-logo">
+    <div class="dot">V</div>
+    <span>VeloScroll</span>
+  </a>
+  <div class="header-search">
+    <span class="search-icon">&#128269;</span>
+    <input type="text" id="searchInput" placeholder="Search docs... (Ctrl+K)" autocomplete="off">
+  </div>
+  <span class="header-version">v1.0.0 &middot; Unity 2021.3+</span>
+</header>
+
+<!-- SEARCH -->
+<div class="search-overlay" id="searchOverlay"></div>
+<div class="search-results" id="searchResults"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Getting Started</div>
+    <a href="#overview"><span class="nav-icon">&#127968;</span> Overview</a>
+    <a href="#installation"><span class="nav-icon">&#10515;</span> Installation</a>
+    <a href="#quickstart"><span class="nav-icon">&#9889;</span> Quick Start</a>
+    <a href="#how-it-works"><span class="nav-icon">&#9881;</span> How It Works</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Features</div>
+    <a href="#feature-list"><span class="nav-icon">&#128203;</span> Recycling List</a>
+    <a href="#feature-grid"><span class="nav-icon">&#9638;</span> Grid</a>
+    <a href="#feature-variable"><span class="nav-icon">&#8597;</span> Variable Cell Sizes</a>
+    <a href="#feature-animation"><span class="nav-icon">&#10024;</span> Animated Cells</a>
+    <a href="#feature-snapping"><span class="nav-icon">&#127919;</span> Snapping / Paging</a>
+    <a href="#feature-dynamic"><span class="nav-icon">&#128260;</span> Dynamic Data</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">No-Code</div>
+    <a href="#editor-tools"><span class="nav-icon">&#128295;</span> Editor Tools / No-Code</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Reference</div>
+    <a href="#api"><span class="nav-icon">&#128217;</span> Scripting API</a>
+    <a href="#compat"><span class="nav-icon">&#128421;</span> Compatibility</a>
+    <a href="#troubleshooting"><span class="nav-icon">&#128161;</span> Troubleshooting</a>
+    <a href="#faq"><span class="nav-icon">&#10067;</span> FAQ</a>
+    <a href="#support"><span class="nav-icon">&#128236;</span> Support</a>
+  </div>
+
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+<!-- ============================================ -->
+<!--                  HERO                        -->
+<!-- ============================================ -->
+<div class="hero" id="overview">
+  <h1>VeloScroll</h1>
+  <p>A high-performance recycling ScrollView for uGUI. Render thousands of rows with a bounded handful of live cells, and configure the whole thing in the Inspector &mdash; no code required. Pure C#, built by composition over Unity's own <code>ScrollRect</code>, with no native binaries.</p>
+  <div class="hero-badges">
+    <span class="badge badge-accent">Unity 2021.3 LTS &ndash; Unity 6</span>
+    <span class="badge badge-green">Pure C# &middot; uGUI</span>
+    <span class="badge badge-yellow">No-code authoring</span>
+    <span class="badge badge-blue">Mono + IL2CPP &middot; WebGL</span>
+  </div>
+</div>
+
+<section class="section">
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>What VeloScroll does.</strong> It virtualizes (recycles) the cells of a scrolling list or grid. A bounded pool of cell GameObjects is reused as you scroll, so the number of <em>live</em> cells stays roughly constant no matter how many items your data has. Drive it entirely from the Inspector, or from script &mdash; code always wins.</div>
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#9989;</span>
+    <div><strong>Measured, not hand-waved.</strong> VeloScroll renders 10,000+ items with a bounded handful of live cells (verified: <strong>12 live cells for 10k and 50k items</strong> in tests; <strong>9 live cells render 10k items</strong> in the shipped player) and performs no per-item instantiation during scroll. The recycler's steady-state bookkeeping allocates <strong>zero bytes</strong>. The shipped player reported <code>RESULT=PASS</code> on both Mono and IL2CPP. See <a href="#how-it-works">How It Works</a>.</div>
+  </div>
+
+  <div class="card-grid">
+    <a class="mini-card" href="#quickstart"><h4>&#9889; First list in 5 minutes</h4><p>Add the <strong>VeloScroll View</strong> component, press Play &mdash; 10k items render with a handful of live cells.</p></a>
+    <a class="mini-card" href="#editor-tools"><h4>&#128295; No-code authoring</h4><p>Component + custom inspector + <code>GameObject &gt; UI &gt; VeloScroll</code> menus + a data-source asset. Zero scripting.</p></a>
+    <a class="mini-card" href="#feature-grid"><h4>&#9638; List &amp; Grid</h4><p>Single-track lists or fixed column/row grids, vertical or horizontal, all recycled.</p></a>
+    <a class="mini-card" href="#feature-variable"><h4>&#8597; Variable sizes</h4><p>Per-cell heights or widths; the visible range is found by binary search, cells stay bounded.</p></a>
+    <a class="mini-card" href="#feature-animation"><h4>&#10024; Animated cells</h4><p>Scroll-driven focus-scale, fade and depth presets &mdash; juice with no code.</p></a>
+    <a class="mini-card" href="#feature-snapping"><h4>&#127919; Snap &amp; jump</h4><p>Snap to the nearest cell on drag-end and animated <code>ScrollToIndex</code> with an <code>OnSnap</code> event.</p></a>
+  </div>
+
+  <p>This guide starts with installation and a five-minute Quick Start, explains how the recycler works, then walks each feature, the no-code editor tooling, and the full scripting API.</p>
+</section>
+
+<!-- ============================================ -->
+<!--             INSTALLATION                     -->
+<!-- ============================================ -->
+<section class="section" id="installation">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#10515;</span> Installation</h2>
+  <p class="section-desc">Import the package, make sure uGUI and the Input System are present, and add a component.</p>
+
+  <div class="steps">
+    <div class="step"><div class="step-content"><strong>Import from the Asset Store</strong><br>In <code>Window &rarr; Package Manager &rarr; My Assets</code>, download and import VeloScroll. Everything lands under <code>Assets/VeloScroll/</code> &mdash; that is the only folder that ships.</div></div>
+    <div class="step"><div class="step-content"><strong>uGUI is required</strong><br>The runtime depends only on <code>com.unity.ugui</code> (Unity's standard UI), which is present in virtually every project. No other package is required for the core component.</div></div>
+    <div class="step"><div class="step-content"><strong>Input System (for clicks/drags in built scenes)</strong><br>The scaffolding menus and sample scenes wire an <code>EventSystem</code> for the new Input System. Make sure <code>com.unity.inputsystem</code> is installed so pointer drags are routed. The core recycler itself uses uGUI drag handlers and works under either input backend.</div></div>
+    <div class="step"><div class="step-content"><strong>Add a component</strong><br>Add a <strong>VeloScroll View</strong> via <code>Add Component &rarr; UI &rarr; VeloScroll &rarr; VeloScroll View</code>, or scaffold a ready-to-play one from <code>GameObject &rarr; UI &rarr; VeloScroll &rarr; Recycling List</code>.</div></div>
+  </div>
+
+  <h3>What gets installed</h3>
+  <pre><code><span class="kw">Assets/VeloScroll/</span>
+  Runtime/        <span class="cm">// VeloScrollView, Recycler, CellPool, layouts, animator, data sources</span>
+  Editor/         <span class="cm">// Custom inspector, scaffolding menus, Welcome window, project validator</span>
+  Demo/           <span class="cm">// The interactive WebGL-ready demo scene (Build Index 0)</span>
+  Samples/        <span class="cm">// Per-feature example scenes + the no-code template scene</span>
+  Documentation/  <span class="cm">// You are here</span>
+  Tests/          <span class="cm">// EditMode + PlayMode tests (run headless via Unity -runTests)</span><span class="lang-tag">Project</span></code></pre>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Deletable extras.</strong> The assembly layering keeps the core independent: <code>Demo/</code> and <code>Samples/</code> are never referenced by the runtime, so you can delete them and the asset still compiles. Only <code>Assets/VeloScroll/</code> ships &mdash; nothing is written outside it, and there are no network calls.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             QUICK START                      -->
+<!-- ============================================ -->
+<section class="section" id="quickstart">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#9889;</span> Quick Start</h2>
+  <p class="section-desc">Your first recycling list in about five minutes &mdash; no code, then one optional line of script.</p>
+
+  <h3>Option A &mdash; Add the component</h3>
+  <div class="steps">
+    <div class="step"><div class="step-content"><strong>Create a UI object</strong><br>In a scene with a Canvas, add an empty <em>UI</em> GameObject (or any RectTransform under the Canvas).</div></div>
+    <div class="step"><div class="step-content"><strong>Add VeloScroll View</strong><br><code>Add Component &rarr; UI &rarr; VeloScroll &rarr; VeloScroll View</code>. The component self-builds a viewport and content and drives a <code>ScrollRect</code> for you &mdash; nothing else to wire.</div></div>
+    <div class="step"><div class="step-content"><strong>Press Play</strong><br>With all-default fields it renders a built-in deterministic sample list immediately. Scroll it: the item count is in the hundreds by default, but only a handful of cells are ever alive.</div></div>
+    <div class="step"><div class="step-content"><strong>Watch the live-cell count</strong><br>Select the view while playing &mdash; the inspector's <em>Preview</em> line shows <code>Items</code>, <code>Live cells</code> and <code>Created</code>. Live cells stay bounded as you scroll.</div></div>
+  </div>
+
+  <h3>Option B &mdash; Scaffold from the menu</h3>
+  <p>Prefer a one-click setup? Use <code>GameObject &rarr; UI &rarr; VeloScroll &rarr; Recycling List</code>. It creates a Canvas and EventSystem only if the scene lacks them, drops in a pre-wired <strong>VeloScroll View</strong>, and registers full Undo. Press Play and it renders the sample. (There is a <code>Recycling Grid</code> variant too.)</p>
+
+  <h3>Make it 10,000 items from code</h3>
+  <p>One call turns the same view into a 10,000-row list bound to your own data. The recycler binds only the cells near the viewport, so the binder runs O(visible), never O(count):</p>
+  <pre><code><span class="kw">using</span> UnityEngine;
+<span class="kw">using</span> VeloScroll;
+
+<span class="kw">public class</span> <span class="tp">QuickStart</span> : <span class="tp">MonoBehaviour</span>
+{
+    [<span class="tp">SerializeField</span>] <span class="kw">private</span> <span class="tp">VeloScrollView</span> view;
+
+    <span class="kw">void</span> <span class="fn">Start</span>()
+    {
+        <span class="cm">// 10,000 items, a handful of live cells, no per-item instantiation while scrolling.</span>
+        view.<span class="fn">SetData</span>&lt;<span class="tp">VeloScrollTextCell</span>&gt;(<span class="num">10000</span>, (i, c) =&gt; c.<span class="fn">SetContent</span>(<span class="str">"Item "</span> + i, <span class="str">""</span>));
+    }
+}</code></pre>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#128161;</span>
+    <div><strong>Code always wins.</strong> Any call to <code>SetData</code> / <code>SetDataSource</code> marks the view as code-configured, so its automatic build-on-play will defer to you and never overwrite your data with the sample.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             HOW IT WORKS                     -->
+<!-- ============================================ -->
+<section class="section" id="how-it-works">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#9881;</span> How It Works</h2>
+  <p class="section-desc">Recycling (a.k.a. virtualization) in one idea: reuse a small, bounded pool of cells as the list scrolls.</p>
+
+  <p>A naive scroll list instantiates one cell GameObject per item, so a 10,000-row list creates 10,000 cells &mdash; slow to build and heavy on memory. VeloScroll instead keeps only the cells that are near the viewport alive. As a cell scrolls out one edge, it is returned to a pool and immediately reused to show the item appearing at the other edge. The count of <em>live</em> cells therefore stays roughly constant regardless of how many items the data has.</p>
+
+  <div class="flow">
+    <span class="flow-node">Scroll changes</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">Compute visible range</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">Release out-of-range cells</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">Get + bind incoming cells</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">(Optional) animate</span>
+  </div>
+
+  <ol>
+    <li>The driven <code>ScrollRect</code>'s <code>onValueChanged</code> reports the new scroll offset.</li>
+    <li>The active <strong>layout</strong> (List or Grid) maps that offset to the range of item indices currently visible. For variable sizes a cumulative-offset cache is searched by <strong>binary search</strong>.</li>
+    <li>The <strong>recycler</strong> returns any now-off-screen cells to the <strong>cell pool</strong> and pulls cells back out for the items entering view.</li>
+    <li>The active <strong>data source</strong> binds each incoming cell (<code>Bind(index, cell)</code>) &mdash; only for the small visible set.</li>
+    <li>If an animation preset is set, the animator nudges each visible cell's scale/opacity by its distance from the viewport center.</li>
+  </ol>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#9989;</span>
+    <div><strong>The numbers behind the claim.</strong> The live-cell count is bounded by roughly <code>visible&nbsp;+&nbsp;2&nbsp;&times;&nbsp;buffer</code> cells &mdash; a small constant independent of your item count. Tests confirm <strong>12 live cells render 100, 10k and 50k items</strong>; in the shipped player <strong>9 cells render 10,000 items</strong>. A 1,000-tick scroll stays at the same pool size (no growth), and the steady-state recycler path measures <strong>zero managed allocation</strong>.</div>
+  </div>
+
+  <h3>Built by composition, not subclassing</h3>
+  <p>VeloScroll <em>drives</em> a standard uGUI <code>ScrollRect</code> by composition; it never subclasses it. That means it coexists with any existing <code>ScrollRect</code> setup, and added to a bare GameObject it self-builds the viewport + content it needs. There is a blank-first-frame guard, too: because UI rects are 0&times;0 until a layout pass runs, the first build defers one frame until the viewport has a real size.</p>
+</section>
+
+<!-- ============================================ -->
+<!--             FEATURE: LIST                    -->
+<!-- ============================================ -->
+<section class="section" id="feature-list">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128203;</span> Feature: Recycling List</h2>
+  <p class="section-desc">A single-track recycled list, vertical or horizontal, with uniform cell sizes.</p>
+
+  <p>The default layout is a list: one column when scrolling vertically, one row when scrolling horizontally. Set the scroll <strong>Axis</strong>, the uniform <strong>Cell Main Size</strong> (height for vertical, width for horizontal), <strong>Spacing</strong>, inner <strong>Padding</strong> and an off-screen <strong>Buffer</strong> (extra cells kept alive just outside the viewport for smoother fast scrolling) in the Inspector.</p>
+
+  <pre><code><span class="cm">// Switch back to a single-track list from code (e.g. after using a grid):</span>
+view.<span class="fn">SetListLayout</span>();
+
+<span class="cm">// Drive it from a typed binder. The default cell is VeloScrollTextCell.</span>
+view.<span class="fn">SetData</span>&lt;<span class="tp">VeloScrollTextCell</span>&gt;(<span class="num">10000</span>, (i, c) =&gt; c.<span class="fn">SetContent</span>(<span class="str">"Row "</span> + i, <span class="str">"subtitle"</span>));</code></pre>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>The default cell needs no prefab.</strong> If you leave the Cell Prefab slot empty, VeloScroll builds a dependency-light <code>VeloScrollTextCell</code> (a background image plus uGUI title/subtitle text), so the zero-setup path needs no prefab and no TextMeshPro. Provide your own prefab holding a <code>VeloScrollCell</code> subclass when you want custom visuals.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             FEATURE: GRID                    -->
+<!-- ============================================ -->
+<section class="section" id="feature-grid">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#9638;</span> Feature: Grid</h2>
+  <p class="section-desc">A fixed-count grid recycler &mdash; columns when scrolling vertically, rows when scrolling horizontally.</p>
+
+  <p>Switch the <strong>Layout Kind</strong> to <em>Grid</em> and set the <strong>Grid Cross Count</strong> (number of columns for a vertical scroll, or rows for a horizontal scroll) and the <strong>Grid Cross Spacing</strong>. The grid recycles exactly like the list &mdash; only the visible lines are alive.</p>
+
+  <pre><code><span class="cm">// 3-column grid (vertical scroll), 6px between columns:</span>
+view.<span class="fn">SetGridLayout</span>(<span class="num">3</span>, <span class="num">6f</span>);
+view.<span class="fn">SetData</span>&lt;<span class="tp">VeloScrollTextCell</span>&gt;(<span class="num">5000</span>, (i, c) =&gt; c.<span class="fn">SetContent</span>(<span class="str">"Cell "</span> + i, <span class="str">""</span>));</code></pre>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#128161;</span>
+    <div><strong>One click from the menu.</strong> <code>GameObject &rarr; UI &rarr; VeloScroll &rarr; Recycling Grid</code> scaffolds a view already set to a 3-column grid.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          FEATURE: VARIABLE SIZES             -->
+<!-- ============================================ -->
+<section class="section" id="feature-variable">
+  <h2><span class="section-icon" style="background:var(--green-dim);color:var(--green)">&#8597;</span> Feature: Variable Cell Sizes</h2>
+  <p class="section-desc">Per-cell heights (vertical) or widths (horizontal), with the live set still bounded.</p>
+
+  <p>Uniform cells are the fast default, but real lists often need rows of different sizes. Provide a size function and the list layout measures each item along the scroll axis, caches cumulative offsets, and finds the visible range by <strong>binary search</strong> &mdash; so even a non-uniform 10k-row list keeps a bounded live-cell set. Pass <code>null</code> to revert to uniform sizing.</p>
+
+  <pre><code><span class="cm">// Alternating tall/short rows; the recycler stays bounded.</span>
+view.<span class="fn">SetVariableSizes</span>(i =&gt; (i % <span class="num">2</span> == <span class="num">0</span>) ? <span class="num">120f</span> : <span class="num">72f</span>);
+view.<span class="fn">SetData</span>&lt;<span class="tp">VeloScrollTextCell</span>&gt;(<span class="num">10000</span>, (i, c) =&gt; c.<span class="fn">SetContent</span>(<span class="str">"Item "</span> + i, <span class="str">"variable height"</span>));</code></pre>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Scope.</strong> Variable sizing applies to the single-track <em>List</em> layout. Grid cells use the uniform cell size along the scroll axis.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          FEATURE: ANIMATION                  -->
+<!-- ============================================ -->
+<section class="section" id="feature-animation">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#10024;</span> Feature: Animated Cells</h2>
+  <p class="section-desc">Scroll-driven cell emphasis &mdash; the no-code "juice" layer, on a real virtualizer.</p>
+
+  <p>Pick an <strong>Animation Kind</strong> and the animator shapes each visible cell by its distance from the viewport center. The math is a pure, testable function of that distance, and writes only when a value changes (no per-frame allocation):</p>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Kind</th><th>Effect</th></tr></thead>
+    <tbody>
+      <tr><td><code>None</code></td><td>Animation disabled (default).</td></tr>
+      <tr><td><code>FocusScale</code></td><td>Edge cells shrink toward the configured strength; the centered cell is full size.</td></tr>
+      <tr><td><code>Fade</code></td><td>Edge cells fade out via a <code>CanvasGroup</code>; centered cell is fully opaque.</td></tr>
+      <tr><td><code>Depth</code></td><td>A combined gentle scale + fade for a depth-of-focus look.</td></tr>
+      <tr><td><code>Parallax</code></td><td>In V1, a gentle depth-style focus (true cross-axis parallax is on the roadmap).</td></tr>
+    </tbody>
+  </table></div>
+
+  <pre><code><span class="cm">// Strength 0..1 controls how strongly edge cells shrink/fade; curve is optional.</span>
+view.<span class="fn">SetAnimation</span>(<span class="tp">VeloScrollAnimationKind</span>.FocusScale, <span class="num">0.35f</span>);
+
+<span class="cm">// Shape the falloff with an AnimationCurve (empty = linear):</span>
+view.<span class="fn">SetAnimation</span>(<span class="tp">VeloScrollAnimationKind</span>.Depth, <span class="num">0.5f</span>, myCurve);</code></pre>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#128161;</span>
+    <div><strong>No-code path.</strong> The same effect is fully Inspector-driven: set <em>Animation Kind</em> and <em>Animation Strength</em> (and an optional curve) on the component &mdash; the strength and curve fields only appear once a kind other than <em>None</em> is selected. Cells reset their scale/alpha automatically when recycled, so a reused cell never carries a stale transform.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          FEATURE: SNAPPING                   -->
+<!-- ============================================ -->
+<section class="section" id="feature-snapping">
+  <h2><span class="section-icon" style="background:var(--yellow-dim);color:var(--yellow)">&#127919;</span> Feature: Snapping / Paging</h2>
+  <p class="section-desc">Snap to the nearest cell when a drag ends, and jump to any index instantly or with an animated scroll.</p>
+
+  <p>Enable <strong>Snapping</strong> and choose where the snapped cell lands in the viewport with <strong>Snap Align</strong> (<code>Start</code>, <code>Center</code> or <code>End</code>). When the user releases a drag, VeloScroll animates the content so the nearest cell settles at that alignment over the configured <strong>Snap Duration</strong>, using a smoothstep ease (or your own curve). Each settle raises the <code>OnSnap</code> event with the resolved item index.</p>
+
+  <pre><code><span class="cm">// Turn on drag-end snapping, center-aligned, quarter-second ease.</span>
+view.<span class="fn">SetSnapping</span>(<span class="kw">true</span>, <span class="tp">VeloScrollSnapAlign</span>.Center, <span class="num">0.25f</span>);
+
+<span class="cm">// Get notified when a snap settles (drag-end or animated jump):</span>
+view.OnSnap += index =&gt; <span class="tp">Debug</span>.<span class="fn">Log</span>(<span class="str">"Snapped to "</span> + index);
+
+<span class="cm">// Jump to an item. animated:true performs an eased scroll and then fires OnSnap.</span>
+view.<span class="fn">ScrollToIndex</span>(<span class="num">500</span>, <span class="tp">VeloScrollSnapAlign</span>.Center, animated: <span class="kw">true</span>);</code></pre>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Paging.</strong> Center- or start-aligned snapping with a full-viewport cell size gives page-style scrolling. The snap target is computed from the layout at the current scroll position, with a half-pixel boundary epsilon so exact cell boundaries never round to the wrong index.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          FEATURE: DYNAMIC DATA               -->
+<!-- ============================================ -->
+<section class="section" id="feature-dynamic">
+  <h2><span class="section-icon" style="background:var(--pink-dim);color:var(--pink)">&#128260;</span> Feature: Dynamic Data</h2>
+  <p class="section-desc">Change the count or the contents at runtime &mdash; the list re-binds without an instantiation storm.</p>
+
+  <p>VeloScroll never stores your model; it asks the data source for a <code>Count</code> and binds cells on demand. When your data changes, call the matching operation and the recycler resizes the content and refreshes the window without rebuilding the world:</p>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Call</th><th>Use when</th></tr></thead>
+    <tbody>
+      <tr><td><code>Reload()</code></td><td>The count or contents changed and you want a full re-evaluation of the visible window.</td></tr>
+      <tr><td><code>InsertItems(index, count)</code></td><td>You inserted rows in your source (the new count comes from your source).</td></tr>
+      <tr><td><code>RemoveItems(index, count)</code></td><td>You removed rows in your source.</td></tr>
+      <tr><td><code>RefreshVisible()</code></td><td>Item <em>contents</em> changed but the count did not &mdash; re-binds the visible cells in place.</td></tr>
+    </tbody>
+  </table></div>
+
+  <pre><code><span class="cm">// A live count delegate keeps the list in sync with a growing/shrinking collection.</span>
+view.<span class="fn">SetData</span>&lt;<span class="tp">VeloScrollTextCell</span>&gt;(() =&gt; items.Count, (i, c) =&gt; c.<span class="fn">SetContent</span>(items[i].Title, <span class="str">""</span>));
+
+items.<span class="fn">Add</span>(newItem);
+view.<span class="fn">Reload</span>();          <span class="cm">// content resized, window refreshed, correct re-bind, no NaN</span></code></pre>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#9989;</span>
+    <div><strong>Hardened.</strong> Dynamic-count changes (e.g. 1000 &rarr; 500 &rarr; 3000) re-bind correctly with no NaN, and a 60&times; repeated reload stays bounded with no cell growth &mdash; both covered by tests.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--          EDITOR TOOLS / NO-CODE              -->
+<!-- ============================================ -->
+<section class="section" id="editor-tools">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128295;</span> Editor Tools / No-Code</h2>
+  <p class="section-desc">VeloScroll is built to be used without writing a line of code. The component, its custom inspector, the scaffolding menus, the data-source asset and the Welcome window cover the whole authoring loop.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#11088;</span>
+    <div><strong>The headline:</strong> <em>add the component, press Play &mdash; done.</em> A freshly added VeloScroll View with all-default fields renders a correct, non-empty, scrollable sample list with the default cell &mdash; zero setup, zero code.</div>
+  </div>
+
+  <h3>1. The component &amp; custom inspector</h3>
+  <p>The <strong>VeloScroll View</strong> component exposes every option as a serialized field with sensible defaults, so it "just works" unconfigured. Its custom inspector groups the fields and shows only the knobs that apply:</p>
+  <ul>
+    <li><strong>Setup:</strong> Axis, Layout Kind, Cell Main Size, Spacing, Padding, Buffer. Grid Cross Count / Cross Spacing appear only when Layout Kind is <em>Grid</em>.</li>
+    <li><strong>Data:</strong> a Data Source Mode selector (<em>Sample</em> / <em>Asset</em> / <em>Code</em>), a Data Source Asset slot (shown in <em>Asset</em> mode, with a helpful hint when empty), the Sample Count (in <em>Sample</em> mode), and an optional Cell Prefab.</li>
+    <li><strong>Animation:</strong> Animation Kind, with Strength and Curve appearing only when a kind other than <em>None</em> is chosen.</li>
+    <li><strong>Behaviour:</strong> the Build On Start toggle.</li>
+    <li><strong>Preview:</strong> a manual <em>Rebuild Preview</em> button in edit mode, and live <code>Items / Live cells / Created</code> stats while playing.</li>
+  </ul>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Safe editor authoring.</strong> The inspector draws purely from <code>SerializedObject</code> (multi-edit safe), and the Rebuild button defers its work to the next editor tick rather than mutating the scene mid-IMGUI &mdash; the correct, crash-free way to materialize cells from a button.</div>
+  </div>
+
+  <h3>2. GameObject scaffolding menus</h3>
+  <p>Two one-click entry points create a ready-to-play view, adding a Canvas and an EventSystem only if the scene lacks them (so running an item twice never litters the hierarchy), wiring the EventSystem for the new Input System, and registering full Undo with the new object selected and pinged:</p>
+  <ul>
+    <li><code>GameObject &rarr; UI &rarr; VeloScroll &rarr; Recycling List</code></li>
+    <li><code>GameObject &rarr; UI &rarr; VeloScroll &rarr; Recycling Grid</code></li>
+  </ul>
+
+  <h3>3. The <code>VeloScrollDataSource</code> asset</h3>
+  <p>For a fully no-code list, create a data asset via <code>Assets &rarr; Create &rarr; VeloScroll &rarr; Data Source</code> (or the <code>CreateAssetMenu</code> entry). Each row is a small struct &mdash; <code>Title</code>, <code>Subtitle</code>, <code>Tint</code> &mdash; authored in the Inspector or generated with a deterministic <em>Generate</em> button. Set the component's Data Source Mode to <strong>Asset</strong>, drop the asset in the slot, and press Play: it renders the asset's rows with no scripting. A ready-made sample data asset ships under <code>Assets/VeloScroll/Samples/</code> for you to duplicate.</p>
+
+  <h3>4. Precedence: "just works" vs "code wins"</h3>
+  <p>On Play, the gated auto-build resolves data in this order:</p>
+  <div class="flow">
+    <span class="flow-node">Configured by code?</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">yes: defer to your data</span>
+    <span class="flow-arrow">|</span>
+    <span class="flow-node">Asset assigned?</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">build from the asset</span>
+    <span class="flow-arrow">|</span>
+    <span class="flow-node">else: built-in sample</span>
+  </div>
+  <p>So a code-set data source is never overwritten by the auto-build, and a truly unconfigured component is never blank.</p>
+
+  <h3>5. The Welcome window</h3>
+  <p>On first load, a one-screen <strong>Welcome</strong> window orients you: a 3-step getting-started, a <em>Create your first Recycling List</em> button (which reuses the exact scaffolding the menu uses), an <em>Open Documentation</em> button, and a "don't show again" toggle. It is available any time under <code>Window &rarr; VeloScroll &rarr; Welcome</code>.</p>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Batch-safe.</strong> The Welcome window's auto-open and the component's auto-build both short-circuit in <code>-batchmode</code>, so headless/CI runs never hang on an editor window or an unexpected build.</div>
+  </div>
+
+  <h3>Sample scenes</h3>
+  <p>Generate per-feature example scenes from <code>Tools &rarr; VeloScroll &rarr; Generate Sample Scenes</code>. Each one isolates a single feature: the recycling list, the grid, variable sizes, animation, snapping, dynamic data, and a fully <strong>no-code template</strong> (a <code>VeloScrollView</code> in Asset mode bound to a <code>VeloScrollDataSource</code>). Open any one, press Play, and see exactly that feature.</p>
+</section>
+
+<!-- ============================================ -->
+<!--             SCRIPTING API                    -->
+<!-- ============================================ -->
+<section class="section" id="api">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#128217;</span> Scripting API</h2>
+  <p class="section-desc">The public surface of <code>VeloScroll.VeloScrollView</code> and its supporting types. Namespace: <code>VeloScroll</code>.</p>
+
+  <h3>Getting a reference and setting data</h3>
+  <pre><code><span class="kw">using</span> UnityEngine;
+<span class="kw">using</span> VeloScroll;
+
+<span class="kw">var</span> view = GetComponent&lt;<span class="tp">VeloScrollView</span>&gt;();
+
+<span class="cm">// Count + typed binder (the default cell type is VeloScrollTextCell):</span>
+view.<span class="fn">SetData</span>&lt;<span class="tp">VeloScrollTextCell</span>&gt;(<span class="num">10000</span>, (i, c) =&gt; c.<span class="fn">SetContent</span>(<span class="str">"Item "</span> + i, <span class="str">""</span>));
+
+<span class="cm">// Live-count delegate for dynamic collections:</span>
+view.<span class="fn">SetData</span>&lt;<span class="tp">VeloScrollTextCell</span>&gt;(() =&gt; model.Count, (i, c) =&gt; c.<span class="fn">SetContent</span>(model[i].Name, <span class="str">""</span>));
+
+<span class="cm">// Full control: implement IVeloScrollDataSource and assign it.</span>
+view.<span class="fn">SetDataSource</span>(myDataSource);</code></pre>
+
+  <h3>Methods</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Signature</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><code>void SetData&lt;TCell&gt;(int count, Action&lt;int, TCell&gt; bind)</code></td><td>Drive the list from a fixed count + a typed per-cell binder. <code>TCell : VeloScrollCell</code>.</td></tr>
+      <tr><td><code>void SetData&lt;TCell&gt;(Func&lt;int&gt; count, Action&lt;int, TCell&gt; bind)</code></td><td>Same, with a live count delegate for dynamic lists.</td></tr>
+      <tr><td><code>void SetDataSource(IVeloScrollDataSource source)</code></td><td>Assign a custom data source and rebuild. Marks the view code-configured.</td></tr>
+      <tr><td><code>void SetListLayout()</code></td><td>Switch to a single-track list and rebuild.</td></tr>
+      <tr><td><code>void SetGridLayout(int crossCount, float crossSpacing = 6f)</code></td><td>Switch to a fixed column/row grid and rebuild.</td></tr>
+      <tr><td><code>void SetVariableSizes(Func&lt;int, float&gt; sizeOf)</code></td><td>Per-cell sizes along the scroll axis (binary-search range). <code>null</code> reverts to uniform.</td></tr>
+      <tr><td><code>void SetAnimation(VeloScrollAnimationKind kind, float strength = 0.35f, AnimationCurve curve = null)</code></td><td>Set the scroll-driven cell animation preset (<code>None</code> disables).</td></tr>
+      <tr><td><code>void SetSnapping(bool enabled, VeloScrollSnapAlign align = Start, float duration = 0.25f)</code></td><td>Enable/disable drag-end snapping and its alignment + duration.</td></tr>
+      <tr><td><code>void Reload()</code></td><td>Reapply after the data count or contents changed (resizes content, refreshes window).</td></tr>
+      <tr><td><code>void InsertItems(int index, int countToInsert)</code></td><td>Reflect an insertion in your source.</td></tr>
+      <tr><td><code>void RemoveItems(int index, int countToRemove)</code></td><td>Reflect a removal in your source.</td></tr>
+      <tr><td><code>void RefreshVisible()</code></td><td>Re-bind the visible cells in place (contents changed, count did not).</td></tr>
+      <tr><td><code>void ScrollToIndex(int index, VeloScrollSnapAlign align = Start, bool animated = false)</code></td><td>Bring an item into view at the given alignment, instant or eased.</td></tr>
+      <tr><td><code>void Build()</code> / <code>void RebuildFromInspector()</code></td><td>(Re)build the hierarchy, layout, pool and initial visible set. The editor preview uses the same path.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Properties &amp; events</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Member</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>int Count</code></td><td>Total logical item count, from the active data source.</td></tr>
+      <tr><td><code>int LiveCellCount</code></td><td>Live (instantiated + active) cells right now. Bounded; independent of <code>Count</code>.</td></tr>
+      <tr><td><code>int TotalCellsCreated</code></td><td>Total cells ever instantiated. Constant during scroll once the pool is warm &mdash; the proof of reuse.</td></tr>
+      <tr><td><code>ScrollRect ScrollRect</code></td><td>The driven <code>ScrollRect</code> (created on first build if absent).</td></tr>
+      <tr><td><code>event Action&lt;int&gt; OnSnap</code></td><td>Raised when a snap (drag-end or animated <code>ScrollToIndex</code>) settles on an item index.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Supporting types</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Type</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>IVeloScrollDataSource</code></td><td>The virtual data contract: <code>int Count { get; }</code> + <code>void Bind(int index, VeloScrollCell cell)</code>.</td></tr>
+      <tr><td><code>VeloScrollCell</code></td><td>Base cell. Override <code>OnBind(index)</code> / <code>OnRecycle()</code> for custom cells.</td></tr>
+      <tr><td><code>VeloScrollTextCell</code></td><td>Built-in default cell (background image + title/subtitle uGUI text). <code>SetContent(title, subtitle)</code>, <code>SetBackground(color)</code>.</td></tr>
+      <tr><td><code>VeloScrollDataSource</code></td><td>ScriptableObject no-code data asset (rows of Title/Subtitle/Tint; deterministic <code>GenerateSample(count)</code>).</td></tr>
+      <tr><td><code>VeloScrollAxis</code></td><td><code>Vertical</code> / <code>Horizontal</code>.</td></tr>
+      <tr><td><code>VeloScrollLayoutKind</code></td><td><code>List</code> / <code>Grid</code>.</td></tr>
+      <tr><td><code>VeloScrollSnapAlign</code></td><td><code>Start</code> / <code>Center</code> / <code>End</code>.</td></tr>
+      <tr><td><code>VeloScrollAnimationKind</code></td><td><code>None</code> / <code>FocusScale</code> / <code>Parallax</code> / <code>Fade</code> / <code>Depth</code>.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Custom cells</h3>
+  <pre><code><span class="kw">public class</span> <span class="tp">MyCell</span> : <span class="tp">VeloScrollCell</span>
+{
+    <span class="kw">public override void</span> <span class="fn">OnBind</span>(<span class="kw">int</span> index)
+    {
+        <span class="kw">base</span>.<span class="fn">OnBind</span>(index);     <span class="cm">// records Index; recycler treats this as "show item N now"</span>
+        <span class="cm">// ... populate your visuals from your model[index] ...</span>
+    }
+
+    <span class="kw">public override void</span> <span class="fn">OnRecycle</span>()
+    {
+        <span class="kw">base</span>.<span class="fn">OnRecycle</span>();         <span class="cm">// resets scale/alpha so a reused cell carries no stale state</span>
+        <span class="cm">// ... release any per-item state ...</span>
+    }
+}</code></pre>
+</section>
+
+<!-- ============================================ -->
+<!--             COMPATIBILITY                    -->
+<!-- ============================================ -->
+<section class="section" id="compat">
+  <h2><span class="section-icon" style="background:var(--green-dim);color:var(--green)">&#128421;</span> Compatibility</h2>
+  <p class="section-desc">Where VeloScroll runs, and what it was verified against.</p>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Area</th><th>Support</th></tr></thead>
+    <tbody>
+      <tr><td>Unity version</td><td>Compiles on Unity <strong>2021.3 LTS through Unity 6</strong>. Verified on <code>2021.3.30f1</code> and <code>6000.0.62f1</code>; no post-2021.3 API is used in the shipped code.</td></tr>
+      <tr><td>UI system</td><td>uGUI (<code>com.unity.ugui</code>) &mdash; the only runtime dependency.</td></tr>
+      <tr><td>Render pipeline</td><td>Built-in, URP and HDRP. The runtime is uGUI canvas-space, so it is pipeline-agnostic.</td></tr>
+      <tr><td>Input</td><td>Routed through uGUI's EventSystem, so it works with the new or the legacy input handler. Scaffolded scenes wire the new Input System's UI module.</td></tr>
+      <tr><td>Scripting backend</td><td>Mono and IL2CPP. The shipped player's self-test reported <code>RESULT=PASS</code> on both.</td></tr>
+      <tr><td>Platforms</td><td>Desktop, mobile and <strong>WebGL</strong> (the demo builds to WebGL). The recycler is pure managed code with no native plugin.</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>No native code, no network.</strong> VeloScroll is pure C# plus standard Unity UI components. It bundles no native binaries, makes no network calls, and collects nothing.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             TROUBLESHOOTING                  -->
+<!-- ============================================ -->
+<section class="section" id="troubleshooting">
+  <h2><span class="section-icon" style="background:var(--pink-dim);color:var(--pink)">&#128161;</span> Troubleshooting</h2>
+  <p class="section-desc">The issues that come up most, and how to fix them.</p>
+
+  <details open>
+    <summary>The list is blank on the first frame, then appears</summary>
+    <div class="details-body">
+      <p>Expected and handled. uGUI rects are 0&times;0 until a layout pass runs, so the first build defers one frame until the viewport has a real size. If it stays blank, confirm the view (or an ancestor) actually has a non-zero RectTransform size &mdash; a VeloScroll View under a stretched Canvas, or with an explicit size, will build correctly.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Dragging or clicking does nothing in a built/scaffolded scene</summary>
+    <div class="details-body">
+      <p>The scene needs an <code>EventSystem</code> with a working UI input module. The scaffolding menus add one wired for the new Input System; if you built the scene yourself, make sure <code>com.unity.inputsystem</code> is installed and the EventSystem uses <code>InputSystemUIInputModule</code> (the menu calls <code>AssignDefaultActions()</code> for you). Without a valid module, pointer drags are silently ignored.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Play shows the sample data instead of mine</summary>
+    <div class="details-body">
+      <p>Either call <code>SetData</code>/<code>SetDataSource</code> from code (which marks the view code-configured, so the auto-build defers to you), or set Data Source Mode to <em>Asset</em> and assign a <code>VeloScrollDataSource</code>. With no data configured, the component deliberately renders a built-in sample so the "add component + Play" path is never blank.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>My data changed but the list didn't update</summary>
+    <div class="details-body">
+      <p>Tell the view what changed: <code>RefreshVisible()</code> when only contents changed, or <code>Reload()</code> (also <code>InsertItems</code>/<code>RemoveItems</code>) when the count changed. If you used a fixed-count <code>SetData</code> overload, switch to the <code>Func&lt;int&gt;</code> overload so the count tracks your collection.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>A reused cell shows a stale scale or opacity</summary>
+    <div class="details-body">
+      <p>If you wrote a custom <code>VeloScrollCell</code> and overrode <code>OnRecycle()</code>, call <code>base.OnRecycle()</code> &mdash; it resets the cell's scale and <code>CanvasGroup</code> alpha so a recycled cell never carries an animation value from its previous item.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Snapping lands one cell off at an exact boundary</summary>
+    <div class="details-body">
+      <p>This was hardened: the snap target uses a half-pixel boundary epsilon so a float round-trip through the normalized scroll position cannot floor to the wrong index. Make sure your Snap Align matches where you expect the cell to land (<code>Start</code>/<code>Center</code>/<code>End</code>).</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Compile error mentioning <code>FindFirstObjectByType</code> on Unity 2021.3</summary>
+    <div class="details-body">
+      <p>The shipped code already guards newer convenience APIs behind version checks and only uses APIs available on the 2021.3 floor. If you see this, confirm you imported the shipped <code>Assets/VeloScroll/</code> unmodified &mdash; the package compiles clean on a fresh 2021.3.30f1 project.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ============================================ -->
+<!--                  FAQ                         -->
+<!-- ============================================ -->
+<section class="section" id="faq">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#10067;</span> FAQ</h2>
+  <p class="section-desc">Quick answers to the questions that come up most.</p>
+
+  <details open>
+    <summary>Do I have to write code to use VeloScroll?</summary>
+    <div class="details-body">
+      <p>No. Add the VeloScroll View component (or scaffold one from <code>GameObject &rarr; UI &rarr; VeloScroll</code>), optionally assign a <code>VeloScrollDataSource</code> asset, and press Play. The whole thing is configurable in the Inspector. Scripting is available when you want full control &mdash; and code always takes precedence over the Inspector data.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>How many cells does it actually keep alive?</summary>
+    <div class="details-body">
+      <p>A small constant, roughly <code>visible + 2 &times; buffer</code> &mdash; independent of your item count. In tests, <strong>12 live cells render 100, 10k and 50k items</strong>; in the shipped player <strong>9 cells render 10,000 items</strong>. The steady-state recycler path allocates zero bytes and instantiates no cells while scrolling once the pool is warm.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Does it use native plugins or make network calls?</summary>
+    <div class="details-body">
+      <p>No. VeloScroll is pure C# plus standard uGUI components. There are no native binaries, no network access, and no data collection. A static audit fails the build if a network symbol appears anywhere in the shipped package.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Will it conflict with my existing ScrollRect?</summary>
+    <div class="details-body">
+      <p>No. VeloScroll drives a <code>ScrollRect</code> by composition and never subclasses it, so it coexists with existing setups. Added to a bare GameObject, it self-builds the viewport and content it needs.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Which render pipelines and platforms are supported?</summary>
+    <div class="details-body">
+      <p>Built-in, URP and HDRP &mdash; the runtime is uGUI canvas-space and therefore pipeline-agnostic. It runs on Mono and IL2CPP across desktop, mobile and WebGL.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>What's the minimum Unity version?</summary>
+    <div class="details-body">
+      <p>Unity 2021.3 LTS. The package compiles on 2021.3 through Unity 6 and was verified on 2021.3.30f1 and 6000.0.62f1, with no post-2021.3 API in the shipped code.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Can cells be different sizes?</summary>
+    <div class="details-body">
+      <p>Yes, in the List layout. Provide a size function via <code>SetVariableSizes</code>; the layout measures each item and finds the visible range by binary search, keeping the live set bounded. Grid cells use the uniform cell size along the scroll axis.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Does it support TextMeshPro?</summary>
+    <div class="details-body">
+      <p>The core recycler is text-agnostic and the built-in default cell uses uGUI <code>Text</code> so the core depends only on <code>com.unity.ugui</code>. To use TextMeshPro, put a TMP component on your own cell prefab (a <code>VeloScrollCell</code> subclass) and bind it in your data source &mdash; the demo and sample cells do exactly that.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ============================================ -->
+<!--                SUPPORT                       -->
+<!-- ============================================ -->
+<section class="section" id="support">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128236;</span> Support</h2>
+  <p class="section-desc">Need help? We're here for you.</p>
+
+  <div class="card" style="text-align:center;padding:40px 24px;">
+    <div style="font-size:48px;margin-bottom:16px;">&#128231;</div>
+    <h3 style="border:none;margin-top:0;padding:0;text-align:center;">Get in Touch</h3>
+    <p style="color:var(--text-dim);max-width:480px;margin:8px auto 24px;">Bug reports, feature requests, setup questions &mdash; reach out and we'll get back to you.</p>
+    <a href="mailto:szekipapa77@gmail.com" style="display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,var(--accent),var(--blue));color:#04121a;text-decoration:none;border-radius:var(--radius-sm);font-weight:700;font-size:15px;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+      &#9993; szekipapa77@gmail.com
+    </a>
+    <p style="color:var(--text-dim);font-size:13px;margin-top:16px;">We typically respond within 24&ndash;48 hours.</p>
+  </div>
+
+  <div class="card-grid" style="margin-top:16px;">
+    <div class="card">
+      <div class="card-title">&#128172; Before contacting</div>
+      <ul style="padding-left:20px;color:var(--text-dim);font-size:14px;line-height:1.9;">
+        <li>Check the <a href="#troubleshooting">Troubleshooting</a> section</li>
+        <li>Confirm the scene has an <strong>EventSystem</strong> for input</li>
+        <li>Confirm a <strong>VeloScroll View</strong> is on the object</li>
+        <li>Check the Console for messages</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">&#128203; Helpful info to include</div>
+      <ul style="padding-left:20px;color:var(--text-dim);font-size:14px;line-height:1.9;">
+        <li>Unity version (e.g. <code>6000.0.62f1</code>)</li>
+        <li>VeloScroll version (<strong>v1.0.0</strong>)</li>
+        <li>Render pipeline (Built-in / URP / HDRP)</li>
+        <li>Scripting backend (Mono / IL2CPP) and target platform</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout callout-tip" style="margin-top:20px;">
+    <span class="callout-icon">&#11088;</span>
+    <div><strong>Enjoying VeloScroll?</strong> A review on the Unity Asset Store helps other developers discover the asset and helps us keep improving it. Thank you!</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div style="border-top:1px solid var(--border);padding-top:32px;margin-top:48px;text-align:center;color:var(--text-dim);font-size:13px;">
+  <p>VeloScroll v1.0.0 &middot; Built for Unity 2021.3 LTS through Unity 6 &middot; Pure C#, no native binaries</p>
+  <p style="margin-top:8px;">Support: <a href="mailto:szekipapa77@gmail.com" style="color:var(--accent-light);text-decoration:none;">szekipapa77@gmail.com</a></p>
+</div>
+
+</main>
+
+<!-- SCRIPTS -->
+<script>
+// Search functionality
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+const searchOverlay = document.getElementById('searchOverlay');
+
+const sections = [];
+document.querySelectorAll('.section, .hero').forEach(s => {
+  const h2 = s.querySelector('h2');
+  const h1 = s.querySelector('h1');
+  const desc = s.querySelector('.section-desc');
+  const h3s = s.querySelectorAll('h3');
+  const id = s.id || (s.parentElement && s.parentElement.id) || '';
+  if (!id) return;
+  sections.push({
+    id: id,
+    title: h2 ? h2.textContent.trim() : (h1 ? h1.textContent.trim() : ''),
+    desc: desc ? desc.textContent.trim() : '',
+    content: s.textContent.toLowerCase(),
+    h3: Array.from(h3s).map(h => h.textContent.trim())
+  });
+});
+
+searchInput.addEventListener('input', function() {
+  const q = this.value.toLowerCase().trim();
+  if (q.length < 2) {
+    searchResults.classList.remove('visible');
+    searchOverlay.classList.remove('visible');
+    return;
+  }
+  const matches = sections.filter(s => s.content.includes(q)).slice(0, 8);
+  if (matches.length === 0) {
+    searchResults.innerHTML = '<div style="padding:16px;color:var(--text-dim);text-align:center;">No results found</div>';
+  } else {
+    searchResults.innerHTML = matches.map(m => {
+      const matchH3 = m.h3.find(h => h.toLowerCase().includes(q));
+      return '<a href="#' + m.id + '" class="search-item" onclick="closeSearch()">' +
+        '<div class="search-item-section">' + m.title + '</div>' +
+        '<div class="search-item-title">' + (matchH3 || m.desc || m.title) + '</div>' +
+      '</a>';
+    }).join('');
+  }
+  searchResults.classList.add('visible');
+  searchOverlay.classList.add('visible');
+});
+
+function closeSearch() {
+  searchResults.classList.remove('visible');
+  searchOverlay.classList.remove('visible');
+  searchInput.value = '';
+  document.querySelector('.sidebar').classList.remove('open');
+}
+
+searchOverlay.addEventListener('click', closeSearch);
+
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    searchInput.focus();
+  }
+  if (e.key === 'Escape') closeSearch();
+});
+
+// Active sidebar link via IntersectionObserver
+const navLinks = document.querySelectorAll('.sidebar a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector('.sidebar a[href="#' + entry.target.id + '"]');
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -70% 0px', threshold: 0 });
+
+document.querySelectorAll('.section[id], .hero[id]').forEach(s => observer.observe(s));
+
+// Close mobile sidebar on nav click
+navLinks.forEach(link => {
+  link.addEventListener('click', () => {
+    document.querySelector('.sidebar').classList.remove('open');
+  });
+});
+</script>
+
+</body>
+</html>
