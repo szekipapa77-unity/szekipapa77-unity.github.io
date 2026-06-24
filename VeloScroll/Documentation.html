@@ -705,6 +705,9 @@ details .details-body p:first-child { margin-top: 0; }
     <a href="#feature-pull"><span class="nav-icon">&#11015;</span> Pull to Refresh</a>
     <a href="#feature-multiprefab"><span class="nav-icon">&#129513;</span> Multi-Prefab Cells</a>
     <a href="#feature-theming"><span class="nav-icon">&#127912;</span> Themes &amp; Presets</a>
+    <a href="#feature-table"><span class="nav-icon">&#128202;</span> Table / Columns</a>
+    <a href="#feature-reorder"><span class="nav-icon">&#8645;</span> Drag-to-Reorder</a>
+    <a href="#feature-nested"><span class="nav-icon">&#128450;</span> Nested Scrolling</a>
     <a href="#feature-dynamic"><span class="nav-icon">&#128260;</span> Dynamic Data</a>
   </div>
 
@@ -1116,6 +1119,52 @@ view.<span class="fn">SetAnimationPreset</span>(focusPreset);      <span class="
 </section>
 
 <!-- ============================================ -->
+<!--          FEATURE: TABLE / COLUMNS           -->
+<!-- ============================================ -->
+<section class="section" id="feature-table">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#128202;</span> Feature: Table / Columns (frozen header)</h2>
+  <p class="section-desc">A virtualized data grid: aligned columns, a header row that stays pinned at the top, thousands of rows recycled.</p>
+
+  <p>Describe your columns (a title + a pixel width; a width of <code>0</code> flexes to share the leftover space), give a row count and a <code>string[]</code> per row, and VeloScroll renders a table whose rows recycle like any list — bounded no matter how many rows. The header row is mirrored into a frozen overlay pinned to the top.</p>
+
+  <pre><code><span class="kw">var</span> columns = <span class="kw">new</span>[] {
+    <span class="kw">new</span> <span class="tp">VeloScrollColumn</span>(<span class="str">"ID"</span>, <span class="num">80</span>),
+    <span class="kw">new</span> <span class="tp">VeloScrollColumn</span>(<span class="str">"Name"</span>, <span class="num">0</span>),     <span class="cm">// flex</span>
+    <span class="kw">new</span> <span class="tp">VeloScrollColumn</span>(<span class="str">"Score"</span>, <span class="num">100</span>),
+};
+view.<span class="fn">SetTable</span>(columns, <span class="num">10000</span>, row =&gt; <span class="kw">new</span>[] { <span class="str">""</span>+row, data[row].Name, <span class="str">""</span>+data[row].Score });</code></pre>
+</section>
+
+<!-- ============================================ -->
+<!--          FEATURE: DRAG-TO-REORDER           -->
+<!-- ============================================ -->
+<section class="section" id="feature-reorder">
+  <h2><span class="section-icon" style="background:var(--green-dim);color:var(--green)">&#8645;</span> Feature: Drag-to-Reorder</h2>
+  <p class="section-desc">Drag a cell to a new position; on drop you move the data and the list reflects it.</p>
+
+  <p>Turn it on with a callback. Press-drag a cell and it lifts and follows the pointer; on release VeloScroll computes the drop index and raises <code>onReorder(from, to)</code> so you mutate your own list, then it reloads into the new order. Your data stays the single source of truth.</p>
+
+  <pre><code>view.<span class="fn">SetReorderable</span>(<span class="kw">true</span>, (from, to) =&gt; {
+    <span class="kw">var</span> item = list[from];
+    list.<span class="fn">RemoveAt</span>(from);
+    list.<span class="fn">Insert</span>(to, item);   <span class="cm">// the view reloads to show the new order</span>
+});</code></pre>
+</section>
+
+<!-- ============================================ -->
+<!--          FEATURE: NESTED SCROLLING          -->
+<!-- ============================================ -->
+<section class="section" id="feature-nested">
+  <h2><span class="section-icon" style="background:var(--pink-dim);color:var(--pink)">&#128450;</span> Feature: Nested Scrolling</h2>
+  <p class="section-desc">Horizontal lists inside a vertical list (a "shelf of shelves") that route drags correctly.</p>
+
+  <p>A plain uGUI <code>ScrollRect</code> swallows the whole drag, so a vertical swipe started on an inner horizontal list never reaches the outer one. Add <code>VeloScrollNestedRouter</code> to the inner scroll's GameObject: it forwards drags that belong to the parent — those orthogonal to the inner axis, or continuing past the inner's edge — to the nearest parent scroll, while the inner keeps handling its own axis.</p>
+
+  <pre><code><span class="cm">// On each inner (e.g. horizontal) VeloScrollView's GameObject:</span>
+innerGo.<span class="fn">AddComponent</span>&lt;<span class="tp">VeloScrollNestedRouter</span>&gt;();   <span class="cm">// auto-finds the parent scroll</span></code></pre>
+</section>
+
+<!-- ============================================ -->
 <!--          EDITOR TOOLS / NO-CODE              -->
 <!-- ============================================ -->
 <section class="section" id="editor-tools">
@@ -1223,6 +1272,8 @@ view.<span class="fn">SetDataSource</span>(myDataSource);</code></pre>
       <tr><td><code>void SetLooping(bool enabled, int copies = 0)</code></td><td>Repeat the data as a long seamless loop (uniform List/Grid) for pickers, carousels and endless feeds. <code>copies = 0</code> auto-sizes.</td></tr>
       <tr><td><code>void SetAutoScroll(float pixelsPerSecond)</code></td><td>Continuously advance the scroll (<code>0</code> = off). With looping on it wraps seamlessly &mdash; an endless marquee/ticker.</td></tr>
       <tr><td><code>void SetPullToRefresh(bool enabled, float thresholdPx = 80f)</code></td><td>Fire <code>OnPullToRefresh</code> / <code>OnLoadMore</code> when the list is over-dragged past its ends.</td></tr>
+      <tr><td><code>void SetTable(VeloScrollColumn[] columns, int rowCount, Func&lt;int, string[]&gt; rowValues, float rowHeight = 36f, bool frozenHeader = true)</code></td><td>Virtualized table: column titles + widths (a width &le; 0 flexes), <code>string[]</code> per row, optional frozen header pinned at the top.</td></tr>
+      <tr><td><code>void SetReorderable(bool enabled, Action&lt;int,int&gt; onReorder = null)</code></td><td>Drag a cell to reorder; on drop <code>onReorder(from, to)</code> fires so you mutate your data, then the view reloads.</td></tr>
       <tr><td><code>void Reload()</code></td><td>Reapply after the data count or contents changed (resizes content, refreshes window).</td></tr>
       <tr><td><code>void InsertItems(int index, int countToInsert)</code></td><td>Reflect an insertion in your source.</td></tr>
       <tr><td><code>void RemoveItems(int index, int countToRemove)</code></td><td>Reflect a removal in your source.</td></tr>
@@ -1257,6 +1308,8 @@ view.<span class="fn">SetDataSource</span>(myDataSource);</code></pre>
       <tr><td><code>VeloScrollDataSource</code></td><td>ScriptableObject no-code data asset (rows of Title/Subtitle/Tint; deterministic <code>GenerateSample(count)</code>).</td></tr>
       <tr><td><code>VeloScrollAnimationPreset</code></td><td>ScriptableObject animation preset (Kind + Strength + Curve). Assign via <code>SetAnimationPreset</code> or the Inspector. Create: <em>Assets &rsaquo; Create &rsaquo; VeloScroll &rsaquo; Animation Preset</em>.</td></tr>
       <tr><td><code>VeloScrollTheme</code></td><td>ScriptableObject theme (cell/background/title/subtitle colors, spacing, font sizes). Assign via <code>SetTheme</code> or the Inspector. Create: <em>Assets &rsaquo; Create &rsaquo; VeloScroll &rsaquo; Theme</em>.</td></tr>
+      <tr><td><code>VeloScrollColumn</code></td><td>A table column: <code>Title</code> + pixel <code>Width</code> (<code>&le; 0</code> = flex). Used by <code>SetTable</code>.</td></tr>
+      <tr><td><code>VeloScrollNestedRouter</code></td><td>Add to an inner scroll's GameObject for nested scrolling — forwards orthogonal / at-edge drags + wheel to the parent <code>ScrollRect</code>.</td></tr>
       <tr><td><code>VeloScrollAxis</code></td><td><code>Vertical</code> / <code>Horizontal</code>.</td></tr>
       <tr><td><code>VeloScrollLayoutKind</code></td><td><code>List</code> / <code>Grid</code> / <code>Staggered</code>.</td></tr>
       <tr><td><code>VeloScrollSnapAlign</code></td><td><code>Start</code> / <code>Center</code> / <code>End</code>.</td></tr>
