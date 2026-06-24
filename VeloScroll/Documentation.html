@@ -699,6 +699,12 @@ details .details-body p:first-child { margin-top: 0; }
     <a href="#feature-variable"><span class="nav-icon">&#8597;</span> Variable Cell Sizes</a>
     <a href="#feature-animation"><span class="nav-icon">&#10024;</span> Animated Cells</a>
     <a href="#feature-snapping"><span class="nav-icon">&#127919;</span> Snapping / Paging</a>
+    <a href="#feature-masonry"><span class="nav-icon">&#129521;</span> Masonry / Staggered</a>
+    <a href="#feature-sections"><span class="nav-icon">&#128209;</span> Sticky Sections</a>
+    <a href="#feature-looping"><span class="nav-icon">&#128257;</span> Looping &amp; Marquee</a>
+    <a href="#feature-pull"><span class="nav-icon">&#11015;</span> Pull to Refresh</a>
+    <a href="#feature-multiprefab"><span class="nav-icon">&#129513;</span> Multi-Prefab Cells</a>
+    <a href="#feature-theming"><span class="nav-icon">&#127912;</span> Themes &amp; Presets</a>
     <a href="#feature-dynamic"><span class="nav-icon">&#128260;</span> Dynamic Data</a>
   </div>
 
@@ -1012,6 +1018,104 @@ view.<span class="fn">Reload</span>();          <span class="cm">// content resi
 </section>
 
 <!-- ============================================ -->
+<!--          FEATURE: MASONRY                    -->
+<!-- ============================================ -->
+<section class="section" id="feature-masonry">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#129521;</span> Feature: Masonry / Staggered Grid</h2>
+  <p class="section-desc">A Pinterest-style grid: fixed columns, but every cell has its own height, packed into the shortest column.</p>
+
+  <p>Where the regular Grid keeps a uniform cell size, the staggered grid takes a per-item main size and places each item into whichever column is currently shortest &mdash; the masonry look &mdash; while staying fully recycled and bounded.</p>
+
+  <pre><code><span class="cm">// 3 columns, 6px cross spacing, each item's height from your model.</span>
+view.<span class="fn">SetStaggeredGrid</span>(<span class="num">3</span>, <span class="num">6f</span>, i =&gt; <span class="num">80f</span> + items[i].ExtraHeight);
+view.<span class="fn">SetData</span>&lt;<span class="tp">VeloScrollTextCell</span>&gt;(items.Count, (i, c) =&gt; c.<span class="fn">SetContent</span>(items[i].Title, <span class="str">""</span>));</code></pre>
+</section>
+
+<!-- ============================================ -->
+<!--          FEATURE: STICKY SECTIONS            -->
+<!-- ============================================ -->
+<section class="section" id="feature-sections">
+  <h2><span class="section-icon" style="background:var(--green-dim);color:var(--green)">&#128209;</span> Feature: Sticky Section Headers</h2>
+  <p class="section-desc">Grouped lists with a header per section that floats, pinned to the top, until the next header pushes it up.</p>
+
+  <p>Describe your list as sections &mdash; each one header followed by its rows &mdash; and VeloScroll flattens them into the recycler's index space. Headers and rows recycle through separate pools. With <code>sticky</code> on, the current section's header is mirrored into a floating overlay pinned to the viewport top, and the next section's incoming header shoves it out for a seamless hand-off.</p>
+
+  <pre><code><span class="cm">// 40 sections, 12 rows each; 50px headers, 44px rows; sticky on.</span>
+view.<span class="fn">SetSections</span>(
+    sectionCount: <span class="num">40</span>,
+    rowsInSection: s =&gt; <span class="num">12</span>,
+    headerSize: <span class="num">50f</span>, rowSize: <span class="num">44f</span>,
+    bindHeader: (s, cell) =&gt; ((<span class="tp">VeloScrollTextCell</span>)cell).<span class="fn">SetContent</span>(<span class="str">"Section "</span> + s, <span class="str">""</span>),
+    bindRow:    (s, r, cell) =&gt; ((<span class="tp">VeloScrollTextCell</span>)cell).<span class="fn">SetContent</span>(<span class="str">"Row "</span> + r, <span class="str">""</span>),
+    sticky: <span class="kw">true</span>);</code></pre>
+</section>
+
+<!-- ============================================ -->
+<!--          FEATURE: LOOPING / MARQUEE          -->
+<!-- ============================================ -->
+<section class="section" id="feature-looping">
+  <h2><span class="section-icon" style="background:var(--purple-dim,var(--pink-dim));color:var(--purple,var(--pink))">&#128257;</span> Feature: Looping &amp; Auto-Scroll</h2>
+  <p class="section-desc">Endless, seamless loops for pickers, carousels and tickers &mdash; optionally self-scrolling.</p>
+
+  <p>Looping repeats your data as one long, seamless run (the virtual extent is capped so scroll precision stays sub-pixel), wrapping each index back onto your real data. Pair it with auto-scroll for a hands-off marquee that wraps with no visible seam.</p>
+
+  <pre><code><span class="cm">// A spinning value picker that wraps forever.</span>
+view.<span class="fn">SetData</span>&lt;<span class="tp">VeloScrollTextCell</span>&gt;(<span class="num">24</span>, (i, c) =&gt; c.<span class="fn">SetContent</span>(hours[i], <span class="str">""</span>));
+view.<span class="fn">SetLooping</span>(<span class="kw">true</span>);
+
+<span class="cm">// A news ticker: loop + continuous auto-scroll at 120 px/s.</span>
+view.<span class="fn">SetLooping</span>(<span class="kw">true</span>);
+view.<span class="fn">SetAutoScroll</span>(<span class="num">120f</span>);</code></pre>
+</section>
+
+<!-- ============================================ -->
+<!--          FEATURE: PULL TO REFRESH            -->
+<!-- ============================================ -->
+<section class="section" id="feature-pull">
+  <h2><span class="section-icon" style="background:var(--yellow-dim);color:var(--yellow)">&#11015;</span> Feature: Pull-to-Refresh &amp; Load-More</h2>
+  <p class="section-desc">The familiar mobile gesture: over-drag past an end to refresh or load the next page.</p>
+
+  <p>Enable it, set a threshold, and wire the events (in code or the Inspector). Over-pull past the start fires <code>OnPullToRefresh</code>; past the end fires <code>OnLoadMore</code> &mdash; perfect for infinite feeds.</p>
+
+  <pre><code>view.<span class="fn">SetPullToRefresh</span>(<span class="kw">true</span>, thresholdPx: <span class="num">90f</span>);
+view.OnPullToRefresh.<span class="fn">AddListener</span>(() =&gt; ReloadFromServer());
+view.OnLoadMore.<span class="fn">AddListener</span>(() =&gt; AppendNextPage());</code></pre>
+</section>
+
+<!-- ============================================ -->
+<!--          FEATURE: MULTI-PREFAB               -->
+<!-- ============================================ -->
+<section class="section" id="feature-multiprefab">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#129513;</span> Feature: Multi-Prefab Cells</h2>
+  <p class="section-desc">Mix different cell types in one list &mdash; ads between posts, dividers, rich vs plain rows &mdash; all bounded.</p>
+
+  <p>Register several cell prefabs plus a per-index type selector. Each type recycles through its own pool, so a heterogeneous list stays as bounded and allocation-free as a uniform one. The untyped binder casts each cell to the type it was handed.</p>
+
+  <pre><code><span class="cm">// Two cell types alternating, 20,000 items, still a bounded handful of live cells.</span>
+view.<span class="fn">SetMultiPrefabData</span>(<span class="num">20000</span>, <span class="kw">new</span>[] { postPrefab, adPrefab },
+    typeOf: i =&gt; (i % <span class="num">8</span> == <span class="num">7</span>) ? <span class="num">1</span> : <span class="num">0</span>,   <span class="cm">// every 8th row is an ad</span>
+    bind: (i, cell) =&gt; Populate(i, cell));</code></pre>
+</section>
+
+<!-- ============================================ -->
+<!--          FEATURE: THEMES & PRESETS           -->
+<!-- ============================================ -->
+<section class="section" id="feature-theming">
+  <h2><span class="section-icon" style="background:var(--pink-dim);color:var(--pink)">&#127912;</span> Feature: Themes &amp; Animation Presets</h2>
+  <p class="section-desc">Reusable ScriptableObject assets for look-and-feel &mdash; assign in the Inspector, no code required.</p>
+
+  <p>A <strong>Theme</strong> asset recolors the built-in text cells (background, title, subtitle) and drives spacing; it is applied on every bind through a zero-allocation hook. An <strong>Animation Preset</strong> asset bundles a scroll animation (kind + strength + curve) and overrides the inline settings. Create both from <em>Assets &rsaquo; Create &rsaquo; VeloScroll</em>, drop them on the component, or assign from code.</p>
+
+  <pre><code>view.<span class="fn">SetTheme</span>(darkTheme);                 <span class="cm">// recolors cells + spacing</span>
+view.<span class="fn">SetAnimationPreset</span>(focusPreset);      <span class="cm">// overrides inline animation</span></code></pre>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#9989;</span>
+    <div><strong>No-code friendly.</strong> Both assets appear as object fields on the component &mdash; the Inspector's asset picker lists every Theme / Animation Preset in your project. The <strong>Create &rsaquo; VeloScroll</strong> menu and the <em>Window &rsaquo; VeloScroll &rsaquo; Create&hellip;</em> window scaffold a configured view in one click.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
 <!--          EDITOR TOOLS / NO-CODE              -->
 <!-- ============================================ -->
 <section class="section" id="editor-tools">
@@ -1106,9 +1210,19 @@ view.<span class="fn">SetDataSource</span>(myDataSource);</code></pre>
       <tr><td><code>void SetDataSource(IVeloScrollDataSource source)</code></td><td>Assign a custom data source and rebuild. Marks the view code-configured.</td></tr>
       <tr><td><code>void SetListLayout()</code></td><td>Switch to a single-track list and rebuild.</td></tr>
       <tr><td><code>void SetGridLayout(int crossCount, float crossSpacing = 6f)</code></td><td>Switch to a fixed column/row grid and rebuild.</td></tr>
+      <tr><td><code>void SetStaggeredGrid(int crossCount, float crossSpacing = 6f, Func&lt;int, float&gt; mainSizeOf = null)</code></td><td>Masonry layout: fixed columns, variable per-item main sizes packed into the shortest column.</td></tr>
       <tr><td><code>void SetVariableSizes(Func&lt;int, float&gt; sizeOf)</code></td><td>Per-cell sizes along the scroll axis (binary-search range). <code>null</code> reverts to uniform.</td></tr>
+      <tr><td><code>void SetSections(int sectionCount, Func&lt;int,int&gt; rowsInSection, float headerSize, float rowSize, Action&lt;int,VeloScrollCell&gt; bindHeader, Action&lt;int,int,VeloScrollCell&gt; bindRow, GameObject headerPrefab = null, GameObject rowPrefab = null, bool sticky = true)</code></td><td>Sectioned list (header + rows per section), flattened into the recycler. With <code>sticky</code>, the current section's header floats pinned to the viewport top.</td></tr>
+      <tr><td><code>void SetMultiPrefabData(int count, GameObject[] prefabs, Func&lt;int,int&gt; typeOf, Action&lt;int,VeloScrollCell&gt; bind)</code></td><td>Heterogeneous cells: N prefabs + a per-index type selector + an untyped binder. Each type recycles through its own pool.</td></tr>
+      <tr><td><code>void SetCellPrefabs(GameObject[] prefabs, Func&lt;int,int&gt; typeOf)</code></td><td>Register the cell prefabs + type selector for a multi-prefab view (drive data with <code>SetMultiPrefabData</code>).</td></tr>
       <tr><td><code>void SetAnimation(VeloScrollAnimationKind kind, float strength = 0.35f, AnimationCurve curve = null)</code></td><td>Set the scroll-driven cell animation preset (<code>None</code> disables).</td></tr>
+      <tr><td><code>void SetAnimationPreset(VeloScrollAnimationPreset preset)</code></td><td>Assign an Animation Preset asset (overrides the inline animation). <code>null</code> reverts.</td></tr>
+      <tr><td><code>void SetTheme(VeloScrollTheme theme)</code></td><td>Assign a Theme asset: recolors built-in text cells on bind and drives spacing. <code>null</code> clears.</td></tr>
       <tr><td><code>void SetSnapping(bool enabled, VeloScrollSnapAlign align = Start, float duration = 0.25f)</code></td><td>Enable/disable drag-end snapping and its alignment + duration.</td></tr>
+      <tr><td><code>void SetPaging(bool enabled)</code></td><td>Snap by full viewport pages on drag end (document-style paging). <code>OnSnap</code> reports the page index.</td></tr>
+      <tr><td><code>void SetLooping(bool enabled, int copies = 0)</code></td><td>Repeat the data as a long seamless loop (uniform List/Grid) for pickers, carousels and endless feeds. <code>copies = 0</code> auto-sizes.</td></tr>
+      <tr><td><code>void SetAutoScroll(float pixelsPerSecond)</code></td><td>Continuously advance the scroll (<code>0</code> = off). With looping on it wraps seamlessly &mdash; an endless marquee/ticker.</td></tr>
+      <tr><td><code>void SetPullToRefresh(bool enabled, float thresholdPx = 80f)</code></td><td>Fire <code>OnPullToRefresh</code> / <code>OnLoadMore</code> when the list is over-dragged past its ends.</td></tr>
       <tr><td><code>void Reload()</code></td><td>Reapply after the data count or contents changed (resizes content, refreshes window).</td></tr>
       <tr><td><code>void InsertItems(int index, int countToInsert)</code></td><td>Reflect an insertion in your source.</td></tr>
       <tr><td><code>void RemoveItems(int index, int countToRemove)</code></td><td>Reflect a removal in your source.</td></tr>
@@ -1125,8 +1239,11 @@ view.<span class="fn">SetDataSource</span>(myDataSource);</code></pre>
       <tr><td><code>int Count</code></td><td>Total logical item count, from the active data source.</td></tr>
       <tr><td><code>int LiveCellCount</code></td><td>Live (instantiated + active) cells right now. Bounded; independent of <code>Count</code>.</td></tr>
       <tr><td><code>int TotalCellsCreated</code></td><td>Total cells ever instantiated. Constant during scroll once the pool is warm &mdash; the proof of reuse.</td></tr>
+      <tr><td><code>bool IsLooping</code></td><td>True while looping is active.</td></tr>
       <tr><td><code>ScrollRect ScrollRect</code></td><td>The driven <code>ScrollRect</code> (created on first build if absent).</td></tr>
-      <tr><td><code>event Action&lt;int&gt; OnSnap</code></td><td>Raised when a snap (drag-end or animated <code>ScrollToIndex</code>) settles on an item index.</td></tr>
+      <tr><td><code>event Action&lt;int&gt; OnSnap</code></td><td>Raised when a snap (drag-end, page, or animated <code>ScrollToIndex</code>) settles on an item/page index.</td></tr>
+      <tr><td><code>UnityEvent OnPullToRefresh</code></td><td>Invoked when the user over-pulls past the start and releases (wire in code or the Inspector).</td></tr>
+      <tr><td><code>UnityEvent OnLoadMore</code></td><td>Invoked when the user over-pulls past the end and releases.</td></tr>
     </tbody>
   </table></div>
 
@@ -1138,8 +1255,10 @@ view.<span class="fn">SetDataSource</span>(myDataSource);</code></pre>
       <tr><td><code>VeloScrollCell</code></td><td>Base cell. Override <code>OnBind(index)</code> / <code>OnRecycle()</code> for custom cells.</td></tr>
       <tr><td><code>VeloScrollTextCell</code></td><td>Built-in default cell (background image + title/subtitle uGUI text). <code>SetContent(title, subtitle)</code>, <code>SetBackground(color)</code>.</td></tr>
       <tr><td><code>VeloScrollDataSource</code></td><td>ScriptableObject no-code data asset (rows of Title/Subtitle/Tint; deterministic <code>GenerateSample(count)</code>).</td></tr>
+      <tr><td><code>VeloScrollAnimationPreset</code></td><td>ScriptableObject animation preset (Kind + Strength + Curve). Assign via <code>SetAnimationPreset</code> or the Inspector. Create: <em>Assets &rsaquo; Create &rsaquo; VeloScroll &rsaquo; Animation Preset</em>.</td></tr>
+      <tr><td><code>VeloScrollTheme</code></td><td>ScriptableObject theme (cell/background/title/subtitle colors, spacing, font sizes). Assign via <code>SetTheme</code> or the Inspector. Create: <em>Assets &rsaquo; Create &rsaquo; VeloScroll &rsaquo; Theme</em>.</td></tr>
       <tr><td><code>VeloScrollAxis</code></td><td><code>Vertical</code> / <code>Horizontal</code>.</td></tr>
-      <tr><td><code>VeloScrollLayoutKind</code></td><td><code>List</code> / <code>Grid</code>.</td></tr>
+      <tr><td><code>VeloScrollLayoutKind</code></td><td><code>List</code> / <code>Grid</code> / <code>Staggered</code>.</td></tr>
       <tr><td><code>VeloScrollSnapAlign</code></td><td><code>Start</code> / <code>Center</code> / <code>End</code>.</td></tr>
       <tr><td><code>VeloScrollAnimationKind</code></td><td><code>None</code> / <code>FocusScale</code> / <code>Parallax</code> / <code>Fade</code> / <code>Depth</code>.</td></tr>
     </tbody>
