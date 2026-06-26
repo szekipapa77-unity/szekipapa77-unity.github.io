@@ -708,6 +708,7 @@ details .details-body p:first-child { margin-top: 0; }
     <a href="#feature-table"><span class="nav-icon">&#128202;</span> Table / Columns</a>
     <a href="#feature-reorder"><span class="nav-icon">&#8645;</span> Drag-to-Reorder</a>
     <a href="#feature-nested"><span class="nav-icon">&#128450;</span> Nested Scrolling</a>
+    <a href="#feature-import"><span class="nav-icon">&#128229;</span> Import CSV / JSON</a>
     <a href="#feature-dynamic"><span class="nav-icon">&#128260;</span> Dynamic Data</a>
   </div>
 
@@ -762,6 +763,7 @@ details .details-body p:first-child { margin-top: 0; }
     <a class="mini-card" href="#feature-variable"><h4>&#8597; Variable sizes</h4><p>Per-cell heights or widths; the visible range is found by binary search, cells stay bounded.</p></a>
     <a class="mini-card" href="#feature-animation"><h4>&#10024; Animated cells</h4><p>Scroll-driven focus-scale, fade and depth presets &mdash; juice with no code.</p></a>
     <a class="mini-card" href="#feature-snapping"><h4>&#127919; Snap &amp; jump</h4><p>Snap to the nearest cell on drag-end and animated <code>ScrollToIndex</code> with an <code>OnSnap</code> event.</p></a>
+    <a class="mini-card" href="#feature-import"><h4>&#128229; Import CSV / JSON</h4><p>Read real CSV or JSON into a list or table and pick which columns to show &mdash; quoted commas and nested objects handled.</p></a>
   </div>
 
   <p>This guide starts with installation and a five-minute Quick Start, explains how the recycler works, then walks each feature, the no-code editor tooling, and the full scripting API.</p>
@@ -1165,6 +1167,30 @@ innerGo.<span class="fn">AddComponent</span>&lt;<span class="tp">VeloScrollNeste
 </section>
 
 <!-- ============================================ -->
+<!--          FEATURE: IMPORT CSV / JSON         -->
+<!-- ============================================ -->
+<section class="section" id="feature-import">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128229;</span> Feature: Import CSV / JSON</h2>
+  <p class="section-desc">A universal file reader: turn a real CSV or JSON payload into a list or a table, and let the user choose which columns to show.</p>
+
+  <p>Pass raw text to <code>VeloScrollImport</code> and it returns a <code>VeloScrollTabularData</code> &mdash; the discovered columns plus the rows. It is deliberately forgiving: it strips byte-order marks, <strong>sniffs the CSV delimiter</strong> (comma / semicolon / tab / pipe), honours RFC-4180 quoting (quoted commas, embedded newlines, doubled <code>""</code> escapes) and pads ragged rows; for JSON it locates the record array (top-level, a wrapper property, or a single object), <strong>unions every record's keys</strong> into the schema and <strong>flattens nested objects</strong> into dotted columns (<code>address.city</code>). It is pure C# and culture-invariant, so it runs in players too &mdash; not just the editor.</p>
+
+  <p>Every column starts included; toggle any of them and the projection (<code>IncludedHeader()</code> / <code>IncludedRow(i)</code>) collapses to just the chosen columns &mdash; the data is never mutated, so you can re-include later. Then drive the view with the <code>ApplyAsTable</code> / <code>ApplyAsList</code> extensions.</p>
+
+  <pre><code><span class="kw">var</span> data = <span class="tp">VeloScrollImport</span>.<span class="fn">FromCsv</span>(csvText);   <span class="cm">// or .FromJson(json) / .Auto(text) / .FromFile(path)</span>
+
+data.<span class="fn">SetIncluded</span>(<span class="str">"internal_id"</span>, <span class="kw">false</span>);     <span class="cm">// the user excludes a column they don't want</span>
+
+view.<span class="fn">ApplyAsTable</span>(data);                   <span class="cm">// virtualized table of the included columns…</span>
+view.<span class="fn">ApplyAsList</span>(data);                    <span class="cm">// …or a list: first column as title, the rest as subtitle</span></code></pre>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#11088;</span>
+    <div>See it live in the <strong>Import</strong> module of the interactive demo: switch CSV&nbsp;/&nbsp;JSON and Table&nbsp;/&nbsp;List, and tick columns on and off &mdash; the view updates instantly.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
 <!--          EDITOR TOOLS / NO-CODE              -->
 <!-- ============================================ -->
 <section class="section" id="editor-tools">
@@ -1225,7 +1251,7 @@ innerGo.<span class="fn">AddComponent</span>&lt;<span class="tp">VeloScrollNeste
   </div>
 
   <h3>Sample scenes</h3>
-  <p>Generate per-feature example scenes from <code>Tools &rarr; VeloScroll &rarr; Generate Sample Scenes</code>. Each one isolates a single feature: the recycling list, grid, masonry, variable sizes, sticky sections, animation, snapping, looping&nbsp;+&nbsp;marquee, pull-to-refresh, multi-prefab, table, drag-to-reorder, nested scrolling, dynamic data, and a fully <strong>no-code template</strong> (a <code>VeloScrollView</code> in Asset mode bound to a <code>VeloScrollDataSource</code>). Open any one, press Play, and see exactly that feature. The interactive <strong>demo scene</strong> showcases all of them together with live controls.</p>
+  <p>Generate per-feature example scenes from <code>Tools &rarr; VeloScroll &rarr; Generate Sample Scenes</code>. Each one isolates a single feature: the recycling list, grid, masonry, variable sizes, sticky sections, animation, snapping, looping&nbsp;+&nbsp;marquee, pull-to-refresh, multi-prefab, table, drag-to-reorder, nested scrolling, dynamic data, CSV&nbsp;/&nbsp;JSON import, and a fully <strong>no-code template</strong> (a <code>VeloScrollView</code> in Asset mode bound to a <code>VeloScrollDataSource</code>). Open any one, press Play, and see exactly that feature. The interactive <strong>demo scene</strong> showcases all of them together with live controls.</p>
 </section>
 
 <!-- ============================================ -->
@@ -1282,6 +1308,20 @@ view.<span class="fn">SetDataSource</span>(myDataSource);</code></pre>
       <tr><td><code>void RefreshVisible()</code></td><td>Re-bind the visible cells in place (contents changed, count did not).</td></tr>
       <tr><td><code>void ScrollToIndex(int index, VeloScrollSnapAlign align = Start, bool animated = false)</code></td><td>Bring an item into view at the given alignment, instant or eased.</td></tr>
       <tr><td><code>void Build()</code> / <code>void RebuildFromInspector()</code></td><td>(Re)build the hierarchy, layout, pool and initial visible set. The editor preview uses the same path.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Importing data (CSV / JSON)</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Signature</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><code>VeloScrollTabularData VeloScrollImport.FromCsv(string text, char delimiter = '\0', bool hasHeader = true)</code></td><td>Parse delimited text. BOM-stripped; delimiter auto-sniffed (comma / semicolon / tab / pipe) when <code>'\0'</code>; RFC-4180 quoting; ragged rows padded; blank lines dropped.</td></tr>
+      <tr><td><code>VeloScrollTabularData VeloScrollImport.FromJson(string text)</code></td><td>Parse arbitrary JSON. Finds the record array (top-level, a wrapper property, or a single object), unions keys into the schema, flattens nested objects to <code>dotted.names</code> and joins primitive arrays.</td></tr>
+      <tr><td><code>VeloScrollTabularData VeloScrollImport.Auto(string text)</code> &middot; <code>FromFile(string path)</code></td><td>Sniff JSON-vs-CSV from the text, or read a file from disk and dispatch on the extension.</td></tr>
+      <tr><td><code>void data.SetIncluded(int col, bool)</code> &middot; <code>SetIncluded(string col, bool)</code> &middot; <code>SetAllIncluded(bool)</code></td><td>Choose which discovered columns to show (all start included). Toggling is a projection &mdash; the data is never mutated.</td></tr>
+      <tr><td><code>IReadOnlyList&lt;string&gt; data.Columns</code> &middot; <code>int RowCount</code> &middot; <code>string Cell(int row, int col)</code> &middot; <code>string[] IncludedHeader()</code> &middot; <code>string[] IncludedRow(int)</code></td><td>Read the full grid, or the projection of just the included columns.</td></tr>
+      <tr><td><code>void view.ApplyAsTable(VeloScrollTabularData data, float rowHeight = 34, bool frozenHeader = true)</code></td><td>Render the included columns as a virtualized table (extension method).</td></tr>
+      <tr><td><code>void view.ApplyAsList(VeloScrollTabularData data, float cellHeight = 60)</code></td><td>Render each row as a built-in text cell: first included column as the title, the rest as a "Name: value" subtitle (extension method).</td></tr>
     </tbody>
   </table></div>
 
