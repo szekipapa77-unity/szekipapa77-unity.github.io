@@ -1184,9 +1184,16 @@ data.<span class="fn">SetIncluded</span>(<span class="str">"internal_id"</span>,
 view.<span class="fn">ApplyAsTable</span>(data);                   <span class="cm">// virtualized table of the included columns…</span>
 view.<span class="fn">ApplyAsList</span>(data);                    <span class="cm">// …or a list: first column as title, the rest as subtitle</span></code></pre>
 
+  <p><strong>Let the user pick a real file at runtime.</strong> <code>VeloScrollFilePicker</code> opens the platform file dialog and hands back the chosen file's text. In a <strong>WebGL</strong> build it opens the browser's native file picker (via a bundled <code>.jslib</code> &mdash; <code>System.IO</code> cannot read a user-selected file in WebGL); in the editor it shows an open-file panel, so the same button works while you iterate. Combine it with <code>Auto</code> (which sniffs CSV vs JSON) for a complete "import my data" button:</p>
+
+  <pre><code><span class="tp">VeloScrollFilePicker</span>.<span class="fn">Open</span>(<span class="str">".csv,.json,.txt"</span>, (name, text) =&gt; {
+    <span class="kw">var</span> data = <span class="tp">VeloScrollImport</span>.<span class="fn">Auto</span>(text);   <span class="cm">// CSV vs JSON auto-detected from the contents</span>
+    view.<span class="fn">ApplyAsTable</span>(data);
+});</code></pre>
+
   <div class="callout callout-tip">
     <span class="callout-icon">&#11088;</span>
-    <div>See it live in the <strong>Import</strong> module of the interactive demo: switch CSV&nbsp;/&nbsp;JSON and Table&nbsp;/&nbsp;List, and tick columns on and off &mdash; the view updates instantly.</div>
+    <div>See it live in the <strong>Import</strong> module of the interactive demo: hit <strong>Open a file&hellip;</strong> to import your own CSV / JSON (live in the WebGL build), or explore the bundled CSV&nbsp;/&nbsp;JSON samples &mdash; switch Table&nbsp;/&nbsp;List and tick columns on and off, and the view updates instantly.</div>
   </div>
 </section>
 
@@ -1322,6 +1329,7 @@ view.<span class="fn">SetDataSource</span>(myDataSource);</code></pre>
       <tr><td><code>IReadOnlyList&lt;string&gt; data.Columns</code> &middot; <code>int RowCount</code> &middot; <code>string Cell(int row, int col)</code> &middot; <code>string[] IncludedHeader()</code> &middot; <code>string[] IncludedRow(int)</code></td><td>Read the full grid, or the projection of just the included columns.</td></tr>
       <tr><td><code>void view.ApplyAsTable(VeloScrollTabularData data, float rowHeight = 34, bool frozenHeader = true)</code></td><td>Render the included columns as a virtualized table (extension method).</td></tr>
       <tr><td><code>void view.ApplyAsList(VeloScrollTabularData data, float cellHeight = 60)</code></td><td>Render each row as a built-in text cell: first included column as the title, the rest as a "Name: value" subtitle (extension method).</td></tr>
+      <tr><td><code>void VeloScrollFilePicker.Open(string accept, Action&lt;string name, string text&gt; onLoaded)</code> &middot; <code>bool IsSupported</code></td><td>Open the platform file dialog &mdash; the browser file picker in a WebGL build, an open-file panel in the editor &mdash; and return the chosen file's name + text. Pair with <code>Auto</code> to import it.</td></tr>
     </tbody>
   </table></div>
 
