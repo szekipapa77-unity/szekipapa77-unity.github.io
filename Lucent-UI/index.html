@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Lucent UI &mdash; Procedural + Dynamic uGUI for Unity</title>
+<meta name="description" content="Lucent UI: one procedural + dynamic uGUI suite that dominates 8 niches at once -- shapes, shadows & liquid glass, animated buttons, charts, 0-GC virtualized scroll, RTL/bidi text, a 25+ widget library, and runtime theming & localization. Built on one backend-neutral DrawList spine." />
+<style>
+:root{--bg0:#0E0B16;--bg1:#171122;--bg2:#221A33;--accent:#7C3AED;--accent-hi:#A78BFA;--glow2:#22D3EE;--text0:#ECEAF5;--text1:#A79FC2;--line:#2C2342;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:
+ radial-gradient(1100px 560px at 82% -8%,#2a1d52 0%,transparent 60%),
+ radial-gradient(900px 480px at 0% 8%,#13203f 0%,transparent 55%),var(--bg0);color:var(--text0);line-height:1.65;-webkit-font-smoothing:antialiased;}
+a{color:var(--accent-hi);text-decoration:none;}a:hover{color:var(--glow2);}
+.wrap{max-width:1000px;margin:0 auto;padding:0 24px;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:24px 0;}
+.logo{display:flex;align-items:center;gap:11px;font-weight:700;font-size:1.2rem;}
+.logo .dot{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--glow2));box-shadow:0 0 16px rgba(124,58,237,.6);}
+header{text-align:center;padding:48px 0 30px;}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.35);color:var(--glow2);padding:7px 16px;border-radius:999px;font-weight:600;font-size:.85rem;margin-bottom:22px;}
+h1{font-size:clamp(2.3rem,6vw,3.7rem);line-height:1.08;letter-spacing:-1px;font-weight:800;}
+h1 .grad{background:linear-gradient(120deg,var(--glow2),var(--accent-hi),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.lead{color:var(--text1);font-size:1.18rem;max-width:660px;margin:20px auto 0;}
+.cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:30px;}
+.btn{font-weight:600;font-size:1rem;padding:14px 28px;border-radius:14px;display:inline-flex;align-items:center;gap:9px;transition:transform .15s,box-shadow .2s;}
+.btn.primary{background:linear-gradient(135deg,var(--accent),var(--glow2));color:#0b0712;box-shadow:0 10px 30px rgba(124,58,237,.4);}
+.btn.primary:hover{transform:translateY(-3px);}
+.btn.ghost{background:rgba(255,255,255,.05);color:var(--text0);border:1px solid rgba(255,255,255,.13);}
+.btn.ghost:hover{transform:translateY(-3px);background:rgba(255,255,255,.09);}
+.shot{margin:42px auto 0;max-width:980px;}
+.shot img{width:100%;border-radius:16px;border:1px solid var(--line);box-shadow:0 24px 60px rgba(0,0,0,.45);display:block;}
+.shot .cap{text-align:center;color:var(--text1);font-size:.86rem;margin-top:12px;}
+section{padding:46px 0;}
+.h2{font-size:1.8rem;font-weight:700;text-align:center;margin-bottom:8px;}
+.sub{text-align:center;color:var(--text1);margin-bottom:34px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:18px;}
+.card{background:linear-gradient(180deg,var(--bg2),var(--bg1));border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:24px 22px;transition:transform .2s,border-color .2s;}
+.card:hover{transform:translateY(-5px);border-color:rgba(124,58,237,.4);}
+.card .n{font-size:.78rem;color:var(--glow2);font-weight:700;letter-spacing:1px;}
+.card h3{font-size:1.12rem;margin:6px 0 7px;font-weight:650;}
+.card p{color:var(--text1);font-size:.95rem;}
+.wins{list-style:none;max-width:760px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.wins li{position:relative;padding:11px 12px 11px 40px;background:var(--bg1);border:1px solid var(--line);border-radius:11px;font-size:.97rem;}
+.wins li:before{content:"\2713";position:absolute;left:13px;top:11px;width:18px;height:18px;border-radius:6px;background:linear-gradient(135deg,var(--accent),var(--glow2));color:#0b0712;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+footer{text-align:center;color:var(--text1);border-top:1px solid var(--line);margin-top:30px;padding:34px 0 56px;font-size:.92rem;}
+@media(max-width:620px){.wins{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="logo"><span class="dot"></span> Lucent UI</div>
+    <div><a href="Documentation.html" style="font-weight:700;margin-right:18px;">Docs</a><a href="demo/" style="font-weight:700;">Live demo</a></div>
+  </nav>
+
+  <header>
+    <div class="badge">Unity 6000.0.62f1+ &middot; uGUI &middot; URP optional</div>
+    <h1>One UI suite that <span class="grad">dominates 8 niches</span> at once</h1>
+    <p class="lead">Lucent UI is a procedural + dynamic uGUI toolkit built on a single backend-neutral
+      <em>DrawList</em> spine: procedural shapes, soft shadows &amp; GPU liquid-glass, animated buttons, live charts,
+      a zero-GC virtualized scroller, RTL/Arabic bidi text (no TextMeshPro required), a 25+ widget library, and
+      runtime theming &amp; localization &mdash; each one strong enough to stand alone.</p>
+    <div class="cta">
+      <a class="btn primary" href="demo/">&#9658; Try the live demo</a>
+      <a class="btn ghost" href="Documentation.html">Read the documentation</a>
+    </div>
+  </header>
+
+  <div class="shot">
+    <img src="screenshot.png" alt="The Lucent UI interactive demo: feature navigator, live stage, controls panel, and a prove-the-win HUD." />
+    <p class="cap">The interactive demo &mdash; one draw call, zero textures, 0&nbsp;B/frame GC. Rendered on the GPU.</p>
+  </div>
+
+  <section>
+    <div class="h2">Eight niches, one asset</div>
+    <p class="sub">Every panel below is real, shipped, and individually competitive.</p>
+    <div class="grid">
+      <div class="card"><div class="n">N1</div><h3>Procedural Shapes</h3><p>Rounded-rect, circle, star, ring &amp; polygon with per-corner radius, gradient/pattern/sprite fills and crisp analytic AA.</p></div>
+      <div class="card"><div class="n">N2 &middot; N3</div><h3>Effects &amp; Liquid Glass</h3><p>Drop/inner shadow, glow &amp; outline on any uGUI graphic, plus GPU dual-Kawase blur and frosted glass.</p></div>
+      <div class="card"><div class="n">N4</div><h3>Animated Buttons</h3><p>Selectable + channel stacks, 35+ presets, ripple, audio and entrance animation &mdash; zero setup.</p></div>
+      <div class="card"><div class="n">N5</div><h3>Charts &amp; Graphs</h3><p>Bar/line/area/pie/scatter/heatmap/candlestick with axes, legends, tooltips, dashboards and export.</p></div>
+      <div class="card"><div class="n">N6</div><h3>Virtualized Scroll</h3><p>A 0-GC recycler &mdash; 5000 items, ~9 live cells &mdash; with snapping, parallax and gamepad navigation.</p></div>
+      <div class="card"><div class="n">N7</div><h3>RTL &amp; Animated Text</h3><p>UAX&nbsp;#9 bidi + Arabic shaping, SDF/MSDF and per-glyph animation &mdash; no TextMeshPro required.</p></div>
+      <div class="card"><div class="n">N8</div><h3>Component Library</h3><p>25+ theme-aware widgets: accordion, dropdown, modal, tabs, toast, date picker, 300+ procedural icons.</p></div>
+      <div class="card"><div class="n">+</div><h3>Theming &amp; Localization</h3><p>Design tokens, a runtime theme switch that recolors the whole UI, and an I2-parity localization term DB.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="h2">Why it&rsquo;s fast</div>
+    <p class="sub">Built for the frame budget, not just the screenshot.</p>
+    <ul class="wins">
+      <li>One mesh = one draw call (effects batch into the shape)</li>
+      <li>Zero per-frame GC on the virtualized scroller</li>
+      <li>Analytic, resolution-independent anti-aliasing</li>
+      <li>GPU liquid-glass on URP, Built-in &amp; HDRP</li>
+      <li>Imports on any input backend (New Input System optional)</li>
+      <li>Procedural by design &mdash; no texture atlases to manage</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>Lucent UI &mdash; by szekipapa77 &middot; Built for Unity 6.</p>
+    <p style="margin-top:8px;">Support: <a href="mailto:szekipapa77@gmail.com">szekipapa77@gmail.com</a></p>
+  </footer>
+</div>
+</body>
+</html>

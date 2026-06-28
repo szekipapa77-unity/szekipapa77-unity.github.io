@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lucent UI &mdash; Documentation</title>
+<style>
+:root{
+  --bg0:#0E0B16; --bg1:#171122; --bg2:#221A33;
+  --accent:#7C3AED; --accent-hi:#A78BFA; --glow2:#22D3EE;
+  --text0:#ECEAF5; --text1:#A79FC2;
+  --line:#2C2342; --line-soft:#241B38;
+  --code-bg:#120D1E; --sidebar-w:286px;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; background:var(--bg0); color:var(--text0);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px; line-height:1.65; -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent-hi); text-decoration:none;}
+a:hover{color:var(--glow2); text-decoration:underline;}
+
+/* ---------- Sidebar ---------- */
+.lc-sidebar{
+  position:fixed; top:0; left:0; bottom:0; width:var(--sidebar-w);
+  background:linear-gradient(180deg,#1a1329 0%,var(--bg1) 100%);
+  border-right:1px solid var(--line); overflow-y:auto; padding:22px 0 40px;
+  z-index:20;
+}
+.lc-brand{padding:0 22px 16px; border-bottom:1px solid var(--line-soft); margin-bottom:14px;}
+.lc-brand .logo{display:flex; align-items:center; gap:10px;}
+.lc-brand .dot{
+  width:22px; height:22px; border-radius:7px;
+  background:linear-gradient(135deg,var(--accent) 0%,var(--glow2) 100%);
+  box-shadow:0 0 14px rgba(124,58,237,.6);
+}
+.lc-brand .name{font-size:18px; font-weight:700; letter-spacing:.2px;}
+.lc-brand .ver{font-size:11.5px; color:var(--text1); margin-top:8px; line-height:1.5;}
+.lc-brand .ver code{background:none; color:var(--accent-hi); padding:0;}
+.lc-nav{list-style:none; margin:0; padding:0 12px;}
+.lc-nav li{margin:1px 0;}
+.lc-nav a{
+  display:block; padding:7px 12px; border-radius:8px; color:var(--text1);
+  font-size:13.5px; font-weight:500; border-left:2px solid transparent;
+}
+.lc-nav a:hover{background:var(--bg2); color:var(--text0); text-decoration:none;}
+.lc-nav a .num{color:var(--accent-hi); font-variant-numeric:tabular-nums; margin-right:8px; font-size:12px;}
+.lc-nav .sep{margin:12px 12px 6px; padding-top:12px; border-top:1px solid var(--line-soft);
+  font-size:10.5px; letter-spacing:1.4px; text-transform:uppercase; color:#6f6593;}
+
+/* ---------- Layout ---------- */
+.lc-main{margin-left:var(--sidebar-w); padding:0;}
+.lc-header{
+  position:sticky; top:0; z-index:10;
+  background:rgba(14,11,22,.82); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line); padding:18px 48px;
+}
+.lc-header h1{margin:0; font-size:22px; font-weight:700; letter-spacing:.2px;}
+.lc-header .tag{margin:5px 0 0; color:var(--text1); font-size:14px;}
+.lc-header .pill{
+  display:inline-block; margin-top:0; margin-left:10px; vertical-align:middle;
+  font-size:11px; font-weight:600; color:var(--glow2);
+  border:1px solid rgba(34,211,238,.35); background:rgba(34,211,238,.08);
+  padding:2px 9px; border-radius:999px; letter-spacing:.3px;
+}
+.lc-content{max-width:920px; padding:8px 48px 80px;}
+section{padding-top:26px; scroll-margin-top:84px;}
+
+/* ---------- Typography ---------- */
+h2{
+  font-size:27px; font-weight:700; margin:34px 0 14px; letter-spacing:.1px;
+  padding-bottom:12px; border-bottom:1px solid var(--line);
+}
+h2:after{content:""; display:block; width:56px; height:3px; margin-top:12px;
+  background:linear-gradient(90deg,var(--accent),var(--glow2)); border-radius:2px;}
+h3{font-size:18.5px; font-weight:650; margin:30px 0 10px; color:var(--text0);}
+p{margin:13px 0;}
+strong{color:var(--text0); font-weight:650;}
+em{color:var(--accent-hi); font-style:italic;}
+ul,ol{padding-left:22px;}
+li{margin:6px 0;}
+
+/* ---------- Inline code ---------- */
+code{
+  font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  font-size:13px; background:var(--bg2); color:#d9cffb;
+  padding:1.5px 6px; border-radius:5px; border:1px solid var(--line-soft);
+}
+
+/* ---------- Code blocks ---------- */
+pre.lc-code{
+  background:var(--code-bg); border:1px solid var(--line);
+  border-left:3px solid var(--accent); border-radius:10px;
+  padding:16px 18px; overflow-x:auto; margin:16px 0; line-height:1.55;
+  box-shadow:0 8px 24px rgba(0,0,0,.28);
+}
+pre.lc-code code{
+  background:none; border:none; padding:0; color:#cfc6ea; font-size:13px;
+  white-space:pre;
+}
+
+/* ---------- Callout ---------- */
+.lc-note{
+  background:linear-gradient(90deg,rgba(124,58,237,.12),rgba(34,211,238,.05));
+  border:1px solid var(--line); border-left:3px solid var(--glow2);
+  border-radius:10px; padding:13px 18px; margin:18px 0; color:var(--text0);
+  font-size:14.5px;
+}
+.lc-note strong:first-child{color:var(--glow2);}
+
+/* ---------- Win lists ---------- */
+ul.lc-win{list-style:none; padding-left:4px; margin:18px 0;}
+ul.lc-win li{
+  position:relative; padding:8px 8px 8px 34px; margin:7px 0;
+  background:var(--bg1); border:1px solid var(--line-soft); border-radius:9px;
+  font-size:14.5px;
+}
+ul.lc-win li:before{
+  content:"\2713"; position:absolute; left:11px; top:8px;
+  color:var(--bg0); background:linear-gradient(135deg,var(--accent),var(--glow2));
+  width:17px; height:17px; border-radius:5px; font-size:11px; font-weight:800;
+  display:flex; align-items:center; justify-content:center; line-height:1;
+  box-shadow:0 0 10px rgba(124,58,237,.45);
+}
+
+/* ---------- Tables ---------- */
+table{border-collapse:collapse; width:100%; margin:18px 0; font-size:14px;
+  background:var(--bg1); border:1px solid var(--line); border-radius:10px; overflow:hidden;}
+thead th{
+  background:var(--bg2); color:var(--accent-hi); text-align:left;
+  padding:10px 14px; font-weight:650; border-bottom:1px solid var(--line);
+}
+tbody td{padding:9px 14px; border-bottom:1px solid var(--line-soft); color:var(--text0);}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:rgba(124,58,237,.06);}
+
+/* ---------- API index ---------- */
+.lc-api-group{margin:22px 0;}
+.lc-api-group h3{
+  display:flex; align-items:center; gap:10px; margin-bottom:8px;
+}
+.lc-api-group h3 .badge{
+  font-size:11px; font-weight:600; color:var(--text1);
+  border:1px solid var(--line); border-radius:999px; padding:1px 9px;
+}
+.lc-syms{display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 0; padding:0; list-style:none;}
+.lc-syms li{margin:0;}
+.lc-syms code{
+  font-size:12px; background:var(--bg1); border:1px solid var(--line);
+  color:#cdbff7; padding:3px 8px; border-radius:6px; display:inline-block;
+}
+
+/* ---------- Footer ---------- */
+.lc-footer{
+  border-top:1px solid var(--line); margin-top:40px; padding:26px 48px 60px;
+  color:var(--text1); font-size:13.5px; margin-left:0;
+}
+.lc-footer a{font-weight:600;}
+.lc-footer .meta{margin-top:8px; font-size:12.5px; color:#6f6593;}
+
+/* ---------- Responsive ---------- */
+@media (max-width:900px){
+  :root{--sidebar-w:0px;}
+  .lc-sidebar{position:static; width:100%; height:auto; border-right:none;
+    border-bottom:1px solid var(--line); padding-bottom:18px;}
+  .lc-main{margin-left:0;}
+  .lc-nav{columns:2; column-gap:8px;}
+  .lc-header,.lc-content,.lc-footer{padding-left:20px; padding-right:20px;}
+  h2{font-size:23px;}
+}
+</style>
+</head>
+<body>
+<nav class="lc-sidebar">
+  <div class="lc-brand">
+    <div class="logo"><span class="dot"></span><span class="name">Lucent UI</span></div>
+    <div class="ver">Procedural + dynamic uGUI suite<br>v0.1.0 &middot; Unity <code>6000.0.62f1</code>+</div>
+  </div>
+  <ul class="lc-nav">
+    <li><a href="#overview"><span class="num">1</span>Overview</a></li>
+    <li><a href="#install"><span class="num">2</span>Installation &amp; Requirements</a></li>
+    <li><a href="#shapes"><span class="num">3</span>Procedural Shapes</a></li>
+    <li><a href="#effects-glass"><span class="num">4</span>Effects &amp; Liquid Glass</a></li>
+    <li><a href="#buttons"><span class="num">5</span>Animated Buttons</a></li>
+    <li><a href="#charts"><span class="num">6</span>Charts</a></li>
+    <li><a href="#scroll"><span class="num">7</span>Virtualized Scroll</a></li>
+    <li><a href="#text"><span class="num">8</span>Text &amp; RTL</a></li>
+    <li><a href="#components-theming"><span class="num">9</span>Components &amp; Theming</a></li>
+    <li><a href="#sdk-nocode"><span class="num">10</span>SDK &amp; No-Code</a></li>
+    <li><a href="#samples-demo"><span class="num">11</span>Samples &amp; Demo</a></li>
+    <li><a href="#faq"><span class="num">12</span>FAQ &amp; Troubleshooting</a></li>
+    <li class="sep">Reference</li>
+    <li><a href="#api-index"><span class="num">&sect;</span>API Index</a></li>
+  </ul>
+</nav>
+<div class="lc-main">
+  <header class="lc-header">
+    <h1>Lucent UI <span class="pill">Unity 6000.0.62f1+</span></h1>
+    <p class="tag">One uGUI package &mdash; every shape, chart, glow and frosted panel is a generator on a single backend-neutral render spine.</p>
+  </header>
+  <main class="lc-content">
+<section id="overview">
+<h2 id="overview">Overview</h2>
+
+<p><strong>Lucent UI</strong> is the single Unity uGUI package a team installs instead of stitching together five-to-eight single-purpose UI assets. It is a <em>procedural</em> + <em>dynamic</em> suite: every visual &mdash; a rounded rect, a chart series, a glow ring, a frosted glass panel &mdash; is a geometry <em>generator</em> that writes into one backend-neutral display list, and that one list is drawn by a pluggable surface. Eight buyer-recognizable niches ride that same spine.</p>
+
+<ul class="lc-win">
+<li><strong>N1 Procedural shapes</strong> &mdash; analytic rounded rects, ellipses, polygons, arcs, dashed/dotted strokes.</li>
+<li><strong>N2 Soft shadow / glow / outline / neumorphism</strong> &mdash; geometry effects composed onto the same element.</li>
+<li><strong>N3 Blur / translucency / liquid glass</strong> &mdash; GPU frosted panels and refractive glass.</li>
+<li><strong>N4 Animated buttons + a self-contained UI motion engine</strong>.</li>
+<li><strong>N5 Charts / data-viz</strong> &mdash; line, area, pie, scatter, all tessellated through the spine.</li>
+<li><strong>N6 Scroll / recycler</strong> &mdash; virtualized lists and grids at zero steady-state allocation.</li>
+<li><strong>N7 Localization / RTL / animated text</strong> &mdash; real Unicode bidi, Arabic shaping, per-glyph effects.</li>
+<li><strong>N8 Theming / widgets / responsive layout</strong> &mdash; design-token theming and the framework backbone.</li>
+</ul>
+
+<h3>One spine, many surfaces</h3>
+
+<p>The whole asset is built on the <code>Lucent.Render</code> spine. A generator implements <code>ILcGenerator</code> and writes pre-tessellated triangles into an <code>LcDrawList</code> (a list of <code>LcVertex</code> + indices + non-tessellated <code>LcTextRun</code> labels). A backend implements exactly one interface &mdash; <code>ILcRenderSurface</code> &mdash; to turn that list into a native mesh. Because tessellation happens <em>once</em> in the list, every backend renders identical pixels:</p>
+
+<pre class="lc-code"><code>// A generator writes backend-neutral geometry...
+var list = new LcDrawList();
+var ctx  = new LcDrawContext(rect, list);
+generator.Generate(ctx);             // ILcGenerator -&gt; LcDrawList
+
+// ...and ANY surface turns that one list into one native mesh.
+ILcRenderSurface surface = GetComponent&lt;LcUGuiSurface&gt;();
+surface.Submit(list);                // uGUI overlay, UI-Toolkit, or world-space
+</code></pre>
+
+<p>The primary surface, <code>LcUGuiSurface</code>, is a <code>MaskableGraphic</code> that maps the list to a <code>CanvasRenderer</code> mesh in <code>OnPopulateMesh</code>. <code>LcUIToolkitSurface</code> and <code>LcWorldSpaceSurface</code> consume the very same <code>LcDrawList</code>. The authoring base every component extends, <code>LcDrawable</code>, runs the generator <em>and</em> its sibling effect chain in painter order into <strong>one pooled list</strong> &mdash; so a shape plus its stroke, shadow, glow and gradient collapse into a single mesh.</p>
+
+<p class="lc-note"><strong>One mesh = one draw call.</strong> A shape and all of its geometry effects emit into a single <code>LcDrawList</code> in <code>LcDrawLayer</code> order (Shadow &rarr; Fill &rarr; Stroke &rarr; Glow &rarr; Overlay), so list-order equals painter-order with no per-effect renderers. Identically-configured elements share one cached material and batch. (Pooled child <code>Text</code> overlays are the only intrinsic extra draw.)</p>
+
+<h3>Why Lucent &mdash; the headline wins</h3>
+
+<ul class="lc-win">
+<li><strong>Analytic anti-aliasing, crisp at any scale.</strong> Each <code>LcVertex</code> carries a signed edge distance and a local AA half-width in <code>Uv1</code>; the shared <code>LcCanvas</code> shader smoothsteps the edge, so curves stay sharp at arbitrary zoom &mdash; no MSAA, no oversized textures, no mipped sprite atlas.</li>
+<li><strong>0-GC scrolling.</strong> <code>LcRecycler</code> keeps only <em>visible + 2&times;buffer</em> cells alive regardless of item count; the steady-state scroll hot path allocates zero bytes (struct enumerators, reused scratch buffers, no LINQ/closures/boxing), so <code>LcScrollView</code> scrolls hundreds of thousands of rows flat.</li>
+<li><strong>GPU liquid glass, one component.</strong> <code>LcGlass</code> is an <code>LcBlurPanel</code> plus analytic refraction, chromatic aberration, an edge glint, squircle corners <em>and</em> a native soft shadow &mdash; all in one mesh and one shared material. A three-asset stack (translucent blur + glass + shadow) collapses into a single batched element.</li>
+<li><strong>Real RTL / bidi.</strong> <code>LcTextRtl.Convert</code> and the <code>Lucent.Text.Unicode.BiDi</code> pipeline implement UAX&nbsp;#9 reordering with Arabic contextual shaping and lam-alef ligatures &mdash; not a naive "RTL fixer."</li>
+<li><strong>No TextMeshPro required.</strong> Text renders through the built-in <code>LegacyRuntime.ttf</code> overlay font (ships with every Unity install &mdash; zero import step) or the self-contained <code>LcSdfText</code> distance-field renderer, which shapes raw <code>.ttf</code> bytes with their own OpenType tables &mdash; no TMP, no native code.</li>
+<li><strong>~99% coverage of the competitor superset.</strong> The V1 ship set is a deliberate superset of the union of every competing asset's features (the Competitive-Coverage Law). The audited number is <strong>215/217 = 99.1%</strong>; the only two residuals are external (the official Unicode bidi conformance corpus and binary showcase sprites &mdash; the asset is procedural by design).</li>
+</ul>
+
+<p class="lc-note">Lucent UI 0.1.0 targets Unity 6000.0+ and has no external package dependencies and no setup step. Where the market forces a buyer to assemble a roughly EUR 290-365 stack of 7-8 SKUs with clashing conventions and batching that breaks at the seams, Lucent is one purchase, one spine, one theme system, and guaranteed batching.</p>
+</section>
+<section id="install">
+<h2 id="install">Installation &amp; Requirements</h2>
+
+<p>Lucent UI is a uGUI-native asset: it draws through Unity's existing <code>CanvasRenderer</code> spine, so it slots into any project that already has a Canvas. There is no external SDK, no native plugin, and no service to register. Drop the <code>Assets/Lucent</code> folder in and the runtime self-initializes.</p>
+
+<h3>Requirements</h3>
+
+<ul>
+<li><strong>Unity 6000.0.62f1 or newer.</strong> The project is authored and validated against <code>6000.0.62f1</code>; the runtime uses the modern <code>FindAnyObjectByType</code> path under a <code>UNITY_2023_1_OR_NEWER</code> guard, so it stays correct on the whole Unity 6 line.</li>
+<li><strong><code>com.unity.ugui</code> (2.0.0+) &mdash; required.</strong> This is the only hard dependency. TextMeshPro is merged <em>into</em> this package (it ships <code>Unity.TextMeshPro.asmdef</code> under <code>com.unity.ugui/Runtime/TMP</code>), so there is no separate TMP import or "Import TMP Essentials" step gating Lucent text.</li>
+<li><strong>New Input System (<code>com.unity.inputsystem</code>) &mdash; recommended, not required.</strong> Lucent is input-backend-optional. Its asmdefs raise the <code>LUCENT_INPUTSYSTEM</code> versionDefine only when the package is present, and the interaction bridge (charts pan/zoom, <code>LcScrollView</code>) prefers <code>UnityEngine.InputSystem</code> when that symbol is defined, falls back to the legacy Input manager otherwise, and finally to a zeroed no-op so it still <em>compiles and runs</em> with no input backend at all.</li>
+<li><strong>URP (<code>com.unity.render-pipelines.universal</code> 17.0.0+) &mdash; optional, enables the blur/glass hero.</strong> The core effects assembly takes <em>no</em> URP reference; the URP scene-color grab lives in a separate <code>Lucent.Effects.Urp</code> assembly gated by the <code>LUCENT_URP</code> versionDefine + define-constraint, so it only compiles when URP is installed.</li>
+<li><strong>HDRP (<code>com.unity.render-pipelines.high-definition</code> 17.0.0+) &mdash; optional.</strong> Same pattern: <code>Lucent.Effects.Hdrp</code> is constrained to <code>LUCENT_HDRP</code> and provides the custom-pass blur path. No HDRP, no compile cost.</li>
+</ul>
+
+<p class="lc-note"><strong>Why the optional backends never break the build:</strong> each integration sits behind a versionDefine declared in its <code>.asmdef</code>. The packages do not need to be present for the asset to compile &mdash; the gated code simply drops out. The same mechanism backs UI Toolkit (<code>LUCENT_HAS_UITOOLKIT</code>, raised from <code>com.unity.modules.uielements</code>).</p>
+
+<pre class="lc-code"><code>// Packages/manifest.json -- only com.unity.ugui is mandatory; the rest light up features.
+"dependencies": {
+  "com.unity.ugui": "2.0.0",
+  "com.unity.inputsystem": "1.14.2",                  // recommended -> LUCENT_INPUTSYSTEM
+  "com.unity.render-pipelines.universal": "17.0.4"    // optional   -> LUCENT_URP (blur/glass)
+}</code></pre>
+
+<pre class="lc-code"><code>// The versionDefine seam, e.g. Lucent.Effects.Urp.asmdef -- present only when URP is installed:
+"defineConstraints": [ "LUCENT_URP" ],
+"versionDefines": [
+  { "name": "com.unity.render-pipelines.universal", "expression": "17.0.0", "define": "LUCENT_URP" }
+]</code></pre>
+
+<h3>Importing</h3>
+
+<ol>
+<li>Import the package (or copy <code>Assets/Lucent</code> into your project). Unity compiles the <code>Lucent.*</code> assemblies; the optional URP/HDRP/Input bridges resolve automatically based on which packages your manifest already has.</li>
+<li><strong>Set Active Input Handling.</strong> In <em>Edit &gt; Project Settings &gt; Player &gt; Active Input Handling</em>, choose <em>Input System Package (New)</em> (recommended) or <em>Both</em>. This project ships with the New System enabled (<code>activeInputHandler: 1</code>).</li>
+<li>No further setup. The composition root <code>LcSdkBootstrap</code> runs at <code>RuntimeInitializeOnLoadMethod(BeforeSceneLoad)</code> and builds the default <code>LcSdk.Registry</code> (every shape, effect, chart, scale, palette) once at startup. It is batch-guarded: under <code>-batchmode</code> it builds the registry but does no UI side effects, so headless/CI runs never hang.</li>
+</ol>
+
+<h3>Your first scene</h3>
+
+<p>Lucent components are ordinary uGUI <code>Graphic</code>s, so the host is a normal Canvas. Create one via <em>GameObject &gt; UI &gt; Canvas</em>, add a child UI object, then add a Lucent component &mdash; from <em>Add Component &gt; Lucent UI &gt; Lc Shape</em>, or in code:</p>
+
+<pre class="lc-code"><code>using Lucent.Core;
+using Lucent.Shapes;
+using UnityEngine;
+
+// uiChild is any RectTransform under a Canvas.
+// A freshly added LcShape already renders a correct AA rounded rect with zero config.
+var shape = uiChild.AddComponent&lt;LcShape&gt;();
+shape.ShapeKind = LcShapeKind.RoundedRect;
+shape.SetUniformRadius(24f);
+shape.SetFillColor(new Color32(38, 132, 255, 255));   // one mesh, one draw call</code></pre>
+
+<p>To see the URP/HDRP hero, add the flagship glass panel. It always renders; when no live scene-color grab exists on the device/pipeline it degrades gracefully to a flat tinted translucent fill rather than a broken shader:</p>
+
+<pre class="lc-code"><code>using Lucent.Effects;
+
+var glass = uiChild.AddComponent&lt;LcGlass&gt;();   // frosted blur + refraction + chromatic aberration + edge glint
+if (!glass.IsSupported)
+{
+    // LcCapabilities.SupportsSceneColorGrab == false (e.g. Built-in with no grab provider):
+    // the panel falls back to a flat tinted fill. No pink shader, ever (invariant 7).
+}</code></pre>
+
+<p class="lc-note"><strong>Pipeline is detected at runtime, not configured.</strong> <code>LcCapabilities.ActivePipeline</code> reads <code>GraphicsSettings.defaultRenderPipeline</code> and returns <code>LcPipeline.BuiltIn</code>, <code>Urp</code>, or <code>Hdrp</code>; the auto-created <code>LcBlurManager</code> re-detects every frame, so a runtime pipeline swap is handled without any per-pipeline asset variant.</p>
+
+<ul class="lc-win">
+<li>One mandatory dependency (<code>com.unity.ugui</code>) &mdash; everything else is opt-in and gated behind versionDefines, so missing packages drop out instead of breaking compilation.</li>
+<li>TextMeshPro needs no separate install: it is merged into <code>com.unity.ugui</code>.</li>
+<li>Input-backend-optional: New Input System, legacy Input manager, or neither &mdash; the same code path compiles and runs in all three via <code>LUCENT_INPUTSYSTEM</code>.</li>
+<li>Cross-pipeline by runtime detection (<code>LcCapabilities.ActivePipeline</code>): Built-in, URP, and HDRP from one asset, with the glass/blur hero degrading to a flat tint where no scene-color grab is available.</li>
+<li>Zero-setup startup: <code>LcSdkBootstrap</code> self-initializes the registry and is batch-guarded for headless CI.</li>
+</ul>
+</section>
+<section id="shapes">
+<h2 id="shapes">Procedural Shapes</h2>
+
+<p><code>LcShape</code> is the no-code authoring component for vector shapes. It is an <code>LcDrawable</code> &mdash; a <code>MaskableGraphic</code> on Lucent's shared DrawList spine &mdash; so a single shape composes its fill, gradient/pattern/sprite paint, and stroke into <strong>one mesh, one draw call</strong>. A freshly added component renders a correct rounded rect on Play with zero setup: the serialized <code>LcShapeStyle</code> block ships sensible defaults and <em>is</em> the source of truth. Code setters write that same block and mark the mesh dirty, so an Animator, Timeline, or script always wins over the inspector, and the build path is fully deterministic (no <code>Random</code>/<code>DateTime</code>/statics).</p>
+
+<p>The shape family is the <code>LcShapeKind</code> enum &mdash; thirteen generators, each a registry row behind <code>LcShapeGenerators.Create</code>:</p>
+
+<pre class="lc-code"><code>public enum LcShapeKind
+{
+    RoundedRect, Circle, Ellipse, Polygon, Star, Chamfer,
+    Parallelogram, Path, Arc, Pie, Ring, Capsule, Squircle
+}</code></pre>
+
+<p>Setting <code>ShapeKind</code> swaps the cached generator (<code>LcShapeGeneratorBase</code>); the live <code>LcShapeStyle</code> instance is shared straight through, so a kind change costs no per-frame allocation. Each generator implements only its silhouette (<code>EmitFill</code>) and, where it differs, its stroke; the base class runs Fill then Stroke layers in order through the spine's <code>LcGeometryBuilder</code> primitives.</p>
+
+<h3>Per-corner radius</h3>
+
+<p>Corners are an <code>LcCorners</code> struct ordered <code>TL, TR, BR, BL</code> (pixels). A shape can use one <code>UniformRadius</code> for all four or independent <code>PerCornerRadius</code> values; radii are <code>Clamped</code> to half the shorter side so they never invert. <code>Capsule</code> is just a rounded rect whose radius is locked to half the shorter side, and <code>Squircle</code> swaps the circular corner for a superellipse profile (<code>SuperellipseExponent ~= 5</code> gives the iOS look).</p>
+
+<pre class="lc-code"><code>var shape = go.AddComponent&lt;LcShape&gt;();
+shape.ShapeKind = LcShapeKind.RoundedRect;          // rebuilds the generator
+shape.SetCornerRadii(new LcCorners(16, 16, 4, 4));  // TL, TR, BR, BL
+shape.SetFillColor(new Color32(38, 132, 255, 255));
+
+// Stroke fields, then one dirty-marking setter picks them all up:
+shape.Style.StrokeAlign = LcStrokeAlign.Inner;      // Inner / Center / Outer
+shape.Style.Dashed = true;                          // marching-ants capable
+shape.SetStroke(enabled: true, width: 3f);
+shape.SetStrokeGradient(true, Color.white, Color.cyan, angleDeg: 45f);</code></pre>
+
+<h3>Fills</h3>
+
+<p><code>LcFillKind</code> selects how the interior is painted, and the shared spine keeps every mode on the always-batches path:</p>
+
+<ul>
+<li><strong>Solid</strong> &mdash; a flat <code>FillColor</code>, or a theme color token (<code>FillTokenId</code>) resolved through the bound <code>LcTheme</code> when one is present (code defers to the literal otherwise).</li>
+<li><strong>Gradient</strong> &mdash; vertex-colored over the fill range via <code>LcGeometryBuilder.ApplyGradient</code>. Families are Linear, Radial, Angular, Stepped, and Corner4; a theme <code>GradientTokenId</code> can override the literal stops (1.18).</li>
+<li><strong>Sprite</strong> &mdash; the shape silhouette clips a sprite. <code>LcShape.mainTexture</code> binds the sprite's texture so the shared white-sampling material samples it, with uGUI <code>Image</code> parity draw modes (Simple, Sliced, Tiled, Filled + fill method/amount).</li>
+<li><strong>Pattern</strong> &mdash; a procedural Grid/Checker/Stripe (<code>LcPatternKind</code>). <code>GetModifiedMaterial</code> hands back a per-instance material copy carrying the SHADER agent's pattern uniforms, so each shape patterns independently while the shared material is never mutated.</li>
+</ul>
+
+<h3>Strokes</h3>
+
+<p>The outline is emitted into the Stroke layer of the same mesh. Width is per-side: the four side toggles collapse into an <code>LcEdgeWidths</code> (Top/Right/Bottom/Left), and any side at width 0 is simply omitted by <code>StrokeRectPerSide</code> &mdash; so &quot;underline only&quot; or &quot;no top border&quot; needs no extra objects. <code>LcStrokeAlign</code> places the centerline Inner, Center, or Outer of the silhouette. Strokes can be solid, <strong>dashed</strong> (<code>DashLength</code>/<code>DashGap</code>, animatable for marching ants), or <strong>dotted</strong> (zero dash length routes to <code>DottedPolyline</code>), and the stroke layer can carry its own independent gradient, separate from the fill.</p>
+
+<h3>Analytic anti-aliasing</h3>
+
+<p>AA is built into the geometry, not bolted on with MSAA or a per-shape texture. Every fill emits a solid interior <em>inset</em> by the AA half-width plus a feather ring offset outward along the edge normal and faded to alpha 0. Each vertex carries an analytic distance field in <code>LcVertex.Uv1</code> (x = signed distance to the edge in px, y = local AA half-width) that the shared <code>LcCanvas</code> shader turns into a smoothstep &mdash; so edges stay crisp at any scale or DPI:</p>
+
+<pre class="lc-code"><code>// LcGeometryBuilder.EmitFilledOutline (abridged)
+float hw = aa &lt;= 0f ? 0f : aa * 0.5f;                 // AA half-width, px
+Color32 outerColor = new Color32(color.r, color.g, color.b, 0);
+
+// inner ring: full color, positive signed distance
+dl.AddVertex(new LcVertex(ring[i] - nrm[i] * hw, color, CenterUv,
+                          new Vector2(coreDist, hw)));
+// outer ring: alpha 0, negative signed distance -> shader feathers the edge
+dl.AddVertex(new LcVertex(ring[i] + nrm[i] * hw, outerColor, CenterUv,
+                          new Vector2(-hw, hw)));</code></pre>
+
+<p class="lc-note">Concave outlines (an authored <code>Path</code>, a deep star notch) would self-overlap under a centroid fan, so <code>FillPolygon</code> detects them and ear-clips through <code>LcPolygonTriangulator</code>, then feathers along the true edge normals. Convex and star-convex inputs keep the fast centroid-fan path. Arc/Pie/Ring fills route through <code>WedgeAA</code> for the same feathered edge.</p>
+
+<h3>Rounding-aware raycast</h3>
+
+<p><code>LcShape</code> implements <code>ICanvasRaycastFilter</code>, so a click is valid only when it lands inside the shape's <em>actual</em> silhouette. The same perimeter that drives the mesh is published through <code>ILcSilhouetteSource.TryGetSilhouette</code> (also consumed by shadow/glow/outline effects so they trace the real outline) and tested with an even-odd <code>LcShapeRaycast.PointInPolygon</code> that handles convex and concave rings alike. A press in a rounded-off, star-notch, or chamfered corner therefore misses the graphic and reaches whatever is behind it. Open/annular families (Arc, Pie, Ring) have no simple closed silhouette and fall back to rect containment, preserving normal clickability.</p>
+
+<ul class="lc-win">
+<li>Thirteen shape families from one component, correct on Play with zero configuration.</li>
+<li>Fill + gradient/pattern/sprite + per-side stroke batch into <strong>one mesh = one draw call</strong>.</li>
+<li>Analytic, geometry-side AA stays crisp at any scale &mdash; no MSAA, no per-shape render texture.</li>
+<li>Clicks honor the true outline: rounded, star, and chamfered corners correctly miss.</li>
+<li>Steady-state rebuilds are zero-GC &mdash; pooled stroke/fill gradients, silhouette buffer, and pattern material.</li>
+</ul>
+</section>
+<section id="effects-glass">
+<h2 id="effects-glass">Effects &amp; Liquid Glass</h2>
+
+<p>Lucent ships two tiers of decoration. <strong>N2</strong> is the batched geometry effect set -- soft drop shadow, true outer glow, and a crisp vector outline -- emitted as real triangles into the host mesh. <strong>N3</strong> is the scene-sampling hero: a frosted background-blur panel and the unified <em>liquid glass</em> element, driven by one dual-Kawase blur source that runs on URP, the Built-in pipeline, and HDRP from a single piece of math.</p>
+
+<h3>N2: shadow, glow, outline as no-code components</h3>
+
+<p>Each effect is authored by a thin <code>MonoBehaviour</code> over a serialized pure-logic spec. <code>LcShadow</code>, <code>LcGlow</code>, and <code>LcOutline</code> all derive from <code>LcEffectBehaviour</code>, which implements the L1 <code>ILcEffect</code> interface and delegates <code>Apply(LcEffectContext)</code> to its spec (<code>LcDropShadowEffect</code> / <code>LcGlowEffect</code> / <code>LcOutlineEffect</code>). A sibling <code>LcDrawable</code> discovers them by <code>GetComponents</code> and folds their geometry into <em>the same mesh</em> as the shape -- so a shadow plus a glow plus an outline on one element is still one draw call, no RenderTexture per element. Add them and they just work: the shadow defaults to offset <code>(0,-4)</code>, blur <code>8</code>, 35&#37; black; the glow to cyan at radius <code>12</code>; the outline to 2px white, center-aligned.</p>
+
+<p>The falloff is not a vertex-color approximation. <code>LcEffectGeometry</code> emits a feathered ring whose outer vertices are alpha-0 and carry a negative <code>Uv1</code> signed distance, so the soft edge runs through the <em>same</em> analytic-AA model as the shape fills: a wide smoothstep under the LcCanvas distance shader, and the alpha ramp itself under a plain vertex-color fallback.</p>
+
+<h3>Casting effects on stock uGUI: LcGraphicEffect</h3>
+
+<p>The True-Shadow parity feature is <code>LcGraphicEffect</code>: it renders a shadow / glow / outline behind <em>stock</em> uGUI graphics Lucent does not own -- <code>Image</code>, <code>RawImage</code>, <code>Text</code>, TMP. It derives the host silhouette from the graphic's rect (and, for an <code>Image</code> carrying an authored physics shape, its alpha outline via <code>ILcSilhouetteSource.TryGetSilhouette</code>), runs the <em>same</em> <code>LcEffectGeometry</code> emit path, and presents the result through a hidden sibling <code>LcGraphicEffectRenderer</code> ordered just before the host so it paints underneath. Every Normal-blend effect rides that one surface -- one mesh, one extra draw call, RenderTexture-free -- and it is deterministically rebuildable headlessly via <code>RebuildEffectNow()</code>.</p>
+
+<pre class="lc-code"><code>// 1) No-code on any LcDrawable (e.g. an LcShape): composed INTO the shape's own mesh.
+var shadow = shape.gameObject.AddComponent&lt;LcShadow&gt;();   // (0,-4), blur 8, 35% black
+shape.gameObject.AddComponent&lt;LcGlow&gt;();                  // cyan, radius 12
+shape.gameObject.AddComponent&lt;LcOutline&gt;();               // 2px white, Center
+
+// 2) Cast the SAME effects behind a STOCK uGUI Graphic Lucent does not own.
+var fx = image.gameObject.AddComponent&lt;LcGraphicEffect&gt;();
+fx.ShadowEnabled = true;
+fx.Glow.Color = new Color32(64, 224, 255, 255);
+fx.Glow.Blend = LcBlendMode.Additive;     // additive bloom -> its own extra draw
+int verts = fx.RebuildEffectNow();        // deterministic, headless-rebuildable</code></pre>
+
+<h3>Blend modes without breaking the batch</h3>
+
+<p>Each effect pass carries a per-effect <code>LcBlendMode</code> (<code>Normal</code>, <code>Additive</code>, <code>Screen</code>, <code>Multiply</code>). <code>Normal</code> is byte-identical to the shared LcCanvas mesh blend, so it stays inside the single batched draw. The other three cannot recolour that shared straight-alpha mesh, so each <em>distinct</em> non-Normal mode in use gets exactly one extra surface (<code>LcEffectBlendSurface</code>) whose material carries that mode's fixed-function blend state. The mapping lives in <code>LcEffectBlend.StateFor</code>:</p>
+
+<pre class="lc-code"><code>case LcBlendMode.Additive:  // out = src.rgb*src.a + dst : adds light
+    return new LcBlendState(BlendMode.SrcAlpha,        BlendMode.One,               BlendOp.Add);
+case LcBlendMode.Screen:    // 1-(1-s)(1-d) : soft highlight, never clips dark
+    return new LcBlendState(BlendMode.OneMinusDstColor, BlendMode.One,              BlendOp.Add);
+case LcBlendMode.Multiply:  // alpha-aware darken
+    return new LcBlendState(BlendMode.DstColor,        BlendMode.OneMinusSrcAlpha,  BlendOp.Add);</code></pre>
+
+<p class="lc-note">The <code>Lucent/LcCanvas</code> shader <em>bakes</em> <code>Blend SrcAlpha OneMinusSrcAlpha</code> into every SubShader, so writing <code>_SrcBlend</code>/<code>_DstBlend</code> onto a clone of it is a dead no-op. <code>LcEffectMaterial</code> therefore builds each variant from a blend-driven pass -- the shipped <code>Lucent/LcEffectBlend</code> shader, degrading to <code>Hidden/Internal-Colored</code>, then to the canvas material -- so a stripped shader renders Normal rather than going magenta. An author can also assign a per-pass <code>CustomMaterial</code> (e.g. an animated noise glow), resolved verbatim by <code>LcEffectMaterial.Resolve</code>.</p>
+
+<p>For canvas-wide batching, <code>LcEffectLayer</code> collects many elements' effects (each via <code>ILcLayerEffect.EmitLayerEffects</code> in its own local rect space), transforms them into the layer's space, and emits them into one pooled <code>LcDrawList</code> -- one mesh, one draw -- instead of True Shadow's RenderTexture-per-element.</p>
+
+<h3>N3: the blur / liquid-glass hero</h3>
+
+<p><code>LcBlurPanel</code> is a no-code frosted/acrylic panel: it emits one Overlay rounded-rect or squircle quad whose material (the <code>LcBlur</code> shader) samples the global <code>_LucentBlurTex</code> at the panel's screen-space UV, with tint, vibrancy (saturation), brightness, grain, and a per-panel blur <code>Radius</code> that drives the shader tap spread. <code>LcGlass</code> <em>is</em> an <code>LcBlurPanel</code> plus analytic refraction, chromatic aberration, an edge glint, and a native under-glass soft shadow (the geometry-shadow path, same mesh) -- so Paraform's three-asset stack (Translucent Image + Paraform + True Shadow) collapses into one component. The shadow is emitted first (behind), then the glass quad, both in one list, so painter order gives the layered look with no separate draw.</p>
+
+<pre class="lc-code"><code>var glass = panel.AddComponent&lt;LcGlass&gt;();    // sensible just-works defaults on add
+LcBlurPanelSpec s = glass.Spec;               // getter returns the struct by value
+s.Radius  = 24f;                              // BLR-14: per-panel blur radius
+s.Quality = LcBlurQuality.High;               // requests a shared quality from the manager
+glass.Spec = s;                               // setter re-applies material + rebuilds the quad
+
+glass.GlassSpec = new LcGlassSpec {           // the liquid-glass half
+    Refraction = 0.02f, ChromaticAberration = 0.004f, EdgeGlint = 0.5f, NativeShadow = true
+};
+if (!glass.IsSupported) { /* degrades to a flat tinted fill -- never magenta */ }</code></pre>
+
+<p>Panels whose specs are equal share one pooled material via <code>LcPanelMaterialKey</code> + <code>LcMaterialCache</code> and batch together; <code>LcGlass</code> pools by the full glass key (blur params plus refraction/aberration/glint). When no live scene grab exists (<code>LcCapabilities.SupportsSceneColorGrab == false</code>) the panel still renders -- as a flat tinted translucent fill -- so it never magentas and never null-refs.</p>
+
+<h3>One blur, three pipelines</h3>
+
+<p><code>LcBlurManager</code> is the auto-created, one-per-scene coordinator. It detects the active pipeline and publishes the shared <code>LcBlurProfile</code> + <code>LcBlurQuality</code> down to the L1 <code>LcBlurRequest</code> -- the backend-neutral seam that lets the L4 panels and the L4 URP feature both reference it <em>downward</em>, never each other. It also owns the active-panel ref-count, so the grab+blur runs only while a panel is alive, and bumps a resize epoch so the buffers stay resolution-independent.</p>
+
+<p>The profile is just three knobs (downsample factor, iterations, radius), tuned per quality preset by <code>LcBlurProfile.ForQuality</code>:</p>
+
+<table>
+  <thead><tr><th>Quality</th><th>Downsample</th><th>Iterations</th><th>Radius</th></tr></thead>
+  <tbody>
+    <tr><td>Low</td><td>4 (quarter-res)</td><td>2</td><td>8</td></tr>
+    <tr><td>Medium</td><td>2 (half-res)</td><td>4</td><td>16</td></tr>
+    <tr><td>High</td><td>2</td><td>5</td><td>24</td></tr>
+    <tr><td>Ultra</td><td>2</td><td>7</td><td>40</td></tr>
+  </tbody>
+</table>
+
+<p>Every backend publishes the <em>same</em> <code>_LucentBlurTex</code> from the <em>same</em> dual-Kawase down/up pyramid, just through a different recording API:</p>
+
+<ul>
+  <li><strong>URP</strong> -- <code>LcBlurFeature</code> / <code>LcBlurPass</code>: a RenderGraph <code>ScriptableRendererFeature</code> (the only runtime asmdef that touches URP). It grabs <code>cameraOpaqueTexture</code> (or the UI-inclusive <code>activeColorTexture</code> when a panel requests blur-behind-UI), runs a Blitter down/up pyramid, with an optional compute fast path guarded by <code>SystemInfo.supportsComputeShaders</code>. Gated on <code>LcBlurRequest.AnyActive</code>, so a present-but-idle feature costs nothing.</li>
+  <li><strong>Built-in</strong> -- <code>LcBlurBuiltInManager</code> + <code>LcBlurCommandBuffer</code>: no SRP package needed (only always-present <code>CommandBuffer</code>/<code>Camera</code> APIs). The manager auto-attaches a command buffer at <code>CameraEvent.BeforeImageEffects</code> while panels are active and flips the capability flag so glass binds the grab instead of degrading. The pyramid is recorded by <code>PopulateBlurCommandBuffer</code> -- the byte-for-byte equal of the URP path, headlessly testable down to its exact blit count.</li>
+  <li><strong>HDRP</strong> -- <code>LcBlurCustomPass</code>: a <code>CustomPass</code> on a volume that ping-pongs between two half-res buffers (no undefined read==write self-blit) and publishes the final index. The whole assembly is gated by <code>LUCENT_HDRP</code> so it compiles out cleanly where HDRP is absent.</li>
+</ul>
+
+<ul class="lc-win">
+  <li>On-mesh shadow + glow + outline compose into the host <code>LcDrawable</code> mesh: zero extra draws, no RenderTexture-per-element.</li>
+  <li><code>LcGraphicEffect</code> gives stock <code>Image</code>/<code>Text</code>/TMP the True-Shadow look in one extra draw for all Normal-blend effects; at most one more per distinct non-Normal blend mode.</li>
+  <li><code>LcGlass</code> unifies Translucent Image + Paraform + True Shadow into a single component and a single shared material; equal-spec panels batch.</li>
+  <li>One dual-Kawase implementation; three pipeline backends publish the identical <code>_LucentBlurTex</code>.</li>
+  <li>Blur work is ref-count-gated -- it runs only while a panel is alive -- and degrades to a flat tint where no scene grab exists (never magenta, never a null-ref).</li>
+</ul>
+</section>
+<section id="buttons">
+<h2 id="buttons">Animated Buttons</h2>
+
+<p>The N4 button, <code>LcButton</code>, is a procedural, fully animated control that extends <code>UnityEngine.UI.Selectable</code>. Because it subclasses Selectable, keyboard and gamepad navigation, the <code>Interactable</code> flag, and the Normal / Highlighted / Pressed / Selected / Disabled state machine all come for free and work on any input backend through uGUI's <code>EventSystem</code> &mdash; there is no hard reference to <code>Unity.InputSystem</code>. Instead of Selectable's built-in ColorTint, the button drives a <strong>stack of animation channels</strong> on every state transition, layers per-event audio over the top, and pairs cleanly with an <code>LcShape</code> host graphic for a one-draw-call procedural skin.</p>
+
+<p>A freshly added <code>LcButton</code> just works: with an empty channel list it applies a built-in Color + Scale default at runtime, so it reacts to hover, press, and click with zero setup. Tweening runs on Lucent's own deterministic <code>LcEasing</code> motion engine &mdash; there is no DOTween dependency.</p>
+
+<h3>The channel stack</h3>
+
+<p>Each entry in the stack is an <code>LcButtonChannel</code>: one <code>LcChannelKind</code> driving one target, holding one value per visual state. Multiple channels run in parallel per transition (multi-target, multi-transition). Ten channel kinds are supported: the six <em>continuous</em> kinds that tween over a <code>Duration</code> with an <code>Ease</code> or <code>AnimationCurve</code> (<code>Color</code>, <code>Scale</code>, <code>Move</code>, <code>Rotate</code>, <code>Fill</code>, <code>Fade</code>), and the four <em>discrete</em> kinds that apply instantly (<code>SpriteSwap</code>, <code>Animator</code>, <code>Activate</code>, <code>Particle</code>). Per-state values live in tidy five-slot structs (<code>LcStateColor</code>, <code>LcStateVector3</code>, <code>LcStateFloat</code>, and friends), each with a <code>Get(state)</code> accessor and convenient <code>DefaultTint()</code> / <code>DefaultScale()</code> factories.</p>
+
+<pre class="lc-code"><code>var btn = gameObject.AddComponent&lt;LcButton&gt;();
+
+// One channel = one property, with a value per visual state.
+btn.Channels.Add(new LcButtonChannel
+{
+    Kind            = LcChannelKind.Scale,
+    Scales          = LcStateVector3.DefaultScale(), // grow on hover, sink on press
+    Ease            = LcEase.OutBack,
+    Duration        = 0.16f,
+    VariationAmount = 0.25f                           // per-press feel jitter
+});
+btn.Channels.Add(new LcButtonChannel
+{
+    Kind     = LcChannelKind.Color,
+    Colors   = LcStateColor.DefaultTint(),
+    Ease     = LcEase.OutQuad,
+    Duration = 0.12f
+});
+btn.Refresh();   // re-bind targets to the host graphic/rect and re-apply the current state</code></pre>
+
+<p>Empty target slots fall back to the button's host graphic (<code>HostGraphic</code>) and host rect (<code>HostRect</code>), so a channel "just binds" without wiring. On <code>Bind</code> each channel captures its untouched home pose once, so Move/Rotate/Scale values stay relative to your layout, and every continuous tween starts from the <em>current</em> live value &mdash; a code-driven value is never stomped mid-flight. A non-<code>Once</code> <code>Loop</code> turns a channel into an idle pulse (oscillating Normal&lt;-&gt;Highlighted) that runs while <code>LoopIdle</code> is on and the button is in the Normal state.</p>
+
+<h3>Presets</h3>
+
+<p>The <code>LcButtonPresets</code> factory ships <strong>35 built-in stacks</strong> enumerated by <code>LcButtonPresetKind</code> &mdash; from <code>HoverScale</code>, <code>PressPunch</code>, and <code>Jelly</code> through <code>Heartbeat</code>, <code>GlowPulse</code>, <code>RubberBand</code>, and <code>ShimmerTint</code>. Each is a pure, deterministic method returning a fresh <code>List&lt;LcButtonChannel&gt;</code> with null targets, so it binds to whatever host you apply it to. Presets are reachable three ways: in code via <code>LcButtonPresets.Create(kind)</code>, as a runtime <code>ScriptableObject</code> via <code>LcButtonPreset.CreateBuiltin(kind)</code>, or as a shareable <code>[CreateAssetMenu]</code> <code>LcButtonPreset</code> asset assigned to <code>LcButton.Preset</code>.</p>
+
+<pre class="lc-code"><code>// Apply one of the 35 built-in stacks, then drive the button from code.
+btn.Channels.Clear();
+btn.Channels.AddRange(LcButtonPresets.Create(LcButtonPresetKind.Jelly));
+btn.Refresh();
+
+btn.SetContent(iconSprite, "Play");   // icon sprite + animated label in one call
+btn.Randomize();                      // advance the seeded per-press variation
+btn.Play(LcTriggerKind.Press);        // fire audio + UnityEvent + drive the Pressed state</code></pre>
+
+<p class="lc-note"><strong>Precedence: code always wins.</strong> An assigned <code>LcButtonPreset</code> overrides the inline channel stack (a preset is the more specific authored intent, and <code>ApplyTo</code> clones its channels so the shared asset is never mutated by a button's runtime home-capture). But a programmatic <code>Play()</code> or <code>SetState()</code> latches a code-configured flag that prevents the auto default or preset from ever re-stomping your stack.</p>
+
+<h3>Audio, ripple, entrance, and label</h3>
+
+<p>The serialized <code>LcButtonAudio</code> block holds a clip per trigger (Click / Hover / Press / Select / Deselect / Disabled), a base volume and pitch, and &mdash; net-new versus the parity competitors &mdash; deterministic pitch/volume jitter plus optional <code>AudioMixerGroup</code> routing. Randomization draws from a seeded <code>LcRng</code> (never <code>UnityEngine.Random</code>), so the variation order is reproducible, and clips play through a pooled <code>AudioSource.PlayOneShot</code> with no per-click allocation. With no clips assigned it is a silent no-op.</p>
+
+<p>A press emits an expanding-circle <strong>ripple</strong> through <code>LcButtonRipple</code>, which is itself an <code>LcUGuiSurface</code>: the ripple is not a bespoke effect but rides the same shared <code>LcDrawList</code> spine as every other Lucent primitive, so the whole live batch resolves to one mesh / one draw call. It auto-wires when dropped on a child of the button, never steals the button's raycast (<code>raycastTarget = false</code>), and ticks only while ripples are in flight &mdash; steady-state zero work. A pointer press ripples at the cursor; a keyboard or gamepad Submit ripples from the button center.</p>
+
+<p>The <code>Start</code> trigger plays a real <strong>entrance animation</strong>: <code>PlayEntrance()</code> snaps the one-shot continuous channels to a collapsed Pressed pre-roll pose, then animates them into the resting state so the button visibly pops in (without latching the code-config flag, since an intro is automatic, not authored). The optional <code>LcButtonLabel</code> bridge routes the button's text through Lucent.Text's per-glyph <code>LcTextAnimator</code> and maps each state to a per-glyph action (replay the reveal on hover/select, pause when disabled) &mdash; inert and harmless when no animator is bound.</p>
+
+<p class="lc-note"><strong>Deterministic variation.</strong> <code>Randomize()</code> advances a seeded <code>[0,1)</code> <code>Variation</code> value that the button feeds into each channel. A channel's <code>VariationAmount</code> (0..1) then modulates its tween duration and its Move/Rotate/Scale travel-from-home by <code>1 + (variation*2-1)*VariationAmount</code> &mdash; so per-press feel varies, yet stays fully reproducible from the seed. With <code>VariationAmount == 0</code> it is inert.</p>
+
+<ul class="lc-win">
+<li><strong>Free navigation + state machine:</strong> subclassing <code>Selectable</code> gives keyboard/gamepad focus, <code>Interactable</code>, and the five-state transition flow on any input backend via <code>EventSystem</code> &mdash; no <code>Unity.InputSystem</code> reference.</li>
+<li><strong>Zero-setup default:</strong> an empty button self-applies a Color + Scale stack and reacts to hover/press/click immediately.</li>
+<li><strong>One draw call ripple:</strong> the press ripple rides the shared <code>LcDrawList</code> spine and ticks only while ripples live (steady-state zero work, never blocks the raycast).</li>
+<li><strong>Reproducible audio:</strong> seeded <code>LcRng</code> pitch/volume jitter (never <code>UnityEngine.Random</code>) through a pooled <code>PlayOneShot</code> with optional mixer routing &mdash; zero per-click allocation.</li>
+<li><strong>No DOTween:</strong> all tweening runs on Lucent's self-contained <code>LcEasing</code> engine; <code>Tick(dt)</code> is public so EditMode/headless tests can pump animation deterministically.</li>
+</ul>
+</section>
+<section id="charts">
+<h2 id="charts">Charts</h2>
+
+<p>The charts layer turns an <code>LcDataset</code> into a picture without ever stepping off the shared render spine. <code>LcChartView</code> is not a wrapper around a separate chart canvas &mdash; it <em>is</em> an <code>LcDrawable</code> (which is an <code>LcUGuiSurface</code>). Its bound generator writes the chart's panel, axes, series and legend into one pooled <code>LcDrawList</code> inside <code>OnPopulateMesh</code>, exactly the way <code>LcShape</code> does. The upshot is that an entire chart &mdash; gridlines, bars, value labels and all &mdash; batches into a single mesh and one draw call, and rides the same render path as every other Lucent visual.</p>
+
+<p>The component works unconfigured: a freshly added <code>LcChartView</code> with no dataset renders a default line chart over a bundled 8-point sample, so nothing on screen is ever blank-by-default. Configuration comes from two directions that never fight: the inspector (a serialized <code>LcChartKind</code> plus X/Y/value column names, axis and legend toggles), and a fluent code builder. A generator assigned in code latches a <code>_generatorFromCode</code> flag so the inspector can never silently override it.</p>
+
+<h3 id="charts-builder">The fluent builder</h3>
+
+<pre class="lc-code"><code>var sales = new LcDatasetBuilder("sales")
+    .Category("month", "Jan", "Feb", "Mar", "Apr")
+    .Number("revenue", 12, 19, 7, 22)
+    .Build();
+
+LcChartView.Create(canvas.transform)
+    .WithData(sales)
+    .Bar("month", "revenue")   // or .Line / .Scatter / .Area / .Spline / .Step / .Bubble(...)
+    .Themed(theme)             // series/panel/axis colors pulled from theme tokens
+    .Axes()                    // bottom X + left Y cartesian axes
+    .Legend(LcLegendVisibility.Auto, LcAxisSide.Right)
+    .Build();</code></pre>
+
+<p>Beyond the cartesian shortcuts, <code>.Chart(LcChartGeneratorBase)</code> binds any generator in the catalog. Composition is deterministic and order-driven: <code>Generate</code> emits the themed panel first (so it lands behind everything), reserves axis thickness and a legend strip through the box-model <code>LcChartLayout.Solve()</code>, projects the generator into the shrunk plot rect, then draws the legend keys into the space the plot was carved out of &mdash; no overlap by construction.</p>
+
+<h3 id="charts-generators">The generator catalog</h3>
+
+<p>Every chart type is an <code>LcChartGeneratorBase</code> implementing the spine's <code>ILcChartGenerator</code>. The base class owns column binding (<code>Dataset</code>, <code>XColumn</code>, <code>YColumn</code>), color and stroke, NaN-tolerant projection (<code>ProjectFinite</code> drops any non-finite point so no NaN geometry is ever emitted), animated reveal via <code>LcDrawContext.AnimationT</code>, and per-row hit-test recording (<code>LastPoints</code> / <code>LastRows</code>). Each generator reports a stable <code>TypeId</code> ("line", "bar", "candlestick", ...) surfaced as <code>LcTypeId</code> ("lc.chart.line") for the registry.</p>
+
+<ul>
+  <li><strong>Line family</strong> &mdash; <code>LcLineGenerator</code>, <code>LcAreaGenerator</code> (fill to baseline + outline), <code>LcSplineGenerator</code> (Catmull-Rom), <code>LcStepGenerator</code>, <code>LcSparklineGenerator</code>.</li>
+  <li><strong>Point family</strong> &mdash; <code>LcScatterGenerator</code> (per-row markers), <code>LcBubbleGenerator</code> (a third column drives marker radius).</li>
+  <li><strong>Bar family</strong> &mdash; <code>LcBarGenerator</code>, <code>LcHorizontalBarGenerator</code>, <code>LcStackedBarGenerator</code>, <code>LcGroupedBarGenerator</code> (the multi-value bars tint each series from <code>LcColorScale.Sequential()</code>).</li>
+  <li><strong>Radial</strong> &mdash; <code>LcPieGenerator</code>, <code>LcDonutGenerator</code>, <code>LcRadarGenerator</code> (concentric grid rings + spokes), <code>LcSunburstGenerator</code>.</li>
+  <li><strong>Statistical</strong> &mdash; <code>LcHistogramGenerator</code>, <code>LcBoxPlotGenerator</code>, <code>LcViolinGenerator</code> (mirrored density outline), <code>LcHeatmapGenerator</code> (row-major grid colored by a sequential scale), <code>LcGaugeGenerator</code>, <code>LcProgressGenerator</code>.</li>
+  <li><strong>Relational / flow</strong> &mdash; <code>LcTreemapGenerator</code> (slice-and-dice), <code>LcSankeyGenerator</code> (curved smoothstep ribbons), <code>LcParallelCoordinatesGenerator</code>, <code>LcTimelineGenerator</code>, <code>LcGanttGenerator</code>, <code>LcWaterfallGenerator</code>, <code>LcFunnelGenerator</code>.</li>
+  <li><strong>Composite</strong> &mdash; <code>LcMultiAxisGenerator</code> (each series on its own auto Y scale over a shared X) and <code>LcComboGenerator</code>, which forwards the shared context and dataset to a list of heterogeneous child generators (e.g. bars under a line) and merges their hit points so pointer interaction spans the whole composition.</li>
+</ul>
+
+<p class="lc-note">The breadth set beyond the core thirteen kinds (histogram through combo) is appended at the end of <code>LcChartKind</code> so existing inspector ordinals stay stable. Box and violin compute quartiles with a local deterministic type-7 percentile over a sorted copy &mdash; identical input always yields identical geometry, which is what makes the charts headless-verifiable.</p>
+
+<h3 id="charts-scales-axes">Scales, axes, legend, tooltips</h3>
+
+<p>Positional scales implement <code>ILcScale</code> (double-precision <code>Project</code>/<code>Invert</code>/<code>Ticks</code>): <code>LcLinearScale</code>, <code>LcLogScale</code>, <code>LcSymlogScale</code> (linear near zero, log beyond &mdash; handles negatives), <code>LcPowerScale</code>, <code>LcTimeScale</code> (Unix-seconds domain with calendar-aware nice ticks), plus the discrete <code>LcOrdinalScale</code> and <code>LcBandScale</code> that the bar generators use for evenly-padded category bands. Tick text comes from an <code>ILcTickFormatter</code> &mdash; <code>LcNumberFormatter</code>, <code>LcSiPrefixFormatter</code>, <code>LcPercentFormatter</code>, <code>LcCurrencyFormatter</code>, <code>LcDateTimeFormatter</code>, or a delegate. Color mapping is kept separate in <code>LcColorScale</code> (sequential / diverging multi-stop gradients) because it returns a color rather than a position.</p>
+
+<p><code>LcChartLayout</code> is a pure box-model solver: from an outer rect it subtracts padding, an optional title band, the legend strip and each axis's reserved thickness to compute the plot rect, then assigns the resulting pixel range back onto each axis's scale. <code>LcAxisRenderer</code> draws baselines, ticks, gridlines, tick labels and titles into the <code>Stroke</code> layer; <code>LcLegendRenderer</code> stacks (vertical sides) or flows (horizontal sides) one swatch + <code>LcTextRun</code> per <code>LcLegendEntry</code>, clipped to its reserved slot. Both emit into the same <code>LcDrawList</code>, so axes and legend batch into the chart's one mesh.</p>
+
+<p>Interaction is device-agnostic and headless-friendly. <code>LcHitTester.NearestIndex</code> does the spatial query against the generator's projected points; <code>LcChartView.OnPointerClick</code> and an optional per-frame hover poll drive an <code>LcSelectionModel</code> and an <code>LcTooltipController</code>. <code>LcPanZoomController</code> mutates scale domains (not pixels) to window the data, clamped to a cumulative zoom range. The <code>LcInputAdapter</code> bridge prefers the new Input System and falls back to the legacy manager (or a zeroed no-op), so the stack imports and runs on any input backend.</p>
+
+<h3 id="charts-surfaces">World-space and UI Toolkit surfaces</h3>
+
+<p>Because the chart's output is a backend-neutral <code>LcDrawList</code>, the same chart can target any surface that implements <code>ILcRenderSurface</code> (<code>PlotRect</code> + <code>Submit</code>). <code>LcChartView.RenderToSurface</code> composes the full chart against the surface's plot rect and hands it over &mdash; without <code>Lucent.Charts</code> ever naming a concrete surface assembly. <code>LcWorldSpaceSurface</code> maps the list onto a planar <code>Mesh</code> (a flat quad in the 3D scene for billboards or diegetic HUDs) and is the recommended large-mesh target because it promotes to a 32-bit index buffer above 65535 vertices. <code>LcUIToolkitSurface</code> is a <code>VisualElement</code> that emits the list into its repaint mesh via <code>MeshGenerationContext</code>, so a chart can live inside a UXML/USS hierarchy beside native UITK controls (16-bit indices; y flipped to top-left).</p>
+
+<h3 id="charts-export">Headless export</h3>
+
+<pre class="lc-code"><code>// Compose the chart onto the headless capture surface, then export -- no GPU.
+var capture = new LcCaptureSurface { PlotRect = new Rect(0, 0, 800, 600) };
+chart.RenderToSurface(capture);                  // panel + axes + series + legend
+
+byte[] png = LcRasterExporter.EncodeToPng(capture, Color.white);
+string svg = LcVectorExporter.ExportSvg(capture.Last, 800, 600,
+                                        new Color32(255, 255, 255, 255));</code></pre>
+
+<p><code>LcRasterExporter</code> is a CPU rasterizer: it barycentric-fills the draw list's triangles with per-vertex color interpolation and alpha blend, blits text runs through the built-in <code>LcBitmapFont</code>, and encodes to PNG/JPG via Unity's deterministic image encoder. <code>LcVectorExporter</code> takes the true vector path &mdash; each triangle becomes an SVG <code>&lt;polygon&gt;</code>, each label a <code>&lt;text&gt;</code> &mdash; with no rasterization and no GUIDs/timestamps. <code>LcCsvExporter</code> and <code>LcJsonExporter</code> round-trip the underlying <code>LcDataset</code> (RFC-4180 CSV / flat JSON rows, invariant culture, BOM-less). <code>LcReportComposer</code> merges many chart panels into a titled near-square grid, paginates at a fixed capacity, and flows each page straight into the raster or vector exporter.</p>
+
+<h3 id="charts-dashboard">Dashboard</h3>
+
+<p><code>LcDashboardView</code> is a <code>MonoBehaviour</code> that hosts <code>LcChartView</code> tiles and only drives their <code>RectTransform</code>s &mdash; each child still batches into its own single mesh. The deterministic <code>LcGridLayoutSolver</code> maps every <code>LcDashboardTile</code> placement (col/row plus span) to a cell rect in a gapped uniform grid; re-layout runs on <code>OnRectTransformDimensionsChange</code> for responsiveness, and width breakpoints (<code>LcGridBreakpoint</code>) can re-shape the column count. The grid + tile placement (not contents) round-trips to portable JSON through <code>LcDashboardDocument</code>, reconstructed against live charts by <code>TileId</code>. <code>LcCrossFilterEngine</code> links a source tile's selection to target tiles: it maps selected rows to category ids, materializes a filtered clone of each target's dataset via <code>LcDataOps</code>, rebinds it and rebuilds &mdash; non-destructive and reversible, since each target's original dataset is cached.</p>
+
+<h3 id="charts-modules">The five specialist modules</h3>
+
+<ul>
+  <li><strong>Analytics</strong> &mdash; rendering-free transforms: <code>LcKMeans</code> (deterministic Lloyd's), <code>LcForecasting</code> (exponential smoothing, OLS linear forecast), <code>LcFunnelAnalysis</code>, <code>LcRetention</code> cohort matrices, <code>LcHistogram</code> binning, descriptive <code>LcSummary</code>, and the shared <code>LcStats</code> math, bridged to datasets by <code>LcDatasetAnalytics</code>.</li>
+  <li><strong>BI</strong> &mdash; <code>LcKpiCalc</code>/<code>LcKpi</code> with an <code>LcKpiTile</code> scorecard generator (extends the chart spine, <code>RequiresData=false</code>), the <code>LcAggregator</code> + <code>LcPivotEngine</code>/<code>LcPivotTable</code> cross-tab (first-seen key order), an <code>LcSlicer</code> cross-filter that produces an <code>LcDrawContext.RowFilter</code>, and an <code>LcDrillDownController</code> for hierarchical navigation.</li>
+  <li><strong>Financial</strong> &mdash; this is where <code>LcCandlestickGenerator</code>, <code>LcOhlcGenerator</code> and <code>LcVolumeGenerator</code> live (index-spaced X via <code>LcIndexTimeScale</code> so calendar gaps never open up). Indicators (<code>LcSmaIndicator</code>, <code>LcEmaIndicator</code>, <code>LcRsiIndicator</code>, <code>LcMacdIndicator</code>, <code>LcBollingerBands</code>, <code>LcAtrIndicator</code>, <code>LcStochasticIndicator</code>, <code>LcVwapIndicator</code>) compute via O(1) streaming engines so batch and live share one source of truth.</li>
+  <li><strong>Scientific</strong> &mdash; 2D breadth (heatmap, contour, error-bars, confidence-band, regression, smoothing, FFT) over the <code>LcDrawList</code> spine, plus <code>LcHeightFieldGenerator</code>, a parametric z=f(x,y) grid that builds a 3D mesh directly and mounts on <code>LcWorldSpaceSurface</code> (the only generator that bypasses the flat draw list). <code>LcScientificModule</code> indexes the stable TypeIds.</li>
+  <li><strong>Telemetry</strong> &mdash; a 0-GC live pipeline: an allocation-free <code>LcRingBuffer&lt;T&gt;</code> backs <code>LcStreamingSeries</code>, which keeps a dirty-tail marker so a live chart re-tessellates only the samples that changed since last frame. <code>LcTelemetrySampler</code> registers <code>ILcTelemetrySource</code> channels (FPS, frame time, managed memory, GC collections, draw calls) and an <code>LcThresholdAlert</code> fires on edge crossings.</li>
+</ul>
+
+<ul class="lc-win">
+  <li>A whole chart &mdash; panel, axes, gridlines, series, value labels, legend &mdash; is <strong>one mesh, one draw call</strong>, because the chart is an <code>LcDrawable</code> writing a single <code>LcDrawList</code>.</li>
+  <li>The <strong>same chart renders to uGUI, a world-space quad, a UI Toolkit element, or a headless capture surface</strong> through one <code>ILcRenderSurface.Submit</code> contract &mdash; the charts assembly never names a concrete surface.</li>
+  <li><strong>Deterministic, GPU-free export</strong> to PNG, SVG, CSV and JSON: identical input bytes out every run (invariant culture, no clock, no GUIDs), which is exactly what makes the charts Tier-1 headless-testable.</li>
+  <li>Generators are <strong>NaN-tolerant by construction</strong> &mdash; non-finite points are dropped before any geometry is emitted, so a single missing cell never poisons a series.</li>
+  <li>Live telemetry is <strong>steady-state zero-allocation</strong>: the ring buffer, push and per-frame tick never allocate, and a dirty-tail marker rebuilds only the changed samples.</li>
+</ul>
+</section>
+<section id="scroll">
+<h2 id="scroll">N6 - Virtualized Scroll: the 0-GC recycler</h2>
+
+<p>A uGUI <code>ScrollRect</code> instantiates one GameObject per row. Show 5000 rows and you pay 5000 cells of memory, 5000 layout entries, and a multi-second build hitch. <strong>Lucent.Scroll</strong> instead keeps a bounded working set alive - only the cells that overlap the viewport (plus a small buffer) - and recycles them as you scroll. 5000 items render as roughly <em>visible + 2&times;buffer</em> live cells (about 9 for a five-row viewport), and the steady-state scroll path allocates <strong>zero bytes</strong>.</p>
+
+<p>The whole thing is driven by one component, <code>LcScrollView</code>. It drives a uGUI <code>ScrollRect</code> by composition (never subclassing), self-builds its own viewport + content when dropped on a bare GameObject, and works with zero code: add the component, press Play, and a real 200-row sample list scrolls. Code always wins over the Inspector once you call a setter.</p>
+
+<h3>The data contract: you never hand it your list</h3>
+
+<p>Lucent.Scroll never stores your model. It asks an <code>ILcScrollDataSource</code> for a <code>Count</code> and to <code>Bind</code> data onto a recycled cell - and it only ever calls <code>Bind</code> for the handful of cells near the viewport, so binding is <code>O(visible)</code>, never <code>O(count)</code>. The fast path is a typed one-liner:</p>
+
+<pre class="lc-code"><code>var view = gameObject.AddComponent&lt;LcScrollView&gt;();
+
+// 5000 logical rows, but Bind() only fires for the ~9 cells on screen.
+view.SetData&lt;LcScrollTextCell&gt;(5000, (i, cell) =&gt;
+    cell.SetContent("Row " + i, "subtitle " + i));</code></pre>
+
+<p>That wraps an <code>LcListDataSource&lt;TCell&gt;</code>. A <code>Func&lt;int&gt;</code> count overload handles lists whose length changes at runtime; implement <code>ILcScrollDataSource</code> directly for full control; or assign an <code>LcScrollDataSource</code> ScriptableObject for the no-code path.</p>
+
+<h3>The hot path: bounded work, zero steady-state allocation</h3>
+
+<p><code>LcRecycler</code> is the heart of the asset. On every scroll event it asks the layout which index range is visible, releases the cells that left the window back to the pool, and fetches + binds + positions the cells that entered. The number of live cells never grows with the item count:</p>
+
+<pre class="lc-code"><code>// LcRecycler.UpdateVisible -- the hot path (condensed)
+public void UpdateVisible(float scrollOffset, float viewportMain)
+{
+    int count = _data.Count;
+    _layout.GetVisibleRange(scrollOffset, viewportMain, out int first, out int last);
+    first -= _buffer; last += _buffer;
+    if (first &lt; 0) first = 0;
+    if (last &gt; count - 1) last = count - 1;
+
+    // ...release every live cell now outside [first,last] to its pool...
+
+    for (int i = first; i &lt;= last; i++)
+    {
+        if (_live.ContainsKey(i)) continue;          // already realised
+        var cell = AcquirePool(i, out int type).Get();
+        cell.CellType = type;
+        cell.OnBind(i);
+        _data.Bind(i, cell);                         // your binder, only for visible i
+        Position(cell, i);
+        _live[i] = cell;
+    }
+}</code></pre>
+
+<p class="lc-note"><strong>Why it stays at 0 GC.</strong> The loop uses struct <code>Dictionary</code> enumerators, a reused scratch <code>List&lt;int&gt;</code>, and no LINQ, closures, or boxing. The subtle part is positioning: a redundant write to a RectTransform's <code>sizeDelta</code> or anchors dirties the underlying uGUI <code>Graphic</code> and forces a per-cell mesh rebuild - the real GC source during scroll. So <code>Position</code> writes a property only when it actually changed:</p>
+
+<pre class="lc-code"><code>if (rt.sizeDelta != size) rt.sizeDelta = size;
+if (rt.anchoredPosition != pos) rt.anchoredPosition = pos;</code></pre>
+
+<p>For uniform cells the size and anchors are constant after warm-up, so only <code>anchoredPosition</code> ever moves - and the mesh is never rebuilt.</p>
+
+<h3>The pool and the cell lifecycle</h3>
+
+<p><code>LcCellPool</code> wraps Unity's <code>ObjectPool&lt;T&gt;</code> with the collection check off. A released cell is deactivated and kept; a fetched cell is reactivated. Nothing is re-instantiated during scroll, which is exactly what <code>TotalCellsCreated</code> proves: it climbs while the pool warms, then stays flat forever. Every cell is an <code>LcScrollCell</code> with a reuse-aware lifecycle - <code>OnBind(index)</code> means "show item N now," <code>OnRecycle()</code> resets scale/alpha so a reused cell never carries stale animation state. The built-in <code>LcScrollTextCell</code> (a procedural <code>Image</code> + two uGUI <code>Text</code> fields, no TextMeshPro dependency) gives you the zero-prefab path.</p>
+
+<h3>Layouts: vertical / horizontal, list / grid / staggered</h3>
+
+<p>Geometry lives behind <code>LcScrollLayout</code>, which maps an index to a position and answers "which indices fall in this window?" without instantiating anything - so the recycler is layout-agnostic. Three layouts ship, on either axis (<code>LcScrollAxis.Vertical</code> or <code>Horizontal</code>):</p>
+
+<ul>
+<li><code>LcScrollLinearLayout</code> - a single track. Uniform extent by default, or per-cell <strong>variable sizes</strong> via <code>SetVariableSizes(Func&lt;int,float&gt;)</code>, which builds an <code>O(count)</code> cumulative-offset cache once and finds the visible range by <strong>binary search</strong> - so even a 50,000-row list with every row a different height stays bounded.</li>
+<li><code>LcGridLayout</code> - fixed columns (vertical) or rows (horizontal): <code>SetGridLayout(3)</code>.</li>
+<li><code>LcStaggeredGridLayout</code> - masonry: fixed columns, variable main sizes packed into the shortest column, via <code>SetStaggeredGrid(crossCount, crossSpacing, mainSizeOf)</code>.</li>
+</ul>
+
+<h3>No-code juice: snapping, paging, pull, parallax, gamepad</h3>
+
+<p>Almost every behavior is a single Inspector toggle or a single setter. None of them touch the recycler's allocation budget:</p>
+
+<pre class="lc-code"><code>view.SetSnapping(true, LcScrollSnapAlign.Center);   // settle on the nearest cell on drag end
+view.SetPaging(true);                               // or snap by full viewport pages
+view.SetPullToRefresh(true, thresholdPx: 80f);      // over-drag past an end fires OnPullToRefresh / OnLoadMore
+view.SetLooping(true);                              // seamless wrap for pickers / endless feeds
+view.SetAutoScroll(40f);                            // px/sec marquee; with Loop it wraps seamlessly
+view.SetAnimation(LcScrollAnimationKind.Parallax, strength: 0.5f);
+view.SetControllerNavigation(true);                 // gamepad d-pad / stick + arrow keys
+view.ScrollToIndex(4200, LcScrollSnapAlign.Center, animated: true);  // jump deep into a virtualized list</code></pre>
+
+<p>Scroll-driven animation is a pure, testable function. <code>LcScrollAnimator.Evaluate</code> maps a cell's distance-from-viewport-centre in <code>[0..1]</code> to a scale/alpha pair for the <code>FocusScale</code>, <code>Fade</code>, and <code>Depth</code> presets; <code>Parallax</code> is distinct - a signed cross-axis positional shear via <code>EvaluateCrossOffset</code> (antisymmetric, so a cell dead-centre never moves). Every preset can be shaped by an <code>AnimationCurve</code> routed through <code>Lucent.Motion</code>'s deterministic <code>LcEasing</code>. Applying it is alloc-free and writes only on change.</p>
+
+<p class="lc-note"><strong>Gamepad navigation, two ways.</strong> When the view is the EventSystem's selected object, <code>IMoveHandler.OnMove</code> drives a focused cell. With <code>SetControllerNavigation(true)</code> it also polls the New Input System directly (d-pad / left stick + arrow keys, edge/repeat-gated). Either way, focusing an item that lives outside the live window auto-scrolls it into view first - <code>FocusDelta</code> is a pure axis/layout-aware mapping (a List steps along its scroll axis; a Grid steps by one within a line and by <code>crossCount</code> across lines), and <code>OnFocusChanged</code> reports the new index.</p>
+
+<h3>Animated data-ops without a rebind</h3>
+
+<p>After you mutate your data source, <code>InsertItems</code>, <code>RemoveItems</code>, and <code>MoveItem</code> animate the change instead of rebuilding. The trick is that the recycler <em>re-keys</em> the live cells in place rather than rebinding them - existing cells keep their instance and slide to their new slots, inserted cells pop in:</p>
+
+<pre class="lc-code"><code>// after data.Insert(index, 3)
+view.InsertItems(index, 3);   // existing visible cells slide down (same instances), 3 new cells pop in
+// after data.Move(from, to)
+view.MoveItem(from, to);      // the moved cell keeps its instance and slides to its new slot</code></pre>
+
+<p>The logical state is committed synchronously; the slide/pop is a brief cosmetic coroutine, skipped automatically when a scroll-driven scale animator already owns the cells. Drag-to-reorder (<code>SetReorderable</code>) and sticky section headers (<code>SetSections</code>) and frozen-header virtualized tables (<code>SetTable</code>) ride the same spine.</p>
+
+<h3>Theme-bound cells</h3>
+
+<p>Assign an <code>LcScrollTheme</code> asset (<code>SetTheme</code> / Inspector) to recolor the built-in text cells and drive spacing with zero scripting. <code>LcScrollTheme.Apply</code> resolves a cell's background, title/subtitle colours, and font sizes from the canonical global <code>Lucent.Theme</code> tokens (<code>LcColorKeys.Surface</code>, <code>LcColorKeys.Text</code>, <code>LcNumberKeys.FontSizeTitle</code>...) when a theme is active, falling back to the asset's serialized fields otherwise - so one theme switch recolours every scroll list, and an unconfigured asset still "just works." The cell setters write only on change, so theming never costs an extra mesh rebuild.</p>
+
+<h3>Prove the win</h3>
+
+<ul class="lc-win">
+<li><strong>5000 items, ~9 live cells.</strong> <code>LiveCellCount</code> stays bounded at <em>visible + 2&times;buffer</em> regardless of <code>Count</code>; <code>TotalCellsCreated</code> goes flat the moment the pool is warm - proof that scrolling recycles, never instantiates.</li>
+<li><strong>0 bytes GC in steady-state scroll.</strong> Struct enumerators, a reused scratch list, no LINQ/closures/boxing, and write-on-change RectTransform updates that never trigger a uGUI mesh rebuild.</li>
+<li><strong>Binding is O(visible), not O(count).</strong> Your <code>Bind</code> delegate runs only for the cells near the viewport; <code>ScrollToIndex(4200, ...)</code> jumps deep into a 5000-row list without touching the other 4990.</li>
+<li><strong>Variable-height lists stay bounded.</strong> Per-cell sizes resolve through an <code>O(count)</code>-built cumulative cache and a binary-search visible range, so non-uniform rows don't degrade the recycler.</li>
+<li><strong>Certified in the shipped player.</strong> <code>LcScrollSelfTest</code> runs the real recycler in a built player under <code>-selfTestScroll</code>: 10,000 items must realise a bounded handful of cells (<code>live &gt; 0 &amp;&amp; live &lt; 100</code>) with correct index binding, proving the path survives IL2CPP/AOT stripping - editor-green never certifies the device build.</li>
+</ul>
+</section>
+<section id="text">
+<h2 id="text">Text: RTL/Arabic, BiDi, SDF/MSDF, and animated text without TextMeshPro</h2>
+
+<p>The <code>Lucent.Text</code> module is a complete Unicode text stack written in pure C#: bidirectional reordering, Arabic and complex-script shaping, line/word/grapheme segmentation, automatic font fallback, an SDF/MSDF glyph renderer that parses raw <code>.ttf</code>/<code>.otf</code> bytes itself, plus combat and animated text. It ships in two tiers. <strong>Tier 1</strong> layers onto an existing TextMeshPro label as a drop-in <code>ITextPreprocessor</code> &mdash; correct Arabic/RTL with zero migration. <strong>Tier 2</strong> (<code>LcSdfText</code>) renders to a <code>MeshRenderer</code> straight from font bytes with the Lucent SDF shader &mdash; <em>no TextMeshPro, no native plugins</em>, so it draws scripts and fonts a TMP atlas cannot.</p>
+
+<h3>Tier 1: one-call RTL, or a drop-in component</h3>
+
+<p>The shaping pipeline is a pure, allocation-cached function with no Unity dependency: Arabic contextual shaping (in logical order) &rarr; UAX&nbsp;#9 BiDi reordering &rarr; L4 mirroring &rarr; visual string. <code>LcTextRtl.Convert</code> is the one-shot path; <code>LcTextProcessor.Process</code> exposes the full result including the cluster map that lets animation reveal glyphs in logical reading order even after they have been reordered for display.</p>
+
+<pre class="lc-code"><code>using Lucent.Text;
+using Lucent.Text.Unicode.BiDi;
+
+// One call: logical-order input -> TMP-ready visual string (shaping + UAX #9 bidi).
+string visual = LcTextRtl.Convert("Ů…Ř±Ř­Ř¨Ř§ World 123");
+
+// Or the full pipeline, with the cluster map for reveal-in-logical-order animation.
+LcProcessedText r = LcTextProcessor.Process(src, LcShapeSettings.Default);
+string display   = r.Visual;          // hand to ANY TMP_Text / UI Text
+bool rtl         = r.IsRightToLeft;   // (r.ParagraphLevel &amp; 1) == 1
+int[] toSource   = r.VisualToSource;  // visual glyph -> original code-point index</code></pre>
+
+<p>Dropping the <code>LcText</code> component next to any <code>TMP_Text</code> wires it as a preprocessor automatically: TMP calls <code>PreprocessText</code> with the logical string and Lucent returns the shaped, reordered visual string. <code>[ExecuteAlways]</code> means Arabic/RTL previews are live in the editor, and <code>_autoFlipAlignment</code> swaps only the horizontal alignment to match the resolved paragraph direction. Disable the component and the text reverts to vanilla TextMeshPro. Options cover base direction (<code>LcBaseDirection.Auto</code> resolves it from the first strong character per UAX&nbsp;#9 P2&ndash;P3), national digit substitution (<code>LcDigitMode</code>), and optional Markdown (<code>**bold**</code>, <code>*italic*</code>, <code>~~strike~~</code>) translated to TMP rich-text.</p>
+
+<p class="lc-note"><strong>What the BiDi engine actually does.</strong> <code>LcBidi.Resolve</code> is a full UAX&nbsp;#9 implementation, not a heuristic "RTL fixer": paragraph level (P2&ndash;P3), explicit embeddings, overrides <em>and</em> directional isolates (X1&ndash;X9, including the X5a&ndash;X6a / FSI rules), weak types (W1&ndash;W7), paired-bracket and neutral resolution (BD16, N0&ndash;N2), implicit levels (I1&ndash;I2), and reordering with mirroring (L1&ndash;L4). That is why embedded Latin and numbers keep their order inside an RTL run, and why mixed Arabic/Hebrew/punctuation/brackets come out right where partial plugins fail.</p>
+
+<h3>Shaping: Arabic now, any complex script via the font</h3>
+
+<p>Tier 1's <code>LcArabicShaper</code> maps letters to their isolated/initial/medial/final presentation forms and builds lam-alef ligatures purely from Unicode joining data (no font file required); tashkeel marks are transparent to joining. Tier 2 goes further: <code>LcOpenTypeArabicShaper</code> and <code>LcComplexShaper</code> drive the <em>font's own</em> GSUB/GPOS tables &mdash; cmap lookup, joining features (<code>isol</code>/<code>init</code>/<code>medi</code>/<code>fina</code>), required and standard ligatures (<code>rlig</code>/<code>liga</code>), contextual alternates (<code>calt</code>), and GPOS mark placement. With Indic syllable reordering (<code>LcIndicReorder</code>) applied first, the same engine shapes Devanagari, Bengali, Tamil, Thai, and more, with the script auto-detected from the text.</p>
+
+<h3>Tier 2: SDF + MSDF rendering with no TextMeshPro</h3>
+
+<p><code>LcSdfText</code> takes a string plus raw font bytes, parses the OpenType tables (<code>LcOpenTypeFont</code>), shapes with the font's tables, runs proper mixed-BiDi glyph reordering via <code>LcBidi.ReorderByLevel</code>, rasterizes each glyph into a shelf-packed atlas, and emits a quad mesh. Two reconstruction modes share the path: classic single-channel SDF, or MSDF, where <code>LcMsdfRasterizer</code> colours contour edges so a per-pixel median of three channels keeps sharp corners crisp under magnification (<code>LcMsdfBitmap.Median3</code> is the managed analogue of msdfgen). Switching is one property.</p>
+
+<pre class="lc-code"><code>using Lucent.Text.Sdf;
+
+var label = go.AddComponent&lt;LcSdfText&gt;();  // adds MeshFilter + MeshRenderer
+label.SetFont(myTtfBytes);                  // parse .ttf/.otf -> cmap, GSUB, GPOS, glyf/CFF
+label.Text     = "ŕ¤ąŕ¤żŕ¤¨ŕĄŤŕ¤¦ŕĄ€ / Hello";  // mixed script
+label.SdfMode  = LcSdfMode.Msdf;            // median-of-3, crisp corners
+label.MaxWidth = 6f;                        // &gt;0 enables UAX #14 word wrap
+label.Alignment = Lucent.Text.Unicode.Layout.LcTextAlignment.Justify;
+
+// Variable fonts: interpolate an instance via fvar/gvar and re-rasterize.
+if (label.HasVariableAxes) label.SetVariation("wght", 700f);</code></pre>
+
+<p>The same renderer composites COLR/CPAL colour emoji as stacked palette-tinted SDF layers (so a Segoe UI Emoji glyph draws with no bitmap tables), supports variable fonts through <code>fvar</code>/<code>gvar</code> interpolation, and offers a pixel-perfect snap mode (<code>LcSdfPixelSnap</code>) for crisp small text. Inline <code>&lt;gradient&gt;</code>/<code>&lt;outline&gt;</code>/<code>&lt;shadow&gt;</code>/<code>&lt;glow&gt;</code>/<code>&lt;bevel&gt;</code> style spans map to per-glyph vertex colours and material properties. Shaders load from <code>Resources</code> first so they survive build stripping on WebGL/IL2CPP.</p>
+
+<h3>Segmentation, wrapping, and font fallback</h3>
+
+<p>Line wrapping uses a full UAX&nbsp;#14 breaker (<code>LcUax14LineBreaker.Analyze</code>, implementing LB2&ndash;LB31 from baked Unicode property tables, with a lightweight <code>LcLineBreaker</code> for the hot path); <code>LcLineWrapper.Wrap</code> and <code>LcTextLayoutEngine.Layout</code> turn break opportunities and advance widths into positioned, aligned multi-line glyphs. Grapheme clusters (<code>LcGraphemeBreak.ClusterStarts</code>, UAX&nbsp;#29) keep a base and its marks together so the typewriter never splits an Arabic letter from its tashkeel; word and sentence breakers and a dictionary segmenter (for scriptio-continua like Thai) round out the set. <code>LcFontFallback.SegmentRuns</code> splits a code-point run into maximal runs that each resolve to the first font in a chain that actually has the glyph &mdash; one label can mix Latin, Arabic, CJK, and emoji even when no single font covers them all.</p>
+
+<h3>Animated and combat text</h3>
+
+<p><code>LcTextAnimator</code> drives a typewriter that honours logical reading order through the cluster map (correct for RTL), plus tag-driven continuous behaviors (wave, shake, rainbow&hellip;), per-character entrances with easing, curved/arc and radial layout, and per-character sound &mdash; all by manipulating the TMP mesh in <code>LateUpdate</code>, with no custom shaders. A global <code>ReduceMotion</code> switch instantly settles every animator (an OS "reduce motion" analogue) while still firing reveal/word/named events so game logic is unaffected. For floating combat text, <code>LcDamageNumbers.Spawn(value, worldPos)</code> just works &mdash; a pooled, billboarded world-space (or canvas) manager that optionally combines rapid hits into one rising total.</p>
+
+<ul class="lc-win">
+<li><strong>No TextMeshPro dependency for Tier 2:</strong> <code>LcSdfText.SetFont(byte[])</code> parses OpenType itself and renders via a <code>MeshRenderer</code> &mdash; no TMP font asset, no native code.</li>
+<li><strong>Real UAX&nbsp;#9, not a fixer:</strong> <code>LcBidi.Resolve</code> implements explicit levels, isolates, paired brackets, and L1&ndash;L4 reordering &mdash; the cases partial RTL plugins get wrong.</li>
+<li><strong>Logical-order animation after visual reordering:</strong> <code>LcProcessedText.VisualToSource</code> maps every displayed glyph back to its source index, so a typewriter reveals RTL text in true reading order.</li>
+<li><strong>Pure, cached, parallelizable core:</strong> immutable results are cached, and <code>LcTextProcessor.ProcessBatch</code> shapes hundreds of strings across all CPU cores.</li>
+<li><strong>Beyond Arabic:</strong> the font-driven <code>LcComplexShaper</code> + <code>LcIndicReorder</code> shape Devanagari, Bengali, Tamil, Thai and more from any font carrying GSUB/GPOS.</li>
+</ul>
+</section>
+<section id="components-theming">
+<h2 id="components-theming">Components, Theming &amp; Localization</h2>
+
+<p>Layer N8 is what most teams reach for first: a library of roughly two dozen no-code widgets, a design-token theme system that recolors the whole UI from one channel, and an I2-parity localization stack. All three sit on the same procedural spine as the rest of Lucent &mdash; widgets paint themselves with <code>LcShape</code> meshes and the built-in runtime font, so a fresh component renders correctly the instant it is added, with zero atlas, zero font import, and zero scene setup.</p>
+
+<h3>The widget library</h3>
+
+<p>The <code>Lucent.Components</code> assembly ships ~25 drop-in widgets, each a single <code>MonoBehaviour</code> whose serialized fields are the source of truth. Overlay/feedback widgets &mdash; <code>LcDropdown</code>, <code>LcModal</code> (dialog), <code>LcToast</code>, <code>LcTooltip</code>, <code>LcContextMenu</code>, <code>LcTabs</code>, <code>LcAccordion</code>/<code>LcCollapsible</code>, <code>LcSegmentedControl</code>, <code>LcDatePicker</code> (<code>LcDate</code>), <code>LcTimePicker</code> (<code>LcTime</code>), <code>LcColorPicker</code>, <code>LcInputField</code>, <code>LcSlider</code>, <code>LcToggle</code>, <code>LcProgressBar</code>, <code>LcRatingStars</code>, <code>LcChip</code>, <code>LcBadge</code>, <code>LcSkeletonLoader</code>, <code>LcScrollbar</code>, <code>LcNavigationController</code> &mdash; build their skin lazily in an <code>EnsureBuilt()</code> pass via the internal <code>LcWidgetKit</code> factory (<code>LcWidgetKit.Shape(...)</code>, <code>LcWidgetKit.Label(...)</code>). Interaction rides the uGUI <code>EventSystem</code> through a tiny <code>LcPointerRelay</code>, so the widgets are backend-neutral and each exposes a <code>UnityEvent</code> (e.g. <code>LcDropdown.OnValueChanged</code>, <code>LcModal.OnConfirmed</code>, <code>LcToast.OnDismissed</code>) plus a plain code API.</p>
+
+<p>Icons are fully procedural. <code>LcIcon</code> is an <code>LcDrawable</code> that tessellates one <code>LcIconKind</code> into a single batched mesh through <code>LcIconGeometry.Draw</code>; the <code>LcIconKind</code> catalogue holds 348 analytic glyphs (marks, arrows, media, files, devices, weather, commerce, shapes&hellip;), so every icon is resolution-independent and recolors or animates for free. <code>LcAnimatedIcon</code> adds spin/pulse and <code>MorphTo(LcIconKind)</code> transitions.</p>
+
+<pre class="lc-code"><code>// No-code widgets are also fully drivable from script.
+toast.ShowSuccess("Saved");            // queued, stacked, auto-dismissed (FIFO over _maxVisible)
+dropdown.Value = 2;                    // clamps + raises OnValueChanged
+icon.IconKind = LcIconKind.Settings;   // re-tessellates one batched mesh, no import</code></pre>
+
+<p class="lc-note"><strong>Just-works unconfigured.</strong> Every widget falls back to a calm dark default palette baked into <code>LcWidgetKit</code> (<code>Surface</code>, <code>Primary</code>, <code>Text</code>, &hellip;) and the engine's built-in <code>LegacyRuntime.ttf</code>, so it renders correctly with no theme and no font asset assigned. Bind an <code>LcTheme</code> and the same tokens resolve through it instead.</p>
+
+<h3>Design tokens &amp; runtime theming</h3>
+
+<p>An <code>LcTheme</code> is a <code>ScriptableObject</code> holding six token tables &mdash; color, gradient, number, font, sprite, audio (the <code>LcTokenCategory</code> set) &mdash; each resolved by a stable string key. Keys are centralized as constants (<code>LcColorKeys.Surface</code>, <code>LcColorKeys.Primary</code>, <code>LcNumberKeys.RadiusMd</code>, <code>LcGradientKeys.Primary</code>, <code>LcAssetKeys.FontDefault</code>), so a single token swap restyles every surface that consumes it. Lookups are lazy-indexed and color resolution walks the explicit color table first, then the active <code>LcPalette</code> (color-blind-safe aware). Themes round-trip to BOM-less, deterministic JSON via <code>ExportJson()</code> / <code>ImportJson(...)</code> (gated on the raw text actually containing the required keys before any parse). Three built-in semantic themes &mdash; Dark, Light, HighContrast &mdash; are constructed entirely in code by <code>LcSemanticThemes.Create(LcThemeId)</code>, each carrying the full color set, the shared numeric scale (<code>DefaultNumbers()</code>), a primary gradient, and an Okabe-Ito color-blind-safe palette variant.</p>
+
+<p>Runtime theme switching flows through one static service, <code>LcThemeManager</code>. Theme-aware surfaces subscribe a single handler to <code>LcThemeManager.Changed</code> in <code>OnEnable</code>; switching the active theme &mdash; or editing the active theme in place &mdash; re-raises that one channel so every consumer re-resolves its tokens and re-tessellates. The hot path is allocation-free; the explicit batch entry point <code>RebindAll(theme)</code> returns the number of live surfaces it recolored (an assertable "applied" count) and, unlike the editor apply path, has no <code>-batchmode</code> guard, so a headless build or CI run gets a real count without walking the scene.</p>
+
+<pre class="lc-code"><code>// Switch the whole UI to the built-in Light theme at runtime.
+LcThemeManager.SetActiveTheme(LcThemeId.Light);
+
+// Headless / CI batch re-bind returns the count of live surfaces recolored.
+LcTheme theme = LcSemanticThemes.CreateHighContrast();
+int recolored = LcThemeManager.RebindAll(theme);   // assertable "applied" count
+
+// A widget resolves a semantic token, falling back to its just-works color.
+Color32 surface = LcWidgetKit.Resolve(theme, LcColorKeys.Surface, LcWidgetKit.Surface);</code></pre>
+
+<p class="lc-note"><strong>Code precedence.</strong> <code>LcThemeManager.Effective(bound)</code> returns a consumer's own explicitly-bound theme when set and only falls back to the app-wide active theme (or literals) when code has not spoken &mdash; the "just-works" default never overrides a value set in code. A fresh domain reset leaves <code>Active == null</code>, so unconfigured surfaces keep their literal colors exactly as if the service did not exist.</p>
+
+<h3>Localization (term-DB, I2-parity)</h3>
+
+<p>The <code>Lucent.Localization</code> stack mirrors the term-database model of I2 Localization. An <code>LcTermDatabase</code> <code>ScriptableObject</code> holds a locale list and a table of <code>LcTerm</code>s keyed by stable id (<code>"ui.menu.play"</code>); each term carries a <code>Category</code>, an <code>LcTermKind</code> (Text, or a per-locale Sprite/Audio/Font/Object asset swap), and a flat list of <code>LcLocaleValue</code>s addressed by (locale, specialization, plural). Databases <code>Merge</code> by descending <code>Priority</code> (last-wins or keep-existing), and <code>LcLocalizationIO</code> round-trips the string tables through CSV/TSV (auto-delimited) and JSON. Resolution is a pure, deterministic function of its inputs: the <code>LcLocalizationManager</code> singleton walks a fallback chain (active &rarr; language-only &rarr; explicit chain &rarr; default) across all registered databases by priority, with optional auto-detect from <code>Application.systemLanguage</code>.</p>
+
+<p>Plurals are CLDR-correct: <code>LcPluralizer.Select</code> dispatches by language subtag to the Arabic (all six categories), East-Slavic (ru/uk/be), Polish, Czech/Slovak, and French-like rule families, a no-inflection family for East-Asian locales, and a one/other fallback &mdash; all integer arithmetic, no culture or clock. <code>LcFormat</code> handles number/date/interpolation formatting per locale, and for RTL locales the <code>LcLocalize</code> component routes resolved strings through the <code>Lucent.Text</code> shaping/BiDi pipeline. <code>LcLocalize</code> binds a term to a <code>UnityEngine.UI.Text</code>, a TMP text (found via reflection &mdash; no TMP asmdef reference), or an <code>LcText</code>, supports <code>{0}</code>/<code>{name}</code> parameters and per-language font/size overrides, and re-applies automatically on every locale change.</p>
+
+<pre class="lc-code"><code>LcLocalizationManager mgr = LcLocalizationManager.Instance;
+mgr.RegisterDatabase(db);          // an LcTermDatabase (authored or CSV/JSON-imported)
+mgr.SetActiveLocale("ru");         // raises LocaleChanged -> every LcLocalize re-resolves
+
+// CLDR-correct plural form + {0}/{count} interpolation, number-formatted for the locale.
+string msg = mgr.GetPlural("inbox.count", 5);   // ru selects the "few" form
+
+// Or bind declaratively: drop LcLocalize on a UI.Text / TMP / LcText and set the term.
+loc.TermId = "ui.menu.play";</code></pre>
+
+<h3>Motion &amp; layout</h3>
+
+<p>Widget animation is shared rather than reinvented. <code>Lucent.Motion</code> supplies <code>LcEase</code> (34 named curves) evaluated by <code>LcEasing.Evaluate</code>, an allocation-free <code>LcTweenTimer</code> (<code>Create</code>/<code>Advance</code>/<code>Completed</code>) plus <code>LcTween</code>/<code>LcTweenVector2</code>/<code>LcTweenColor</code> value tweens, a critically-damped <code>LcSpring</code>, and an authorable <code>LcTweenSequence</code> &mdash; this is what drives the modal scale-fade, the toast slide-in, and the accordion's height tween, all on unscaled delta time and pumpable headlessly via each widget's public <code>Tick(float dt)</code>. <code>Lucent.Layout</code> adds flexbox-style arrangement (<code>LcFlexLayout</code> over <code>LcFlexAxis</code>), responsive scaling against breakpoints (<code>LcResponsiveScaler</code>), and content/aspect fitting (<code>LcAutoSize</code>, <code>LcAspectMode</code>).</p>
+
+<ul class="lc-win">
+<li><strong>348 procedural icons</strong> in <code>LcIconKind</code> &mdash; analytic geometry, no atlas and no import step; every glyph scales crisply, recolors via a theme token, and animates for free.</li>
+<li><strong>One channel recolors everything.</strong> <code>LcThemeManager.RebindAll()</code> returns an assertable count of live surfaces recolored and runs in <code>-batchmode</code> with no scene walk &mdash; CI can verify a theme switch numerically.</li>
+<li><strong>I2-parity term model:</strong> terms keyed by id with category, specialization, and CLDR plural forms; multi-database merge by priority; CSV/TSV/JSON round-trip with raw-key gating on import.</li>
+<li><strong>Deterministic plurals</strong> for ar/ru/pl/cs/fr families plus a no-inflection East-Asian family, all pure integer arithmetic &mdash; same output on every platform, no culture dependency.</li>
+<li><strong>~25 no-code widgets,</strong> each a single <code>MonoBehaviour</code> that builds its own procedural skin and works the instant it is added, recolors through <code>LcTheme</code> tokens, and is fully drivable from script.</li>
+</ul>
+</section>
+<section id="sdk-nocode">
+<h2 id="sdk-nocode">SDK and No-Code Authoring</h2>
+
+<p>Lucent UI is code-first and no-code-convenient. Everything the editor hub can drop into a scene is a real component you could also create from a script, and every provider the system knows about lives behind a single typed seam: the <code>LcRegistry</code>. Third parties extend the asset by implementing <code>ILcPlugin</code>; the editor consumes the same registry through the Component Creator and Welcome windows. There is exactly one extension point, and the no-code layer always defers to it.</p>
+
+<h3>The registry seam: LcRegistry</h3>
+
+<p><code>LcRegistry</code> (namespace <code>Lucent.Sdk</code>) is a typed register/resolve table with one category per provider family: shapes, effects, charts, render surfaces, chart scales, data transforms, and palettes. Each category exposes a <code>Register*</code> method (a stable id plus a factory delegate) and a <code>TryCreate*</code> resolver that constructs a <em>fresh</em> instance on demand. Palettes are immutable data, so they are stored and returned directly via <code>RegisterPalette</code> / <code>TryGetPalette</code>.</p>
+
+<pre class="lc-code"><code>// Register (or override) a shape generator factory under a stable id.
+public void RegisterShape(string id, Func&lt;ILcShapeGenerator&gt; factory);
+
+// Construct a fresh shape generator by id; false (and null) when unknown.
+public bool TryCreateShape(string id, out ILcShapeGenerator generator);
+
+// Ordinal-sorted id set, for editor dropdowns and id-based creation.
+public IReadOnlyCollection&lt;string&gt; ShapeIds { get; }</code></pre>
+
+<p>Two design choices make the registry safe to enumerate from editor UI. First, <strong>registration is last-wins</strong>: registering an id that already exists overwrites it, which is exactly how a plugin overrides a builtin. Second, <strong>enumeration is deterministic</strong>: every category is backed by a <code>SortedDictionary&lt;string, ...&gt;</code> keyed with <code>StringComparer.Ordinal</code>, so the id collections (<code>ShapeIds</code>, <code>EffectIds</code>, <code>ChartIds</code>, <code>SurfaceIds</code>, <code>ScaleIds</code>, <code>TransformIds</code>, <code>PaletteIds</code>) enumerate in a stable ordinal order rather than hash order. The aggregate <code>Count</code> sums every registered factory and palette across all categories.</p>
+
+<h3>The extension point: ILcPlugin + [LcPlugin]</h3>
+
+<p>A community or studio extension implements <code>ILcPlugin</code> and marks the class with the <code>[LcPlugin]</code> attribute. The interface is two members: a stable, prefixed <code>LcPluginId</code> that drives discovery ordering, and a <code>Register(LcRegistry)</code> method that adds the plugin's providers.</p>
+
+<pre class="lc-code"><code>using Lucent.Sdk;
+using Lucent.Render;   // ILcShapeGenerator
+
+[LcPlugin]
+public sealed class StudioPackPlugin : ILcPlugin
+{
+    public string LcPluginId { get { return "com.studio.lucentpack"; } }
+
+    public void Register(LcRegistry registry)
+    {
+        // A new shape, or -- because registration is last-wins -- an
+        // override of a builtin id such as "lc.shape.roundedRect".
+        registry.RegisterShape("lc.shape.hexagon", () =&gt; new HexagonGenerator());
+    }
+}</code></pre>
+
+<p>Resolution anywhere in the asset goes through the one default registry exposed by <code>LcSdk.Registry</code>:</p>
+
+<pre class="lc-code"><code>LcRegistry reg = LcSdk.Registry;
+ILcShapeGenerator gen;
+if (reg.TryCreateShape("lc.shape.hexagon", out gen))
+{
+    // 'gen' is a fresh instance, ready to emit geometry.
+}</code></pre>
+
+<h3>Discovery: bounded, attribute-gated, deterministic</h3>
+
+<p><code>LcPluginLoader.DiscoverAndRegister(registry)</code> finds every marked plugin and calls its <code>Register</code>, returning the count successfully registered. Discovery is deliberately narrow: <code>Discover()</code> only inspects the Sdk assembly itself and assemblies that actually <em>reference</em> it, and within those only types carrying <code>[LcPlugin]</code> are considered. There is no arbitrary all-types reflection scan and no speculative instantiation of unmarked types. The resolved set is sorted by <code>LcPluginId</code> (ordinal) and de-duplicated by id, so registration order is stable across runs and across machines. A plugin whose <code>Register</code> throws is logged and skipped rather than aborting the whole load.</p>
+
+<h3>Composition root and startup</h3>
+
+<p><code>LcSdk.BuildDefault()</code> is the composition root. It registers <em>every</em> builtin first -- all shape kinds via <code>LcShapeGenerators.Registrations</code>, the geometry effects, every <code>LcChartKind</code> generator, the seven positional scales, the data transforms, the three theme palettes, and the headless capture surface -- and only <em>then</em> runs <code>LcPluginLoader.DiscoverAndRegister</code>. Because plugins register last and registration is last-wins, a plugin can cleanly override any builtin id. <code>LcSdk.PluginCount</code> reports how many plugins were discovered.</p>
+
+<p><code>LcSdkBootstrap.Init</code> is a single <code>[RuntimeInitializeOnLoadMethod(BeforeSceneLoad)]</code> seam that touches <code>LcSdk.Registry</code> once to force the build. It is batch-guarded: under <code>Application.isBatchMode</code> it still builds the registry but performs no UI or logging side effects, so headless validation never hangs.</p>
+
+<h3>The no-code hub</h3>
+
+<p>The editor hub lives in <code>Lucent.Hub.Editor</code> and is pure code-driven IMGUI (no UXML). <code>LcComponentCreatorWindow</code> is the one-stop creator: it reads the <em>live</em> registry id lists (<code>ShapeIds</code> / <code>EffectIds</code> / <code>ChartIds</code>) into Shapes / Effects / Charts tabs, plus a curated Widgets tab, lets you pick a kind, and drops a configured component into the scene. <code>LcWelcomeWindow</code> is the first-run orientation screen (auto-opens once per machine), and <code>LcHubMenu</code> adds the cross-cutting <code>Tools &gt; Lucent UI</code> entries (Hub, Documentation, Demo Scene) plus shared navigation to the Theme Designer and Localization windows -- routed through <code>EditorApplication.ExecuteMenuItem</code> so the hub never hard-references those assemblies.</p>
+
+<p>Every "Create In Scene" action funnels through one shared helper, <code>LcSceneScaffold.CreateUnder</code>, so there is a single source of truth for Canvas + EventSystem provisioning, new-Input-System UI-module wiring, Undo registration, RectTransform setup, selection, and ping. <code>ResolveCanvas</code> reuses an existing Canvas (or creates a ScreenSpaceOverlay one) and <code>EnsureEventSystem</code> reuses or creates an EventSystem with an <code>InputSystemUIInputModule</code> resolved by name -- so running an action twice never litters duplicates.</p>
+
+<h3>Defer-to-code precedence</h3>
+
+<p>The no-code layer is a thin convenience over the code-first runtime, and it defers to code at every boundary:</p>
+
+<p class="lc-note">The lower layers (L0-L5) construct their builtins <em>directly</em>; the Sdk only <em>registers</em> them for enumeration and id-based creation. Nothing in those layers references <code>Lucent.Sdk</code> -- there is no upward dependency edge. The registry is a lookup index over code, not the authority for it.</p>
+
+<p>Inside the hub, component types are resolved by name via <code>Type.GetType("Ns.Type, Assembly")</code> with a loaded-assembly fallback, so the window degrades gracefully if a runtime area is absent. Configuration is best-effort: <code>TrySetKindFromId</code> maps a registry id's last segment (for example <code>lc.shape.roundedRect</code> to <code>RoundedRect</code>) onto a public <code>*Kind</code> enum property, and a missing property or mismatch is a logged no-op, never a hard failure. Every scene mutation is deferred out of the IMGUI layout pass through <code>EditorApplication.delayCall</code>, and the type is re-resolved at click time. The hub authors the same components you would author in code, then steps out of the way.</p>
+
+<ul class="lc-win">
+<li><strong>One seam, typed:</strong> all builtins and all third-party depth enter through <code>LcRegistry</code> via <code>Register*</code> / <code>TryCreate*</code> -- a 36th chart type or a custom effect needs no core changes.</li>
+<li><strong>Deterministic enumeration:</strong> ordinal-sorted <code>SortedDictionary</code> id sets and id-sorted plugin discovery mean editor dropdowns and registration order are identical across runs and hosts.</li>
+<li><strong>Bounded, safe discovery:</strong> only assemblies referencing the Sdk and only <code>[LcPlugin]</code>-marked types are inspected -- no all-types reflection scan, no speculative instantiation.</li>
+<li><strong>Graceful degradation:</strong> a plugin whose <code>Register</code> throws is logged and skipped; <code>DiscoverAndRegister</code> returns only the count that succeeded.</li>
+<li><strong>Batch-safe:</strong> <code>LcSdkBootstrap</code> builds the registry headlessly with no UI side effects, and <code>LcWelcomeWindow.AutoOpenOnce</code> bails on its first line under <code>Application.isBatchMode</code>, so CI validation cannot hang.</li>
+<li><strong>No scene litter:</strong> <code>LcSceneScaffold.CreateUnder</code> reuses an existing Canvas and EventSystem, registers Undo, and pings the result -- repeat clicks stay clean.</li>
+</ul>
+</section>
+<section id="samples-demo">
+<h2 id="samples-demo">Samples &amp; the interactive demo</h2>
+
+<p>Lucent ships two distinct things to learn from, and they are built to opposite goals. The <strong>samples</strong> (<code>Assets/Lucent/Samples</code>) are eight tiny, single-feature teaching scenes &mdash; open one, press Play, read the one small script next to it. The <strong>interactive demo</strong> (<code>Assets/Lucent/Demo</code>, the <code>Lucent.Demo</code> assembly) is a single runtime-built showcase app with one module per niche, a persistent navigator/stage/controls chrome, and a live "prove-the-win" HUD &mdash; and it is WebGL-buildable end to end. Both build their UI <em>from code</em> against the real shipped Lucent components, so the saved <code>.unity</code> assets stay tiny and deterministic.</p>
+
+<h3>The samples: one feature per scene</h3>
+
+<p>Each sample is a single <code>MonoBehaviour</code> that implements <code>ILcSample</code> and constructs its example in <code>Start()</code>. The contract is deliberately minimal &mdash; a sample exposes exactly one member, <code>SceneName</code> (the scene file stem), and is otherwise free to teach its one feature however reads best. The shared plumbing is one static helper, <code>LcSampleStage</code>, whose <code>CreateRoot</code> self-heals a <code>ScreenSpaceOverlay</code> Canvas and an <code>EventSystem</code> (new Input System when present, legacy module otherwise) and hands back a full-stretch root to build under:</p>
+
+<pre class="lc-code"><code>namespace Lucent.Samples
+{
+    using UnityEngine;
+    using Lucent.Render;   // LcShapeKind, LcCorners, LcStrokeAlign (shared spine types)
+    using Lucent.Shapes;   // LcShape, LcShapeStyle (the feature taught here)
+
+    public sealed class S01_Shapes : MonoBehaviour, ILcSample
+    {
+        // Pure literal: the scene builder reads it right after AddComponent, before Start.
+        public string SceneName =&gt; "01_Shapes";   // -&gt; Scenes/01_Shapes.unity
+
+        void Start()
+        {
+            // Self-heals a Canvas + EventSystem; returns a full-stretch RectTransform.
+            RectTransform root = LcSampleStage.CreateRoot(SceneName);
+
+            var go = new GameObject("RoundedRect", typeof(RectTransform));
+            go.GetComponent&lt;RectTransform&gt;().SetParent(root, false);
+            LcShape rrect = go.AddComponent&lt;LcShape&gt;();
+            rrect.ShapeKind = LcShapeKind.RoundedRect;
+            rrect.SetCornerRadii(new LcCorners(56f, 14f, 56f, 14f)); // TL, TR, BR, BL
+            rrect.SetFillColor(new Color32(99, 102, 241, 255));      // indigo
+            rrect.SetStroke(true, 4f);                                // 4px inner outline
+        }
+    }
+}</code></pre>
+
+<p>The eight scenes live under <code>Assets/Lucent/Samples/Scenes</code>, one per niche: <code>01_Shapes</code>, <code>02-Effects-Glass</code>, <code>03-Buttons</code>, <code>04-Charts</code>, <code>05-Scroll</code>, <code>06-Text</code>, <code>07-Components</code>, <code>08-Theming-Localization</code>. They are <strong>hand-opened teaching scenes and intentionally are not added to Build Settings.</strong> To open one: build the scenes (below), open <code>Assets/Lucent/Samples/Scenes/&lt;NN_Name&gt;.unity</code>, press Play, then read the matching <code>S0N_*.cs</code> file &mdash; the teaching comments are the product.</p>
+
+<p>You do not author scenes by hand. <code>LcSampleSceneBuilder</code> (in <code>Lucent.Samples.Editor</code>) reflects over every <code>ILcSample</code> in the assembly and emits one scene each &mdash; a Camera (solid dark clear) + a <code>ScreenSpaceOverlay</code> Canvas + an EventSystem + the bare sample component. Run it from the menu <strong>Tools &gt; Lucent &gt; Samples &gt; Build Sample Scenes</strong>, or headlessly:</p>
+
+<pre class="lc-code"><code>Unity -batchmode -projectPath "&lt;PROJECT_DIR&gt;" \
+      -executeMethod Lucent.Samples.Editor.LcSampleSceneBuilder.BuildAll -quit</code></pre>
+
+<p class="lc-note">In batchmode <code>BuildAll()</code> self-exits the editor with code <strong>0</strong> on success / <strong>13</strong> on failure, so CI can gate on it. Adding a new sample is a one-file operation: drop a new <code>ILcSample</code> MonoBehaviour into <code>Lucent.Samples</code> and re-run the builder &mdash; no shared file (contract, stage helper, asmdef, builder) is ever edited.</p>
+
+<h3>The interactive demo: one module per niche</h3>
+
+<p>The demo is a persistent <em>shell</em> plus pluggable <em>modules</em>. <code>LcDemoController</code> is one <code>MonoBehaviour</code> that builds the whole chrome at runtime &mdash; a top title bar, a left feature navigator, a center stage, a right per-feature controls panel, and a bottom prove-the-win HUD &mdash; and self-provisions its own Canvas + new-Input-System EventSystem so it runs from a bare GameObject. Each feature page is a class implementing <code>ILcDemoModule</code>; <code>LcDemoRegistry.Discover()</code> reflects over the <code>Lucent.Demo</code> assembly, finds every public module with a parameterless constructor, de-dupes by type, and sorts by <code>Title</code> (the <code>"N1 "..."N9 "</code> tag makes navigator order deterministic). Modules never touch the chrome and never see each other &mdash; so all nine were authored in parallel against this one contract:</p>
+
+<pre class="lc-code"><code>public sealed class LcModuleN1Shapes : ILcDemoModule
+{
+    public string Title =&gt; "N1 - Procedural Shapes";
+    public string Niche =&gt; "One mesh, one draw call, zero textures.";
+
+    // stage = empty center canvas; controls = empty vertical auto-stack panel.
+    // Build everything from the REAL Lucent components via the DemoUI factory.
+    public void Build(RectTransform stage, RectTransform controls, DemoUI ui)
+    {
+        LcShape card = ui.Panel(stage, 20f, elevated: true, "N1Card");
+        LcShape hero = ui.Surface(card.rectTransform, ui.Accent, 56f, "Hero");
+        hero.ShapeKind = LcShapeKind.RoundedRect;
+
+        ui.Button(controls, "Cycle shape", () =&gt; hero.ShapeKind = LcShapeKind.Star);
+        ui.Slider(ui.Field(controls, "Stroke width"), 0f, 14f, 3f,
+                  v =&gt; { hero.Style.StrokeWidth = v; hero.SetVerticesDirty(); });
+    }
+
+    // 1..6 short "metric: value" strings rendered into the bottom HUD.
+    public string[] ProveTheWin() =&gt; new[]
+    {
+        "1 draw call (fill+stroke)", "0 textures sampled", "0 B/frame GC", "13 procedural families"
+    };
+}</code></pre>
+
+<p>Every widget comes from the <code>DemoUI</code> factory, which wraps the genuine components (<code>LcShape</code> surfaces, <code>LcButton</code>, <code>LcSlider</code>, <code>LcToggle</code>) and the demo design tokens behind a tiny shared surface (<code>Panel</code>, <code>Surface</code>, <code>Column</code>, <code>Row</code>, <code>Button</code>, <code>Slider</code>, <code>Toggle</code>, <code>Field</code>, <code>Label</code>). Labels ride Unity's built-in <code>LegacyRuntime.ttf</code> font so there is no asset to import &mdash; which is exactly what keeps the demo deterministic and WebGL-portable. The nine modules are N1 Procedural Shapes, N2 Live Effects, N3 Liquid Glass, N4 Animated Buttons, N5 Live Charts, N6 Virtualized Scroll, N7 Arabic / RTL Text, N8 Component Gallery, and N9 Theming &amp; Localization, each with live controls and its own metric strip.</p>
+
+<p>Clicking a navigator entry calls <code>LcDemoController.Show(index)</code>, which tears down the previous page (via <code>Destroy</code> on user-driven navigation, never in a lifecycle callback) and asks the selected module to rebuild the stage + controls. Tests inject an explicit module set with <code>SetModules(...)</code> to bypass reflection.</p>
+
+<h3>Opening, building, and shipping the demo</h3>
+
+<p>To run it in-editor, build the scene with <strong>Tools &gt; Lucent &gt; Demo &gt; Build Interactive Demo Scene</strong> (or <code>LcDemoSceneBuilder.Build</code> headlessly), then open and Play <code>Assets/Lucent/Demo/Scenes/LucentUI_InteractiveDemo.unity</code> &mdash; the builder also inserts that scene at <strong>EditorBuildSettings index 0</strong>, so it is the default player scene. A full WebGL player is one headless call:</p>
+
+<pre class="lc-code"><code>Unity -batchmode -quit -projectPath "&lt;PROJECT_DIR&gt;" \
+      -executeMethod Lucent.Demo.Editor.LcBuildDemoWebGL.BuildWebGL</code></pre>
+
+<p>That builds the scene, produces a WebGL player under <code>Artifacts/WebGLDemo</code> (uncompressed, no exception overhead, Unity logo off &mdash; robust showcase defaults), and writes a <code>RESULT=PASS|FAIL</code> marker to <code>Artifacts/webgl-build.txt</code> for a headless poll to read.</p>
+
+<p class="lc-note">Honest caveat: those uGUI labels on the built-in <code>LegacyRuntime.ttf</code> read a little faint at 720p on the dark theme. Structure, layout, interactivity, and the metrics are all correct &mdash; a higher-res capture or a bundled display font crisps the text up. The font choice is a deliberate trade for zero-import determinism and WebGL portability.</p>
+
+<p>The demo is a verified Phase-3 exit artifact (see <code>DEMO-VALIDATION-REPORT.md</code>). Prove-the-win:</p>
+
+<ul class="lc-win">
+<li><strong>Compiles + green:</strong> EditMode 665 pass / 0 fail, PlayMode 71 pass / 0 fail across the <code>Lucent.Demo</code> / <code>.Editor</code> / <code>.Tests</code> assemblies.</li>
+<li><strong>WebGL build: RESULT=PASS</strong> &mdash; <code>BuildResult.Succeeded</code>, 0 errors, <code>index.html</code> present, ~64.8 MB, Unity 6000.0.62f1.</li>
+<li><strong>Real-GPU visual proof:</strong> routed through a capture camera + RenderTexture on the D3D11 GPU; <code>ReadPixels</code> found 97 distinct quantized colors (a varied UI, not a blank frame) and saved <code>Artifacts/demo-screenshot.png</code>.</li>
+<li><strong>HUD reads true:</strong> the N1 page reports "vertices 169 / triangles 140 / draw calls 1 / textures 0" &mdash; one <code>LcShape</code> = one mesh = one draw call, sampling zero textures.</li>
+</ul>
+</section>
+<section id="faq">
+<h2 id="faq">FAQ &amp; Troubleshooting</h2>
+
+<p>Practical answers to the questions that come up most often when dropping Lucent UI into an existing project. If something here does not match what you see, mail the exact symptom, your Unity version, and your active render pipeline to <a href="mailto:szekipapa77@gmail.com">szekipapa77@gmail.com</a>.</p>
+
+<h3 id="faq-input">Which input backend does it need &mdash; old, new, or both?</h3>
+<p>Either, including both at once. The interactive widgets (<code>LcButton</code> and friends) derive from uGUI's <code>Selectable</code> and implement the standard <code>IPointerClickHandler</code> / <code>ISubmitHandler</code> interfaces, so they are driven by whatever <em>input module</em> sits on your <code>EventSystem</code> &mdash; the legacy <code>StandaloneInputModule</code> or the new <code>InputSystemUIInputModule</code>. Both work with zero changes.</p>
+<p>Where Lucent reads a raw pointer directly (chart pan/zoom, hover), it goes through one device-agnostic bridge, <code>LcInputAdapter.Read()</code>, which returns an <code>LcPointerState</code>. It prefers the new Input System's <code>Mouse.current</code> when the package is present, falls back to the legacy <code>UnityEngine.Input</code> manager otherwise, and returns a zeroed (no-op) state when neither backend is available &mdash; so it imports and runs no matter how <em>Project Settings &gt; Player &gt; Active Input Handling</em> is set.</p>
+<p class="lc-note"><strong>Detection is automatic.</strong> The new-Input-System branch is guarded by the <code>LUCENT_INPUTSYSTEM</code> define, which the asmdef raises only when <code>com.unity.inputsystem</code> (1.0.0+) is installed. The legacy branch is guarded by Unity's own <code>ENABLE_LEGACY_INPUT_MANAGER</code>. You never edit a define by hand.</p>
+
+<h3 id="faq-pipeline">Do I need URP or HDRP? I'm on Built-in.</h3>
+<p>No. URP and HDRP are <strong>optional</strong>. The core asset never references either package; the render spine draws procedural meshes through the standard uGUI canvas material, so the vast majority of Lucent &mdash; shapes, buttons, charts, scroll, text, theming, effects &mdash; is pipeline-agnostic and runs on Built-in out of the box. At runtime the pipeline is sniffed from <code>GraphicsSettings.defaultRenderPipeline</code> via <code>LcCapabilities.ActivePipeline</code>, which returns one of <code>LcPipeline.BuiltIn</code>, <code>Urp</code>, <code>Hdrp</code>, or <code>Unknown</code>. Pipeline-specific code lives in isolated sub-assemblies (<code>Lucent.Effects.Urp</code> behind <code>LUCENT_URP</code>, <code>Lucent.Effects.Hdrp</code> behind <code>LUCENT_HDRP</code>) that compile out entirely when the package is absent.</p>
+<p>The one feature that benefits from a live scene-color grab is the N3 blur / liquid-glass hero. It works on all three pipelines from one piece of dual-Kawase math: Built-in records the down/up pyramid through an <code>LcBlurBuiltInManager</code> + <code>CommandBuffer</code> (no SRP package required), URP through a RenderGraph <code>ScriptableRendererFeature</code>, and HDRP through a <code>CustomPass</code>. Where no grab provider exists, <code>LcGlass.IsSupported</code> reads <code>false</code> and the panel degrades to a flat tinted translucent fill &mdash; never a broken (magenta) shader, never a null-ref.</p>
+
+<h3 id="faq-tmp">Do I have to install or import TextMeshPro?</h3>
+<p>No, on both counts. TextMeshPro is merged into <code>com.unity.ugui</code> (it ships <code>Unity.TextMeshPro.asmdef</code> under <code>com.unity.ugui/Runtime/TMP</code>), so there is no separate package to add and no "Import TMP Essentials" step gating Lucent text. More importantly, Lucent does not <em>require</em> TMP at all: every built-in label rides Unity's bundled <code>LegacyRuntime.ttf</code> font, and the Tier-2 text renderer <code>LcSdfText</code> parses raw <code>.ttf</code>/<code>.otf</code> bytes itself and draws through a plain <code>MeshRenderer</code> &mdash; no TMP font asset, no native plugin. If you <em>do</em> use TMP, the Tier-1 <code>LcText</code> component wires itself in as an <code>ITextPreprocessor</code> for correct Arabic/RTL with zero migration.</p>
+
+<h3 id="faq-drawcalls">Why is my whole element "one draw call," and when does that break?</h3>
+<p>Every Lucent visual is an <code>LcDrawable</code> that tessellates its shape, gradient/pattern/sprite paint, stroke, and its sibling geometry effects (shadow, glow, outline) into a single pooled <code>LcDrawList</code> in painter order, which becomes one <code>CanvasRenderer</code> mesh. Identically-configured elements share one cached material and batch together. The batch is only broken by the things that always break uGUI batching: a non-<code>Normal</code> blend mode (each distinct one gets exactly one extra surface), a child <code>Text</code>/TMP overlay (the one intrinsic extra draw), an interleaved non-Lucent graphic that forces a different material, or a Mask/RectMask2D boundary. Keep effects on <code>Normal</code> blend and elements on the shared material and the batch holds.</p>
+
+<h3 id="faq-glass">My glass / blur panel just shows a flat tint. Why?</h3>
+<p>That is the intentional graceful-degradation path, not a bug. <code>LcBlurPanel</code>/<code>LcGlass</code> sample a global <code>_LucentBlurTex</code> that a per-pipeline backend publishes from the scene color. If no live scene-color grab is available &mdash; for example Built-in with no grab provider attached yet, or a headless run &mdash; <code>LcCapabilities.SupportsSceneColorGrab</code> is <code>false</code> and the panel renders a flat tinted translucent fill instead of magenta. To get the real frosted look, make sure a camera is rendering the scene behind the panel: on URP add the <code>LcBlurFeature</code> to your renderer; on Built-in the <code>LcBlurBuiltInManager</code> auto-attaches its command buffer while a panel is alive. Blur work is ref-count-gated, so it only runs while at least one panel is active.</p>
+
+<h3 id="faq-gc">How does the scroll list stay at 0 GC with thousands of rows?</h3>
+<p><code>LcScrollView</code> never stores your model and never instantiates per row. <code>LcRecycler</code> keeps only <em>visible + 2&times;buffer</em> cells alive, pools the rest, and its hot path uses struct enumerators, a reused scratch list, and no LINQ/closures/boxing. The one subtle source of scroll-time GC &mdash; a redundant <code>RectTransform</code> write that dirties a uGUI <code>Graphic</code> and forces a mesh rebuild &mdash; is avoided by writing <code>sizeDelta</code>/<code>anchoredPosition</code> only when they actually change. If you <em>do</em> see allocation during scroll, it is almost always your own <code>Bind</code> delegate (string concatenation, boxing, LINQ) rather than the recycler; the recycler calls <code>Bind</code> only for the handful of on-screen cells.</p>
+
+<h3 id="faq-headless">Can it run headless / in CI without hanging?</h3>
+<p>Yes &mdash; this is a first-class design constraint. The composition root <code>LcSdkBootstrap</code> still builds the registry under <code>-batchmode</code> but performs no UI or logging side effects, and the editor Welcome window bails on its first line in batch mode, so validation never blocks on a dialog. The charts layer exports to PNG/SVG/CSV/JSON on the CPU with no GPU, deterministically (invariant culture, no clock, no GUIDs). The sample and demo scene builders self-exit with a clean status code (<code>0</code> success / <code>13</code> failure), and <code>LcThemeManager.RebindAll(theme)</code> returns an assertable count of recolored surfaces without walking the scene &mdash; so CI can gate on real numbers.</p>
+
+<h3 id="faq-deps">What are the actual package dependencies?</h3>
+<p>Exactly one is mandatory: <code>com.unity.ugui</code> (2.0.0+). Everything else lights up features and is gated behind a versionDefine, so a missing package drops its code out instead of breaking compilation: <code>com.unity.inputsystem</code> (recommended &rarr; <code>LUCENT_INPUTSYSTEM</code>), <code>com.unity.render-pipelines.universal</code> / <code>.high-definition</code> (optional &rarr; <code>LUCENT_URP</code> / <code>LUCENT_HDRP</code>, for the blur/glass hero), and <code>com.unity.modules.uielements</code> (optional &rarr; <code>LUCENT_HAS_UITOOLKIT</code>, for the UI Toolkit surface). Target Unity <strong>6000.0.62f1</strong> or newer.</p>
+
+<ul class="lc-win">
+<li><strong>Input-backend-agnostic:</strong> old, new, or both &mdash; widgets ride the <code>EventSystem</code> and raw reads route through <code>LcInputAdapter</code>, down to a zeroed no-op.</li>
+<li><strong>Built-in is a first-class target:</strong> the core is pipeline-agnostic; URP/HDRP only enrich the blur/glass hero and compile out when absent.</li>
+<li><strong>No TextMeshPro requirement:</strong> built-in labels use <code>LegacyRuntime.ttf</code> and <code>LcSdfText</code> parses font bytes itself.</li>
+<li><strong>Predictable batching:</strong> one <code>LcDrawable</code> = one mesh = one draw call until a known batch-breaker (non-Normal blend, text overlay, mask) intervenes.</li>
+<li><strong>Headless/CI-safe by design:</strong> batch-guarded bootstrap, GPU-free deterministic export, and assertable applied-counts.</li>
+</ul>
+</section>
+<section id="api-index">
+<h2 id="api-index">API Index</h2>
+
+<p>Public types and members referenced across this documentation, grouped by the section that introduces them. Names are given as written in the <code>Lucent.*</code> namespaces.</p>
+
+<div class="lc-api-group">
+  <h3>Overview <span class="badge">Lucent.Render &middot; spine</span></h3>
+  <ul class="lc-syms">
+    <li><code>Lucent.Render.LcDrawList</code></li>
+    <li><code>Lucent.Render.LcVertex</code></li>
+    <li><code>Lucent.Render.LcTextRun</code></li>
+    <li><code>Lucent.Render.LcDrawContext</code></li>
+    <li><code>Lucent.Render.ILcGenerator</code></li>
+    <li><code>Lucent.Render.ILcRenderSurface</code></li>
+    <li><code>Lucent.Render.LcGeometryBuilder</code></li>
+    <li><code>Lucent.Render.LcDrawLayer</code></li>
+    <li><code>Lucent.Render.UGui.LcUGuiSurface</code></li>
+    <li><code>Lucent.Render.UGui.LcDrawable</code></li>
+    <li><code>Lucent.Render.UIToolkit.LcUIToolkitSurface</code></li>
+    <li><code>Lucent.Render.WorldSpace.LcWorldSpaceSurface</code></li>
+    <li><code>Lucent.Scroll.LcScrollView</code></li>
+    <li><code>Lucent.Scroll.LcRecycler</code></li>
+    <li><code>Lucent.Effects.LcGlass</code></li>
+    <li><code>Lucent.Effects.LcGlassSpec</code></li>
+    <li><code>Lucent.Text.Sdf.LcSdfText</code></li>
+    <li><code>Lucent.Text.LcTextRtl</code></li>
+    <li><code>Lucent.Core.LcVersion</code></li>
+  </ul>
+</div>
+
+<div class="lc-api-group">
+  <h3>Installation &amp; Requirements <span class="badge">bootstrap &middot; capabilities</span></h3>
+  <ul class="lc-syms">
+    <li><code>LcShape</code></li>
+    <li><code>LcShapeKind.RoundedRect</code></li>
+    <li><code>LcShape.SetUniformRadius</code></li>
+    <li><code>LcShape.SetFillColor</code></li>
+    <li><code>LcGlass</code></li>
+    <li><code>LcBlurPanel.IsSupported</code></li>
+    <li><code>LcBlurManager</code></li>
+    <li><code>LcCapabilities.ActivePipeline</code></li>
+    <li><code>LcCapabilities.SupportsSceneColorGrab</code></li>
+    <li><code>LcPipeline</code></li>
+    <li><code>LcSdk.Registry</code></li>
+    <li><code>LcSdkBootstrap</code></li>
+    <li><code>LUCENT_INPUTSYSTEM</code></li>
+    <li><code>LUCENT_URP</code></li>
+    <li><code>LUCENT_HDRP</code></li>
+  </ul>
+</div>
+
+<div class="lc-api-group">
+  <h3>Procedural Shapes <span class="badge">Lucent.Shapes</span></h3>
+  <ul class="lc-syms">
+    <li><code>LcShape</code></li>
+    <li><code>LcShapeKind</code></li>
+    <li><code>LcShapeStyle</code></li>
+    <li><code>LcFillKind</code></li>
+    <li><code>LcPatternKind</code></li>
+    <li><code>LcImageType</code></li>
+    <li><code>LcStrokeAlign</code></li>
+    <li><code>LcCorners</code></li>
+    <li><code>LcEdgeWidths</code></li>
+    <li><code>LcShapeGeneratorBase</code></li>
+    <li><code>LcShapeGenerators</code></li>
+    <li><code>LcShapeGeometry</code></li>
+    <li><code>LcShapeRaycast.PointInPolygon</code></li>
+    <li><code>ILcSilhouetteSource.TryGetSilhouette</code></li>
+    <li><code>LcShape.IsRaycastLocationValid</code></li>
+    <li><code>LcShape.SetCornerRadii</code></li>
+    <li><code>LcShape.SetStroke</code></li>
+    <li><code>LcShape.SetStrokeGradient</code></li>
+    <li><code>LcShape.SetPattern</code></li>
+    <li><code>LcShape.SetFillGradientToken</code></li>
+    <li><code>LcVertex</code></li>
+    <li><code>LcGeometryBuilder.FillRoundedRect</code></li>
+    <li><code>LcGeometryBuilder.FillPolygon</code></li>
+    <li><code>LcGeometryBuilder.WedgeAA</code></li>
+    <li><code>LcGeometryBuilder.StrokeRectPerSide</code></li>
+    <li><code>LcGeometryBuilder.ApplyGradient</code></li>
+  </ul>
+</div>
+
+<div class="lc-api-group">
+  <h3>Effects &amp; Liquid Glass <span class="badge">Lucent.Effects</span></h3>
+  <ul class="lc-syms">
+    <li><code>LcShadow</code></li>
+    <li><code>LcGlow</code></li>
+    <li><code>LcOutline</code></li>
+    <li><code>LcEffectBehaviour</code></li>
+    <li><code>LcGraphicEffect</code></li>
+    <li><code>LcGraphicEffectRenderer</code></li>
+    <li><code>LcEffectBlendSurface</code></li>
+    <li><code>LcDropShadowEffect</code></li>
+    <li><code>LcGlowEffect</code></li>
+    <li><code>LcOutlineEffect</code></li>
+    <li><code>LcBlendMode</code></li>
+    <li><code>LcEffectBlend</code></li>
+    <li><code>LcEffectMaterial</code></li>
+    <li><code>LcEffectLayer</code></li>
+    <li><code>ILcLayerEffect</code></li>
+    <li><code>LcBlurPanel</code></li>
+    <li><code>LcBlurPanelSpec</code></li>
+    <li><code>LcGlass</code></li>
+    <li><code>LcGlassSpec</code></li>
+    <li><code>LcBlurManager</code></li>
+    <li><code>LcBlurRequest</code></li>
+    <li><code>LcBlurProfile</code></li>
+    <li><code>LcBlurQuality</code></li>
+    <li><code>LcBlurFeature</code></li>
+    <li><code>LcBlurPass</code></li>
+    <li><code>LcBlurCommandBuffer</code></li>
+    <li><code>LcBlurBuiltInManager</code></li>
+    <li><code>LcBlurCustomPass</code></li>
+    <li><code>LcCapabilities.SupportsSceneColorGrab</code></li>
+  </ul>
+</div>
+
+<div class="lc-api-group">
+  <h3>Animated Buttons <span class="badge">Lucent.Buttons</span></h3>
+  <ul class="lc-syms">
+    <li><code>LcButton</code></li>
+    <li><code>LcButtonChannel</code></li>
+    <li><code>LcChannelKind</code></li>
+    <li><code>LcButtonState</code></li>
+    <li><code>LcTriggerKind</code></li>
+    <li><code>LcButtonPresets</code></li>
+    <li><code>LcButtonPresetKind</code></li>
+    <li><code>LcButtonPreset</code></li>
+    <li><code>LcButtonAudio</code></li>
+    <li><code>LcButtonRipple</code></li>
+    <li><code>LcButtonLabel</code></li>
+    <li><code>LcTriggerRouter</code></li>
+    <li><code>LcStateColor</code></li>
+    <li><code>LcStateVector3</code></li>
+    <li><code>LcStateFloat</code></li>
+    <li><code>LcButton.Play(LcTriggerKind)</code></li>
+    <li><code>LcButton.SetState(LcButtonState)</code></li>
+    <li><code>LcButton.PlayEntrance()</code></li>
+    <li><code>LcButton.Randomize()</code></li>
+    <li><code>LcButton.Refresh()</code></li>
+    <li><code>LcButton.SetContent(Sprite, string)</code></li>
+    <li><code>LcButton.EmitRipple()</code></li>
+    <li><code>LcButtonChannel.Begin(LcButtonState, bool)</code></li>
+    <li><code>LcButtonChannel.Tick(float)</code></li>
+    <li><code>LcButtonPresets.Create(LcButtonPresetKind)</code></li>
+    <li><code>LcButtonPreset.ApplyTo(LcButton)</code></li>
+  </ul>
+</div>
+
+<div class="lc-api-group">
+  <h3>Charts <span class="badge">Lucent.Charts</span></h3>
+  <ul class="lc-syms">
+    <li><code>LcChartView</code></li>
+    <li><code>LcChartView.Create</code></li>
+    <li><code>LcChartView.RenderToSurface</code></li>
+    <li><code>LcChartView.GeneratorFor</code></li>
+    <li><code>LcChartKind</code></li>
+    <li><code>LcChartGeneratorBase</code></li>
+    <li><code>ILcChartGenerator</code></li>
+    <li><code>LcLineGenerator</code></li>
+    <li><code>LcAreaGenerator</code></li>
+    <li><code>LcSplineGenerator</code></li>
+    <li><code>LcStepGenerator</code></li>
+    <li><code>LcSparklineGenerator</code></li>
+    <li><code>LcScatterGenerator</code></li>
+    <li><code>LcBubbleGenerator</code></li>
+    <li><code>LcBarGenerator</code></li>
+    <li><code>LcHorizontalBarGenerator</code></li>
+    <li><code>LcStackedBarGenerator</code></li>
+    <li><code>LcGroupedBarGenerator</code></li>
+    <li><code>LcPieGenerator</code></li>
+    <li><code>LcDonutGenerator</code></li>
+    <li><code>LcRadarGenerator</code></li>
+    <li><code>LcSunburstGenerator</code></li>
+    <li><code>LcHistogramGenerator</code></li>
+    <li><code>LcBoxPlotGenerator</code></li>
+    <li><code>LcViolinGenerator</code></li>
+    <li><code>LcHeatmapGenerator</code></li>
+    <li><code>LcGaugeGenerator</code></li>
+    <li><code>LcProgressGenerator</code></li>
+    <li><code>LcTreemapGenerator</code></li>
+    <li><code>LcSankeyGenerator</code></li>
+    <li><code>LcParallelCoordinatesGenerator</code></li>
+    <li><code>LcTimelineGenerator</code></li>
+    <li><code>LcGanttGenerator</code></li>
+    <li><code>LcWaterfallGenerator</code></li>
+    <li><code>LcFunnelGenerator</code></li>
+    <li><code>LcMultiAxisGenerator</code></li>
+    <li><code>LcComboGenerator</code></li>
+    <li><code>ILcScale</code></li>
+    <li><code>LcLinearScale</code></li>
+    <li><code>LcLogScale</code></li>
+    <li><code>LcSymlogScale</code></li>
+    <li><code>LcTimeScale</code></li>
+    <li><code>LcBandScale</code></li>
+    <li><code>LcOrdinalScale</code></li>
+    <li><code>ILcTickFormatter</code></li>
+    <li><code>LcColorScale</code></li>
+    <li><code>LcChartLayout</code></li>
+    <li><code>LcAxisRenderer</code></li>
+    <li><code>LcAxisStyle</code></li>
+    <li><code>LcLegendRenderer</code></li>
+    <li><code>LcLegendEntry</code></li>
+    <li><code>LcLegendVisibility</code></li>
+    <li><code>LcAxisSide</code></li>
+    <li><code>LcEncoding</code></li>
+    <li><code>LcEncodingSet</code></li>
+    <li><code>LcHitTester</code></li>
+    <li><code>LcPanZoomController</code></li>
+    <li><code>LcSelectionModel</code></li>
+    <li><code>LcTooltipController</code></li>
+    <li><code>LcInputAdapter</code></li>
+    <li><code>ILcRenderSurface</code></li>
+    <li><code>LcWorldSpaceSurface</code></li>
+    <li><code>LcUIToolkitSurface</code></li>
+    <li><code>LcCaptureSurface</code></li>
+    <li><code>LcRasterExporter</code></li>
+    <li><code>LcVectorExporter</code></li>
+    <li><code>LcCsvExporter</code></li>
+    <li><code>LcJsonExporter</code></li>
+    <li><code>LcReportComposer</code></li>
+    <li><code>LcDashboardView</code></li>
+    <li><code>LcDashboardTile</code></li>
+    <li><code>LcGridSpec</code></li>
+    <li><code>LcGridLayoutSolver</code></li>
+    <li><code>LcDashboardDocument</code></li>
+    <li><code>LcCrossFilter</code></li>
+    <li><code>LcCrossFilterEngine</code></li>
+    <li><code>LcKMeans</code></li>
+    <li><code>LcForecasting</code></li>
+    <li><code>LcSummary</code></li>
+    <li><code>LcDatasetAnalytics</code></li>
+    <li><code>LcKpiTile</code></li>
+    <li><code>LcKpiCalc</code></li>
+    <li><code>LcPivotEngine</code></li>
+    <li><code>LcSlicer</code></li>
+    <li><code>LcDrillDownController</code></li>
+    <li><code>LcCandlestickGenerator</code></li>
+    <li><code>LcOhlcGenerator</code></li>
+    <li><code>LcVolumeGenerator</code></li>
+    <li><code>ILcIndicator</code></li>
+    <li><code>LcMacdIndicator</code></li>
+    <li><code>LcBollingerBands</code></li>
+    <li><code>LcVwapIndicator</code></li>
+    <li><code>LcIndexTimeScale</code></li>
+    <li><code>LcHeightFieldGenerator</code></li>
+    <li><code>LcScientificModule</code></li>
+    <li><code>LcRingBuffer</code></li>
+    <li><code>LcStreamingSeries</code></li>
+    <li><code>ILcTelemetrySource</code></li>
+    <li><code>LcTelemetrySampler</code></li>
+    <li><code>LcThresholdAlert</code></li>
+  </ul>
+</div>
+
+<div class="lc-api-group">
+  <h3>Virtualized Scroll <span class="badge">Lucent.Scroll</span></h3>
+  <ul class="lc-syms">
+    <li><code>LcScrollView</code></li>
+    <li><code>LcScrollView.SetData&lt;TCell&gt;</code></li>
+    <li><code>LcScrollView.SetDataSource</code></li>
+    <li><code>LcScrollView.SetGridLayout</code></li>
+    <li><code>LcScrollView.SetStaggeredGrid</code></li>
+    <li><code>LcScrollView.SetVariableSizes</code></li>
+    <li><code>LcScrollView.SetSnapping</code></li>
+    <li><code>LcScrollView.SetPaging</code></li>
+    <li><code>LcScrollView.SetPullToRefresh</code></li>
+    <li><code>LcScrollView.SetLooping</code></li>
+    <li><code>LcScrollView.SetAutoScroll</code></li>
+    <li><code>LcScrollView.SetAnimation</code></li>
+    <li><code>LcScrollView.SetControllerNavigation</code></li>
+    <li><code>LcScrollView.MoveFocus</code></li>
+    <li><code>LcScrollView.ScrollToIndex</code></li>
+    <li><code>LcScrollView.InsertItems</code></li>
+    <li><code>LcScrollView.RemoveItems</code></li>
+    <li><code>LcScrollView.MoveItem</code></li>
+    <li><code>LcScrollView.SetReorderable</code></li>
+    <li><code>LcScrollView.SetSections</code></li>
+    <li><code>LcScrollView.SetTable</code></li>
+    <li><code>LcScrollView.SetTheme</code></li>
+    <li><code>LcScrollView.LiveCellCount</code></li>
+    <li><code>LcScrollView.TotalCellsCreated</code></li>
+    <li><code>LcScrollView.Count</code></li>
+    <li><code>LcScrollView.FocusedIndex</code></li>
+    <li><code>LcScrollView.OnSnap</code></li>
+    <li><code>LcScrollView.OnFocusChanged</code></li>
+    <li><code>LcScrollView.OnPullToRefresh</code></li>
+    <li><code>LcScrollView.OnLoadMore</code></li>
+    <li><code>LcRecycler</code></li>
+    <li><code>LcRecycler.UpdateVisible</code></li>
+    <li><code>LcRecycler.LiveCount</code></li>
+    <li><code>LcRecycler.ApplyInsert</code></li>
+    <li><code>LcRecycler.ApplyRemove</code></li>
+    <li><code>LcRecycler.ApplyMove</code></li>
+    <li><code>LcCellPool</code></li>
+    <li><code>LcScrollCell</code></li>
+    <li><code>LcScrollCell.OnBind</code></li>
+    <li><code>LcScrollCell.OnRecycle</code></li>
+    <li><code>LcScrollTextCell</code></li>
+    <li><code>ILcScrollDataSource</code></li>
+    <li><code>LcListDataSource&lt;TCell&gt;</code></li>
+    <li><code>LcDelegateDataSource</code></li>
+    <li><code>LcLoopDataSource</code></li>
+    <li><code>LcSampleDataSource</code></li>
+    <li><code>LcScrollLayout</code></li>
+    <li><code>LcScrollLinearLayout</code></li>
+    <li><code>LcGridLayout</code></li>
+    <li><code>LcStaggeredGridLayout</code></li>
+    <li><code>LcScrollAnimator</code></li>
+    <li><code>LcScrollAnimator.Evaluate</code></li>
+    <li><code>LcScrollAnimator.EvaluateCrossOffset</code></li>
+    <li><code>LcScrollAnimationKind</code></li>
+    <li><code>LcScrollAxis</code></li>
+    <li><code>LcScrollLayoutKind</code></li>
+    <li><code>LcScrollSnapAlign</code></li>
+    <li><code>LcScrollColumn</code></li>
+    <li><code>LcScrollTheme</code></li>
+    <li><code>LcScrollTheme.Apply</code></li>
+    <li><code>LcScrollSelfTest</code></li>
+  </ul>
+</div>
+
+<div class="lc-api-group">
+  <h3>Text &amp; RTL <span class="badge">Lucent.Text</span></h3>
+  <ul class="lc-syms">
+    <li><code>LcText</code></li>
+    <li><code>LcTextRtl.Convert</code></li>
+    <li><code>LcTextProcessor.Process</code></li>
+    <li><code>LcTextProcessor.ProcessBatch</code></li>
+    <li><code>LcShapeSettings</code></li>
+    <li><code>LcProcessedText</code></li>
+    <li><code>LcProcessedText.VisualToSource</code></li>
+    <li><code>LcBaseDirection</code></li>
+    <li><code>LcDigitMode</code></li>
+    <li><code>LcBidi.Resolve</code></li>
+    <li><code>LcBidi.ReorderByLevel</code></li>
+    <li><code>LcBidiResult</code></li>
+    <li><code>LcArabicShaper.Shape</code></li>
+    <li><code>LcOpenTypeArabicShaper.Shape</code></li>
+    <li><code>LcComplexShaper.Shape</code></li>
+    <li><code>LcOpenTypeShapeResult</code></li>
+    <li><code>LcIndicReorder</code></li>
+    <li><code>LcSdfText</code></li>
+    <li><code>LcSdfText.SetFont</code></li>
+    <li><code>LcSdfMode</code></li>
+    <li><code>LcSdfText.SetVariation</code></li>
+    <li><code>LcSdfTextMesh.Build</code></li>
+    <li><code>LcMsdfRasterizer.Rasterize</code></li>
+    <li><code>LcMsdfBitmap.Median3</code></li>
+    <li><code>LcSdfGlyphCache</code></li>
+    <li><code>LcMsdfGlyphCache</code></li>
+    <li><code>LcOpenTypeFont</code></li>
+    <li><code>LcUax14LineBreaker.Analyze</code></li>
+    <li><code>LcLineWrapper.Wrap</code></li>
+    <li><code>LcTextLayoutEngine.Layout</code></li>
+    <li><code>LcGraphemeBreak.ClusterStarts</code></li>
+    <li><code>LcWordBreaker.Words</code></li>
+    <li><code>LcFontFallback.SegmentRuns</code></li>
+    <li><code>LcTextAnimator</code></li>
+    <li><code>LcTextAnimator.ReduceMotion</code></li>
+    <li><code>LcDamageNumbers.Spawn</code></li>
+    <li><code>LcDamageNumberManager</code></li>
+    <li><code>LcPopupStyle</code></li>
+  </ul>
+</div>
+
+<div class="lc-api-group">
+  <h3>Components, Theming &amp; Localization <span class="badge">Lucent.Components &middot; .Theme &middot; .Localization</span></h3>
+  <ul class="lc-syms">
+    <li><code>LcWidgetKit</code></li>
+    <li><code>LcPointerRelay</code></li>
+    <li><code>LcIcon</code></li>
+    <li><code>LcIconKind</code></li>
+    <li><code>LcIconGeometry</code></li>
+    <li><code>LcAnimatedIcon</code></li>
+    <li><code>LcDropdown</code></li>
+    <li><code>LcModal</code></li>
+    <li><code>LcToast</code></li>
+    <li><code>LcToastSeverity</code></li>
+    <li><code>LcTooltip</code></li>
+    <li><code>LcContextMenu</code></li>
+    <li><code>LcTabs</code></li>
+    <li><code>LcAccordion</code></li>
+    <li><code>LcCollapsible</code></li>
+    <li><code>LcSegmentedControl</code></li>
+    <li><code>LcDatePicker</code></li>
+    <li><code>LcTimePicker</code></li>
+    <li><code>LcColorPicker</code></li>
+    <li><code>LcInputField</code></li>
+    <li><code>LcTheme</code></li>
+    <li><code>LcThemeManager</code></li>
+    <li><code>LcThemeManager.SetActiveTheme</code></li>
+    <li><code>LcThemeManager.RebindAll</code></li>
+    <li><code>LcThemeManager.Effective</code></li>
+    <li><code>LcThemeManager.Changed</code></li>
+    <li><code>LcSemanticThemes</code></li>
+    <li><code>LcThemeId</code></li>
+    <li><code>LcColorKeys</code></li>
+    <li><code>LcNumberKeys</code></li>
+    <li><code>LcGradientKeys</code></li>
+    <li><code>LcAssetKeys</code></li>
+    <li><code>LcTokenCategory</code></li>
+    <li><code>LcColorToken</code></li>
+    <li><code>LcGradientToken</code></li>
+    <li><code>LcNumberToken</code></li>
+    <li><code>LcPalette</code></li>
+    <li><code>LcTheme.TryResolveColor</code></li>
+    <li><code>LcTheme.ImportJson</code></li>
+    <li><code>LcLocalize</code></li>
+    <li><code>LcLocalizationManager</code></li>
+    <li><code>LcLocalizationManager.GetPlural</code></li>
+    <li><code>LcLocalizationManager.SetActiveLocale</code></li>
+    <li><code>LcTermDatabase</code></li>
+    <li><code>LcTerm</code></li>
+    <li><code>LcLocaleValue</code></li>
+    <li><code>LcTermKind</code></li>
+    <li><code>LcPluralCategory</code></li>
+    <li><code>LcPluralizer</code></li>
+    <li><code>LcLocalizationIO</code></li>
+    <li><code>LcFormat</code></li>
+    <li><code>LcLocale</code></li>
+    <li><code>LcRtlMode</code></li>
+    <li><code>LcEase</code></li>
+    <li><code>LcEasing</code></li>
+    <li><code>LcTweenTimer</code></li>
+    <li><code>LcTween</code></li>
+    <li><code>LcSpring</code></li>
+    <li><code>LcTweenSequence</code></li>
+    <li><code>LcFlexLayout</code></li>
+    <li><code>LcResponsiveScaler</code></li>
+    <li><code>LcAutoSize</code></li>
+  </ul>
+</div>
+
+<div class="lc-api-group">
+  <h3>SDK &amp; No-Code Authoring <span class="badge">Lucent.Sdk &middot; Lucent.Hub.Editor</span></h3>
+  <ul class="lc-syms">
+    <li><code>LcRegistry</code></li>
+    <li><code>LcRegistry.RegisterShape</code></li>
+    <li><code>LcRegistry.TryCreateShape</code></li>
+    <li><code>LcRegistry.RegisterEffect</code></li>
+    <li><code>LcRegistry.RegisterChart</code></li>
+    <li><code>LcRegistry.RegisterSurface</code></li>
+    <li><code>LcRegistry.RegisterScale</code></li>
+    <li><code>LcRegistry.RegisterTransform</code></li>
+    <li><code>LcRegistry.RegisterPalette</code></li>
+    <li><code>LcRegistry.TryGetPalette</code></li>
+    <li><code>LcRegistry.ShapeIds</code></li>
+    <li><code>LcRegistry.Count</code></li>
+    <li><code>ILcPlugin</code></li>
+    <li><code>ILcPlugin.LcPluginId</code></li>
+    <li><code>ILcPlugin.Register</code></li>
+    <li><code>LcPluginAttribute</code></li>
+    <li><code>LcPluginLoader.DiscoverAndRegister</code></li>
+    <li><code>LcPluginLoader.Discover</code></li>
+    <li><code>LcSdk.Registry</code></li>
+    <li><code>LcSdk.PluginCount</code></li>
+    <li><code>LcSdk.BuildDefault</code></li>
+    <li><code>LcSdkBootstrap.Init</code></li>
+    <li><code>LcComponentCreatorWindow</code></li>
+    <li><code>LcWelcomeWindow</code></li>
+    <li><code>LcHubMenu</code></li>
+    <li><code>LcSceneScaffold.CreateUnder</code></li>
+    <li><code>LcSceneScaffold.ResolveCanvas</code></li>
+    <li><code>LcSceneScaffold.EnsureEventSystem</code></li>
+  </ul>
+</div>
+
+<div class="lc-api-group">
+  <h3>Samples &amp; Demo <span class="badge">Lucent.Samples &middot; Lucent.Demo</span></h3>
+  <ul class="lc-syms">
+    <li><code>ILcSample</code></li>
+    <li><code>ILcSample.SceneName</code></li>
+    <li><code>LcSampleStage</code></li>
+    <li><code>LcSampleStage.CreateRoot</code></li>
+    <li><code>LcSampleStage.EnsureCanvas</code></li>
+    <li><code>LcSampleStage.EnsureEventSystem</code></li>
+    <li><code>LcSampleSceneBuilder.BuildAll</code></li>
+    <li><code>LcSampleSceneBuilder.BuildAllScenes</code></li>
+    <li><code>ILcDemoModule</code></li>
+    <li><code>ILcDemoModule.Build</code></li>
+    <li><code>ILcDemoModule.Title</code></li>
+    <li><code>ILcDemoModule.Niche</code></li>
+    <li><code>ILcDemoModule.ProveTheWin</code></li>
+    <li><code>LcDemoController</code></li>
+    <li><code>LcDemoController.Show</code></li>
+    <li><code>LcDemoController.SetModules</code></li>
+    <li><code>LcDemoRegistry.Discover</code></li>
+    <li><code>LcDemoRegistry.Register</code></li>
+    <li><code>DemoUI</code></li>
+    <li><code>DemoUI.Panel</code></li>
+    <li><code>DemoUI.Surface</code></li>
+    <li><code>DemoUI.Button</code></li>
+    <li><code>DemoUI.Slider</code></li>
+    <li><code>DemoUI.Toggle</code></li>
+    <li><code>LcDemoSceneBuilder.Build</code></li>
+    <li><code>LcBuildDemoWebGL.BuildWebGL</code></li>
+  </ul>
+</div>
+</section>
+  </main>
+  <footer class="lc-footer">
+    <p><strong>Lucent UI</strong> 0.1.0 &mdash; one procedural + dynamic uGUI suite on a single render spine. Targets Unity 6000.0.62f1+ &middot; one mandatory dependency (<code>com.unity.ugui</code>) &middot; no external SDK, no setup step.</p>
+    <p>Questions, bug reports, or feature requests &mdash; include your Unity version and active render pipeline: <a href="mailto:szekipapa77@gmail.com">szekipapa77@gmail.com</a></p>
+    <p class="meta">&copy; 2026 Lucent UI. Documentation generated as a single self-contained file &mdash; works offline and on GitHub Pages.</p>
+  </footer>
+</div>
+</body>
+</html>
