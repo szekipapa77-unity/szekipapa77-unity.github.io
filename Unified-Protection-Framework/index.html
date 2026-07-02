@@ -768,7 +768,7 @@ details .details-body p:first-child { margin-top: 0; }
 
   <div class="steps">
     <div class="step"><div class="step-content"><strong>Import from the Asset Store</strong><br>In <code>Window &rarr; Package Manager &rarr; My Assets</code>, download and import UPF. It lands at <code>Assets/UPF/</code>.</div></div>
-    <div class="step"><div class="step-content"><strong>The Welcome window opens automatically</strong><br>On first import the <strong>Welcome to UPF</strong> window appears once. Re-open it any time from <code>Window &rarr; UPF &rarr; Welcome</code> or <code>Tools &rarr; UPF &rarr; Welcome</code>.</div></div>
+    <div class="step"><div class="step-content"><strong>The Welcome window opens automatically</strong><br>On first import the <strong>Welcome to UPF</strong> window appears once. Re-open it any time from <code>Window &rarr; UPF &rarr; Welcome</code> or <code>Tools &rarr; UPF &rarr; Welcome</code>. For a guided, click-through setup, open <code>Tools &rarr; UPF &rarr; Open Welcome Scene</code> and press <strong>Play</strong>.</div></div>
     <div class="step"><div class="step-content"><strong>Create a Protection Profile</strong><br><code>Tools &rarr; UPF &rarr; Create or Select Protection Profile</code> creates <code>Assets/UPFProfiles/DefaultUPFProfile.asset</code> and selects it. Pick a preset in the Inspector.</div></div>
     <div class="step"><div class="step-content"><strong>Open the Dashboard</strong><br><code>Tools &rarr; UPF &rarr; Dashboard</code> &mdash; analyze your project, dry-run, validate and build, all from one window.</div></div>
   </div>
@@ -1120,7 +1120,10 @@ Unity.exe -batchmode -quit -projectPath . <span class="op">\</span>
   </div>
 
   <h3>Welcome window</h3>
-  <p>A first-run onboarding window opens automatically once per project (never in batch / CI) and is re-openable from <code>Window &rarr; UPF &rarr; Welcome</code>. It links straight to Documentation, the Dashboard, profile creation, dropping a Protection Guardian into the scene, and the demo scene &mdash; plus the requirements and support contact.</p>
+  <p>A first-run onboarding window opens automatically once per project (never in batch / CI) and is re-openable from <code>Window &rarr; UPF &rarr; Welcome</code> or <code>Tools &rarr; UPF &rarr; Welcome</code>. It links straight to the interactive Welcome scene, Documentation, the Dashboard, profile creation, dropping a Protection Guardian into the scene, and the demo scene &mdash; plus the requirements and support contact.</p>
+
+  <h3>Interactive Welcome scene (guided setup)</h3>
+  <p>Prefer to learn by doing? Open <code>Tools &rarr; UPF &rarr; Open Welcome Scene</code> (or the <strong>Open the Getting-Started Scene</strong> button in the Welcome window) and press <strong>Play</strong>. The scene builds a guided, paged walkthrough of the exact steps to protect your game &mdash; create a profile, pick a preset, add the Protection Guardian, and build &mdash; and, in the editor, its buttons run the real UPF menu actions (create / select a profile, add the Guardian, open the Dashboard, Documentation or the interactive demo). It is a developer onboarding aid and is intentionally left out of Build Settings, so it never ships in your game.</p>
 
   <h3>Protection Profile &amp; one-click presets</h3>
   <p>The <code>UpfProtectionProfile</code> ScriptableObject is the single source of truth for every layer. Create it via <code>Assets &rarr; Create &rarr; UPF &rarr; Protection Profile</code> or <code>Tools &rarr; UPF &rarr; Create or Select Protection Profile</code>. Its custom Inspector adds:</p>
@@ -1161,6 +1164,7 @@ Unity.exe -batchmode -quit -projectPath . <span class="op">\</span>
     <thead><tr><th>Menu item</th><th>Action</th></tr></thead>
     <tbody>
       <tr><td><code>Tools &rarr; UPF &rarr; Welcome</code></td><td>Open the onboarding / help window.</td></tr>
+      <tr><td><code>Tools &rarr; UPF &rarr; Open Welcome Scene</code></td><td>Open (creating if needed) the interactive, guided getting-started scene &mdash; press Play to use it.</td></tr>
       <tr><td><code>Tools &rarr; UPF &rarr; Dashboard</code></td><td>Open the protection dashboard (below).</td></tr>
       <tr><td><code>Tools &rarr; UPF &rarr; Create or Select Protection Profile</code></td><td>Create / select the default profile asset and ping it.</td></tr>
       <tr><td><code>Tools &rarr; UPF &rarr; Build Protected Player</code></td><td>Build a protected player for the active target to <code>Builds/UPFProtected/&lt;target&gt;</code>.</td></tr>
