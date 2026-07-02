@@ -701,7 +701,7 @@ details .details-body p:first-child { margin-top: 0; }
   <div class="sidebar-group">
     <div class="sidebar-group-title">No-Code &amp; Editor Tools</div>
     <a href="#editor-tools"><span class="nav-icon">&#128295;</span> Editor Tools (No-Code)</a>
-    <a href="#welcome"><span class="nav-icon">&#128075;</span> Welcome Window</a>
+    <a href="#welcome"><span class="nav-icon">&#128075;</span> Welcome &amp; Getting Started</a>
     <a href="#assets"><span class="nav-icon">&#128193;</span> Assets &amp; Presets</a>
   </div>
 
@@ -787,6 +787,7 @@ details .details-body p:first-child { margin-top: 0; }
                   <span class="cm">//   profiles, diagnostics, automation, the Astra Web View component</span>
   Editor/         <span class="cm">// Welcome window, custom inspectors, scaffolding menu, Setup,</span>
                   <span class="cm">//   Diagnostics, project validation</span>
+  Welcome/        <span class="cm">// interactive Getting Started scene (built in code at runtime)</span>
   Plugins/        <span class="cm">// WebGL .jslib, Windows WebView2 DLL, iOS/Android sources</span>
   Demo/           <span class="cm">// a guided, fully interactive showcase scene</span>
   Documentation/  <span class="cm">// You are here</span>
@@ -931,15 +932,29 @@ details .details-body p:first-child { margin-top: 0; }
 <!--          WELCOME WINDOW                      -->
 <!-- ============================================ -->
 <section class="section" id="welcome">
-  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128075;</span> Welcome Window</h2>
-  <p class="section-desc">A friendly front door that gets you productive in a minute.</p>
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128075;</span> Welcome &amp; Getting Started</h2>
+  <p class="section-desc">Two friendly front doors that get you productive in a minute.</p>
 
+  <h3>Welcome window (Editor)</h3>
   <ul>
     <li>Auto-opens once the first time the asset is in the project (suppressed in batch/CI).</li>
-    <li>Big buttons: Open Documentation, Open the Demo Scene, Create your first Astra Web View, Open Setup &amp; Validation.</li>
+    <li>Big buttons: Open the interactive Welcome scene, Open Documentation, Open the Demo Scene, Create your first Astra Web View, Open Setup &amp; Validation.</li>
     <li>A "Get started in 3 steps" list, requirements, and the support contact.</li>
     <li>Dismissible via the "Show this window on startup" toggle, and re-openable any time from <code>Tools &rarr; Astra Web Platform &rarr; Welcome</code>.</li>
   </ul>
+
+  <h3>Interactive Welcome scene</h3>
+  <p>A playable, hands-on onboarding scene that walks you through the three steps to your first live web page &mdash; and lets you try it on the spot. Open it from the Welcome window's <em>Open the interactive Welcome scene</em> button, or generate it via <code>Tools &rarr; Astra Web Platform &rarr; Create Welcome Scene</code> (it lands at <code>Assets/AstraWebPlatform/Welcome/Scenes/AstraWebPlatform_Welcome.unity</code>).</p>
+  <ul>
+    <li>A left-hand stepper: <strong>Welcome &rarr; Add a Web View &rarr; Set URL &amp; Engine &rarr; Press Play &rarr; Next steps</strong>, with Back / Next navigation.</li>
+    <li>A <strong>live preview</strong> on the "Press Play" step: type a URL and it drives the real <code>Astra Web View</code> component, showing the resolved engine and the page's <code>document.title</code>. In the Editor this resolves the Mock engine; a Windows/WebGL player renders the real page.</li>
+    <li>One-click Open Documentation and Contact Support throughout.</li>
+  </ul>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#128161;</span>
+    <div><strong>Built in code at runtime.</strong> The entire scene is constructed from a near-empty scene (Camera + controller), so it carries no serialized asset references and opens cleanly on any machine &mdash; and it exercises the same shipping runtime you use in your own project.</div>
+  </div>
 </section>
 
 <!-- ============================================ -->
