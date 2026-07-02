@@ -674,7 +674,7 @@ details .details-body p:first-child { margin-top: 0; }
     <span class="search-icon">&#128269;</span>
     <input type="text" id="searchInput" placeholder="Search docs... (Ctrl+K)" autocomplete="off">
   </div>
-  <span class="header-version">v0.3.0 &middot; Unity 6000.0+</span>
+  <span class="header-version">v0.3.1 &middot; Unity 6000.0+</span>
 </header>
 
 <!-- SEARCH -->
@@ -770,6 +770,7 @@ details .details-body p:first-child { margin-top: 0; }
   <div class="steps">
     <div class="step"><div class="step-content"><strong>Import from the Asset Store</strong><br>In <code>Window &rarr; Package Manager &rarr; My Assets</code>, download and import Universal Asset Preview Studio. It lands at <code>Assets/UniversalAssetPreviewStudio/</code>.</div></div>
     <div class="step"><div class="step-content"><strong>Read the Welcome window</strong><br>On first import a <strong>Welcome</strong> window auto-opens once. It is dismissible and re-openable from <code>Window &rarr; Universal Asset Preview Studio &rarr; Welcome</code>.</div></div>
+    <div class="step"><div class="step-content"><strong>(Optional) Open the Getting Started scene</strong><br><code>Window &rarr; Universal Asset Preview Studio &rarr; Getting Started Scene</code> opens a guided onboarding scene &mdash; a guidance card plus a <strong>&#9733; START HERE</strong> object whose Inspector launches the Studio, docs and demo in one click.</div></div>
     <div class="step"><div class="step-content"><strong>Open the Studio</strong><br><code>Window &rarr; Universal Asset Preview Studio &rarr; Open Studio</code>. Let the first scan finish &mdash; large projects may take a few minutes while assets are indexed.</div></div>
     <div class="step"><div class="step-content"><strong>(Optional) Open the demo</strong><br><code>Window &rarr; Universal Asset Preview Studio &rarr; Open Demo Scene</code> opens a WebGL-safe showcase that visualizes the editor workflows.</div></div>
   </div>
@@ -1149,11 +1150,12 @@ Unity.exe -batchmode -nographics -projectPath <span class="str">"&lt;project&gt;
       <tr><td><code>Window &rarr; Universal Asset Preview Studio &rarr; Open Studio</code></td><td>The main Studio window (<code>UapsWindow</code>) &mdash; browse, preview, validate, compare, organize, export, audit.</td></tr>
       <tr><td><code>Window &rarr; &hellip; &rarr; Open Toolkit Studio</code></td><td>A UI Toolkit browser shell for modern docking / search / details. The classic Studio remains the feature-complete surface for all export and analysis actions.</td></tr>
       <tr><td><code>Window &rarr; &hellip; &rarr; Welcome</code></td><td>The first-run Welcome window. Auto-opens once, dismissible, and re-openable here.</td></tr>
+      <tr><td><code>Window &rarr; &hellip; &rarr; Getting Started Scene</code></td><td>Opens the onboarding scene &mdash; an on-screen guidance card plus a <strong>&#9733; START HERE</strong> object whose Inspector has one-click buttons to open the Studio, docs and demo.</td></tr>
       <tr><td><code>Window &rarr; &hellip; &rarr; Documentation</code></td><td>Opens this documentation.</td></tr>
       <tr><td><code>Window &rarr; &hellip; &rarr; Open Demo Scene</code></td><td>Opens the WebGL-safe interactive demo scene.</td></tr>
       <tr><td><code>Window &rarr; &hellip; &rarr; Project Window Thumbnails</code></td><td>Toggles cached Project-window thumbnail overlays.</td></tr>
       <tr><td><code>Assets &rarr; UAPS &rarr; Preview Selected</code></td><td>Jumps the Studio to the currently selected asset.</td></tr>
-      <tr><td><code>Tools &rarr; Universal Asset Preview Studio &rarr; Demo / Samples</code></td><td>Rebuild the demo scene and generate the fixture library.</td></tr>
+      <tr><td><code>Tools &rarr; Universal Asset Preview Studio &rarr; Demo / Samples</code></td><td>Rebuild the Welcome / demo / example scenes and generate the fixture library.</td></tr>
     </tbody>
   </table></div>
 
@@ -1165,8 +1167,9 @@ Unity.exe -batchmode -nographics -projectPath <span class="str">"&lt;project&gt;
     <div class="card"><div class="card-title">&#128101; Team Workspace</div><p style="color:var(--text-dim);font-size:13.5px;margin:0;">A <code>UapsTeamWorkspaceSettings</code> asset storing shared saved searches, tags, collections, pinned comparisons, recents and review assignments &mdash; project metadata that belongs in source control instead of personal EditorPrefs.</p></div>
   </div>
 
-  <h3>The Welcome window</h3>
-  <p>On first import the Welcome window auto-opens once to orient new users toward opening the Studio and the demo scene. It is dismissible and can always be re-opened from the menu. It is informational only &mdash; nothing about your project changes when it shows.</p>
+  <h3>The Welcome window &amp; Getting Started scene</h3>
+  <p>On first import the <strong>Welcome</strong> window auto-opens once to orient new users toward opening the Studio, the documentation and the onboarding scene. It is dismissible and can always be re-opened from the menu. It is informational only &mdash; nothing about your project changes when it shows.</p>
+  <p>The <strong>Getting Started scene</strong> (<code>Window &rarr; &hellip; &rarr; Getting Started Scene</code>) is a self-contained onboarding scene: it shows an always-visible guidance card with the three-step quick start, and a <strong>&#9733; START HERE</strong> object whose Inspector turns into a launcher &mdash; one click opens the Studio, the documentation, the interactive demo or the Welcome window. Regenerate it any time from <code>Tools &rarr; Universal Asset Preview Studio &rarr; Demo &rarr; Rebuild Welcome Scene</code>.</p>
 
   <div class="callout callout-tip">
     <span class="callout-icon">&#128161;</span>
@@ -1416,7 +1419,7 @@ Unity.exe -batchmode -nographics -projectPath <span class="str">"&lt;project&gt;
       <div class="card-title">&#128203; Helpful info to include</div>
       <ul style="padding-left:20px;color:var(--text-dim);font-size:14px;line-height:1.9;">
         <li>Unity version (e.g. <code>6000.0.30f1</code>)</li>
-        <li>UAPS version (<strong>v0.3.0</strong>)</li>
+        <li>UAPS version (<strong>v0.3.1</strong>)</li>
         <li>Render pipeline (Built-in / URP / HDRP)</li>
         <li>The asset type + a sample asset path</li>
       </ul>
