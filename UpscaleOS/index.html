@@ -795,13 +795,14 @@ details .details-body p:first-child { margin-top: 0; }
                   <span class="cm">//   the URP renderer feature + HDRP CustomPass + Built-in driver</span>
   Runtime/Native/ <span class="cm">// the native-bridge source you build to enable vendor ML paths</span>
   Editor/         <span class="cm">// Setup Wizard, Diagnostics, Welcome, Quality Compare, inspectors</span>
+  Welcome.unity   <span class="cm">// the interactive first-run onboarding scene (Tools ▸ UpscaleOS ▸ Welcome Scene)</span>
   Demo/           <span class="cm">// a generated demo scene (Create Demo Scene) with motion-vector objects</span>
   Documentation/  <span class="cm">// You are here</span>
   Tests/          <span class="cm">// EditMode + PlayMode validation</span><span class="lang-tag">Project</span></code></pre>
 
   <div class="callout callout-info">
     <span class="callout-icon">&#9432;</span>
-    <div><strong>First-run Welcome.</strong> A Welcome window auto-opens once after import. Re-open it any time via <code>Tools &rarr; UpscaleOS &rarr; Welcome</code>.</div>
+    <div><strong>First-run Welcome.</strong> A Welcome window auto-opens once after import. Re-open it any time via <code>Tools &rarr; UpscaleOS &rarr; Welcome</code>, and open the interactive onboarding scene via <code>Tools &rarr; UpscaleOS &rarr; Welcome Scene</code> (press Play for a guided "start in 3 steps" walkthrough).</div>
   </div>
 </section>
 
@@ -954,6 +955,9 @@ details .details-body p:first-child { margin-top: 0; }
     <div class="card"><div class="card-title">&#128218; Documentation</div><p style="color:var(--text-dim);font-size:13.5px;margin:0;">Opens this documentation.</p></div>
     <div class="card"><div class="card-title">&#127916; Create Demo Scene</div><p style="color:var(--text-dim);font-size:13.5px;margin:0;">Generates a demo scene with a controller, debug overlay, and motion-vector objects.</p></div>
     <div class="card"><div class="card-title">&#128230; Export .unitypackage</div><p style="color:var(--text-dim);font-size:13.5px;margin:0;">Exports the asset as a <code>.unitypackage</code>.</p></div>
+    <div class="card"><div class="card-title">&#128075; Welcome Scene</div><p style="color:var(--text-dim);font-size:13.5px;margin:0;">Creates &amp; opens the interactive onboarding scene — press Play for a guided "start in 3 steps" walkthrough.</p></div>
+    <div class="card"><div class="card-title">&#127916; Create Sample Scenes</div><p style="color:var(--text-dim);font-size:13.5px;margin:0;">Generates the focused single-feature sample scenes (quality presets, temporal, backends, smart mode, adaptive, sharpening).</p></div>
+    <div class="card"><div class="card-title">&#127760; Build WebGL Demo</div><p style="color:var(--text-dim);font-size:13.5px;margin:0;">Builds the interactive demo as a WebGL package for a public browser preview.</p></div>
   </div>
 
   <h3>Other menus</h3>
@@ -1074,6 +1078,12 @@ weakest / unknown       &rarr; FSR1 &rarr; Bilinear<span class="lang-tag">Fallba
 c.autoTuneToTargetFps = <span class="kw">true</span>;
 c.targetFps          = <span class="num">60</span>;   <span class="cm">// 30..240</span>
 c.ApplySettings();<span class="lang-tag">C#</span></code></pre>
+
+  <h3>Pluggable governor <span class="tag tag-info">Advanced</span></h3>
+  <p>The scaling logic is an <strong>extension point</strong>. Implement <code>IDynamicResolutionPolicy</code>
+  and register it on the process-wide <code>DynamicResolution.Policy</code> to replace the built-in governor
+  with your own (e.g. a thermal- or content-aware controller) without forking the asset.</p>
+  <pre><code><span class="tp">DynamicResolution</span>.Policy = <span class="kw">new</span> MyThermalAwarePolicy();  <span class="cm">// swap the auto-tune governor</span><span class="lang-tag">C#</span></code></pre>
 </section>
 
 <!-- ============================================ -->
@@ -1128,7 +1138,9 @@ c.ApplySettings();<span class="lang-tag">C#</span></code></pre>
   </div>
 
   <h3>Built-in <span class="tag tag-platform">Driver</span></h3>
-  <p>The Built-in pipeline has a driver based on <code>OnRenderImage</code>.</p>
+  <p>The Built-in pipeline has a driver based on <code>OnRenderImage</code>. For the no-code path, add
+  <strong>Add Component &rarr; UpscaleOS &rarr; Upscale (Built-in Pipeline)</strong> to your camera and pick a
+  Quality preset — no renderer feature or Custom Pass needed.</p>
 
   <div class="callout callout-tip">
     <span class="callout-icon">&#128161;</span>
@@ -1165,6 +1177,8 @@ Debug.Log(<span class="tp">UpscaleService</span>.Active);    <span class="cm">//
       <tr><td><code>UpscaleService.ExplainSelection()</code></td><td>A per-backend why-chosen / why-rejected trace.</td></tr>
       <tr><td><code>UpscaleService.ResetHistory()</code></td><td>Flush temporal history &mdash; call on a hard cut / teleport.</td></tr>
       <tr><td><code>UpscaleService.ActiveRenderStats</code></td><td>Live render-side statistics.</td></tr>
+      <tr><td><code>UpscaleService.Stats</code></td><td>The controller-side stats snapshot (active backend, resolutions, timings, fallback reason).</td></tr>
+      <tr><td><code>UpscaleService.ResetDefault()</code></td><td>Reset the shared default service instance (e.g. between test runs or a full re-init).</td></tr>
     </tbody>
   </table></div>
 
