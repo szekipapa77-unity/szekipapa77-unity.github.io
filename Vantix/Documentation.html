@@ -1,0 +1,1662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vantix — Documentation</title>
+<style>
+:root {
+  --bg: #0D0B1A;
+  --bg-card: #161230;
+  --bg-card-hover: #1E1840;
+  --bg-code: #1A1535;
+  --bg-sidebar: #100D20;
+  --text: #e2e2ea;
+  --text-dim: #9088b0;
+  --text-code: #c8c8d8;
+  --accent: #9333EA;
+  --accent-light: #A855F7;
+  --accent-glow: rgba(147,51,234,0.15);
+  --green: #00cec9;
+  --green-dim: rgba(0,206,201,0.12);
+  --yellow: #fdcb6e;
+  --yellow-dim: rgba(253,203,110,0.12);
+  --pink: #EC4899;
+  --pink-dim: rgba(236,72,153,0.12);
+  --orange: #e17055;
+  --orange-dim: rgba(225,112,85,0.12);
+  --blue: #818cf8;
+  --blue-dim: rgba(129,140,248,0.12);
+  --border: #2D2550;
+  --border-light: #3D3560;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --sidebar-w: 280px;
+  --header-h: 64px;
+  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 24px); }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 15px;
+  overflow-x: hidden;
+}
+
+::selection { background: var(--accent); color: #fff; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+/* ---- HEADER ---- */
+.header {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  background: rgba(13,11,26,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  gap: 16px;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.header-logo .dot {
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, #9333EA, #EC4899);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800; color: #fff;
+}
+
+.header-search {
+  flex: 1;
+  max-width: 420px;
+  margin-left: auto;
+  position: relative;
+}
+
+.header-search input {
+  width: 100%;
+  padding: 8px 16px 8px 40px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--font);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.header-search input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.header-search input::placeholder { color: var(--text-dim); }
+
+.header-search .search-icon {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  color: var(--text-dim); font-size: 14px; pointer-events: none;
+}
+
+.header-version {
+  font-size: 12px; color: var(--text-dim);
+  background: var(--bg-card);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.menu-toggle {
+  display: none;
+  background: none; border: none;
+  color: var(--text); font-size: 22px;
+  cursor: pointer; padding: 4px;
+}
+
+/* ---- SIDEBAR ---- */
+.sidebar {
+  position: fixed;
+  top: var(--header-h);
+  left: 0;
+  width: var(--sidebar-w);
+  height: calc(100vh - var(--header-h));
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 20px 0;
+  z-index: 90;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-group { margin-bottom: 8px; }
+
+.sidebar-group-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text-dim);
+  padding: 12px 24px 6px;
+}
+
+.sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 24px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 13.5px;
+  transition: all 0.15s;
+  border-left: 2px solid transparent;
+}
+
+.sidebar a:hover {
+  color: var(--text);
+  background: var(--accent-glow);
+}
+
+.sidebar a.active {
+  color: var(--accent-light);
+  background: var(--accent-glow);
+  border-left-color: var(--accent);
+  font-weight: 600;
+}
+
+.sidebar a .nav-icon {
+  width: 20px;
+  text-align: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* ---- MAIN ---- */
+.main {
+  margin-left: var(--sidebar-w);
+  margin-top: var(--header-h);
+  padding: 40px 48px 80px;
+  max-width: 960px;
+}
+
+/* ---- HERO ---- */
+.hero {
+  padding: 48px 0 40px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 48px;
+}
+
+.hero h1 {
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #fff 0%, #A855F7 40%, #EC4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  font-size: 17px;
+  color: var(--text-dim);
+  max-width: 640px;
+  line-height: 1.7;
+}
+
+.hero-badges {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-purple { background: var(--accent-glow); color: var(--accent-light); border: 1px solid rgba(147,51,234,0.25); }
+.badge-green { background: var(--green-dim); color: var(--green); border: 1px solid rgba(0,206,201,0.25); }
+.badge-yellow { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(253,203,110,0.25); }
+.badge-pink { background: var(--pink-dim); color: var(--pink); border: 1px solid rgba(236,72,153,0.25); }
+.badge-blue { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(129,140,248,0.25); }
+
+/* ---- SECTIONS ---- */
+.section {
+  margin-bottom: 56px;
+  scroll-margin-top: calc(var(--header-h) + 24px);
+}
+
+.section h2 {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section h2 .section-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.section > .section-desc {
+  color: var(--text-dim);
+  margin-bottom: 28px;
+  font-size: 15px;
+}
+
+h3 {
+  font-size: 19px;
+  font-weight: 700;
+  margin-top: 32px;
+  margin-bottom: 12px;
+  color: var(--text);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+h4 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-top: 24px;
+  margin-bottom: 8px;
+  color: var(--accent-light);
+}
+
+p { margin-bottom: 12px; }
+
+ul, ol { padding-left: 22px; margin-bottom: 14px; }
+li { margin-bottom: 4px; }
+
+a { color: var(--accent-light); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---- CARDS ---- */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 16px;
+  transition: border-color 0.2s;
+}
+
+.card:hover { border-color: var(--border-light); }
+
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.mini-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: block;
+  color: inherit;
+}
+
+.mini-card:hover {
+  border-color: var(--accent);
+  background: var(--bg-card-hover);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+.mini-card h4 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  color: var(--text);
+  border: none;
+  padding: 0;
+}
+
+.mini-card p {
+  font-size: 12.5px;
+  color: var(--text-dim);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ---- CODE ---- */
+pre {
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 18px 22px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-code);
+  margin-bottom: 16px;
+  position: relative;
+}
+
+pre .lang-tag {
+  position: absolute;
+  top: 8px; right: 12px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-dim);
+  opacity: 0.6;
+  font-family: var(--font);
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: var(--bg-code);
+  padding: 2px 7px;
+  border-radius: 4px;
+  color: var(--accent-light);
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+.kw { color: #C084FC; }
+.str { color: #c3e88d; }
+.cm { color: #6B5F8A; font-style: italic; }
+.fn { color: #818cf8; }
+.tp { color: #ffcb6b; }
+.num { color: #f78c6c; }
+.op { color: #A78BFA; }
+
+/* ---- TABLES ---- */
+.table-wrap {
+  overflow-x: auto;
+  margin-bottom: 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+thead th {
+  background: var(--bg-code);
+  font-weight: 700;
+  text-align: left;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+}
+
+td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(147,51,234,0.04); }
+
+/* ---- COLLAPSIBLE ---- */
+details {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+
+details[open] { border-color: var(--border-light); }
+
+summary {
+  padding: 14px 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+  list-style: none;
+  transition: color 0.15s;
+}
+
+summary::-webkit-details-marker { display: none; }
+
+summary::before {
+  content: '\25B6';
+  font-size: 10px;
+  color: var(--text-dim);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+details[open] > summary::before { transform: rotate(90deg); }
+
+summary:hover { color: var(--accent-light); }
+
+details .details-body { padding: 0 20px 18px; }
+details .details-body p:first-child { margin-top: 0; }
+
+/* ---- CALLOUT ---- */
+.callout {
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.callout > div { flex: 1; }
+.callout p { margin-bottom: 6px; }
+.callout p:last-child { margin-bottom: 0; }
+
+.callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+.callout-tip { background: var(--green-dim); border: 1px solid rgba(0,206,201,0.2); }
+.callout-tip .callout-icon { color: var(--green); }
+
+.callout-warn { background: var(--yellow-dim); border: 1px solid rgba(253,203,110,0.2); }
+.callout-warn .callout-icon { color: var(--yellow); }
+
+.callout-info { background: var(--blue-dim); border: 1px solid rgba(129,140,248,0.2); }
+.callout-info .callout-icon { color: var(--blue); }
+
+.callout-danger { background: var(--pink-dim); border: 1px solid rgba(236,72,153,0.2); }
+.callout-danger .callout-icon { color: var(--pink); }
+
+/* ---- STEP LIST ---- */
+.steps { counter-reset: step; margin-bottom: 16px; }
+
+.step {
+  display: flex;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  counter-increment: step;
+}
+
+.step:last-child { border-bottom: none; }
+
+.step::before {
+  content: counter(step);
+  width: 28px; height: 28px;
+  background: var(--accent-glow);
+  color: var(--accent-light);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.step-content { flex: 1; }
+.step-content strong { color: var(--text); }
+
+/* ---- FLOW DIAGRAM ---- */
+.flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+}
+
+.flow-node {
+  padding: 8px 16px;
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.flow-arrow {
+  padding: 0 8px;
+  color: var(--text-dim);
+  font-size: 16px;
+}
+
+/* ---- TAGS ---- */
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tag-required { background: var(--pink-dim); color: var(--pink); }
+.tag-optional { background: var(--green-dim); color: var(--green); }
+.tag-auto { background: var(--accent-glow); color: var(--accent-light); }
+.tag-platform { background: var(--yellow-dim); color: var(--yellow); }
+.tag-info { background: var(--blue-dim); color: var(--blue); }
+
+/* ---- SEARCH RESULTS ---- */
+.search-overlay {
+  display: none;
+  position: fixed;
+  top: var(--header-h);
+  left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 95;
+}
+
+.search-results {
+  display: none;
+  position: fixed;
+  top: calc(var(--header-h) + 8px);
+  left: 50%; transform: translateX(-50%);
+  width: 520px;
+  max-width: calc(100vw - 32px);
+  max-height: 60vh;
+  overflow-y: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  z-index: 96;
+  padding: 8px;
+}
+
+.search-results.visible { display: block; }
+.search-overlay.visible { display: block; }
+
+.search-item {
+  display: block;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--text);
+  transition: background 0.1s;
+}
+
+.search-item:hover { background: var(--accent-glow); text-decoration: none; }
+.search-item-section { font-size: 11px; color: var(--accent-light); margin-bottom: 2px; }
+.search-item-title { font-weight: 600; font-size: 14px; }
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; padding: 24px 20px 60px; }
+  .menu-toggle { display: block; }
+  .header-search { max-width: 200px; }
+  .hero h1 { font-size: 28px; }
+  .card-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .header { padding: 0 16px; }
+  .header-version { display: none; }
+  .header-search { max-width: 160px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Toggle menu">&#9776;</button>
+  <a href="#overview" class="header-logo">
+    <div class="dot">V</div>
+    <span>Vantix</span>
+  </a>
+  <div class="header-search">
+    <span class="search-icon">&#128269;</span>
+    <input type="text" id="searchInput" placeholder="Search docs... (Ctrl+K)" autocomplete="off">
+  </div>
+  <span class="header-version">v1.0 &middot; Unity 2021.3+</span>
+</header>
+
+<!-- SEARCH -->
+<div class="search-overlay" id="searchOverlay"></div>
+<div class="search-results" id="searchResults"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Getting Started</div>
+    <a href="#overview"><span class="nav-icon">&#127968;</span> Overview</a>
+    <a href="#installation"><span class="nav-icon">&#10515;</span> Installation</a>
+    <a href="#quickstart"><span class="nav-icon">&#9889;</span> Quick Start</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Core</div>
+    <a href="#how-it-works"><span class="nav-icon">&#9881;</span> How It Works</a>
+    <a href="#console"><span class="nav-icon">&#128421;</span> Runtime Console</a>
+    <a href="#inspector"><span class="nav-icon">&#128270;</span> Runtime Inspector</a>
+    <a href="#logging"><span class="nav-icon">&#128221;</span> Logging</a>
+    <a href="#performance"><span class="nav-icon">&#128293;</span> Performance Diagnostics</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Data</div>
+    <a href="#telemetry"><span class="nav-icon">&#128225;</span> Telemetry</a>
+    <a href="#analytics"><span class="nav-icon">&#128202;</span> Analytics</a>
+    <a href="#visualization"><span class="nav-icon">&#128200;</span> Visualization &amp; Dashboards</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Reliability</div>
+    <a href="#bug-reporting"><span class="nav-icon">&#128027;</span> Bug Reporting</a>
+    <a href="#crash"><span class="nav-icon">&#128165;</span> Crash Diagnostics</a>
+    <a href="#session"><span class="nav-icon">&#9201;</span> Session &amp; Timeline</a>
+    <a href="#qa"><span class="nav-icon">&#9989;</span> QA Toolkit</a>
+    <a href="#liveops"><span class="nav-icon">&#127919;</span> LiveOps</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Editor / No-Code</div>
+    <a href="#nocode"><span class="nav-icon">&#129520;</span> No-Code Setup</a>
+    <a href="#editor-tools"><span class="nav-icon">&#128295;</span> Editor Tools</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Developer</div>
+    <a href="#api"><span class="nav-icon">&#128217;</span> Scripting API</a>
+    <a href="#troubleshooting"><span class="nav-icon">&#128161;</span> Troubleshooting</a>
+    <a href="#faq"><span class="nav-icon">&#10067;</span> FAQ</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-group-title">Support</div>
+    <a href="#support"><span class="nav-icon">&#128236;</span> Support</a>
+  </div>
+
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+<!-- ============================================ -->
+<!--                  HERO                        -->
+<!-- ============================================ -->
+<div class="hero" id="overview">
+  <h1>Vantix</h1>
+  <p>A unified runtime diagnostics &amp; developer-operations platform for Unity &mdash; console, inspector, logging, telemetry, analytics, performance, bug &amp; crash reporting, a cross-correlated session timeline, QA and live-ops, on one Diagnostics Bus.</p>
+  <div class="hero-badges">
+    <span class="badge badge-purple">Unity 2021.3+</span>
+    <span class="badge badge-green">Built-in / URP / HDRP</span>
+    <span class="badge badge-yellow">Mono + IL2CPP</span>
+    <span class="badge badge-pink">No external deps</span>
+  </div>
+</div>
+
+<section class="section">
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>One platform, one data spine.</strong> Every Vantix module &mdash; logging, console, inspector, performance, telemetry, analytics, crash, QA, live-ops &mdash; publishes to a single in-process <strong>Diagnostics Bus</strong>. The <a href="#session">Session Recorder</a> folds all of it into one correlated timeline, so you can see exactly what surrounded a spike, an error or a crash.</div>
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#129520;</span>
+    <div><strong>No code required to start.</strong> Drop the <strong>Vantix Bootstrapper</strong> component on a GameObject (or use <code>GameObject &rarr; Vantix &rarr; Add Vantix To Scene</code>) and press Play. The full developer overlay appears &mdash; HUD plus console. See <a href="#nocode">No-Code Setup</a>.</div>
+  </div>
+
+  <div class="card-grid">
+    <a class="mini-card" href="#quickstart"><h4>&#9889; Up in under a minute</h4><p>Add one component and press Play, or call <code>VantixLog.Info</code> &mdash; Vantix auto-boots either way.</p></a>
+    <a class="mini-card" href="#console"><h4>&#128421; Runtime console</h4><p>Decorate a method with <code>[VantixCommand]</code> and run it in-game with autocomplete and history.</p></a>
+    <a class="mini-card" href="#session"><h4>&#9201; Unified timeline</h4><p>Logs, telemetry, metrics and markers on one correlated, queryable, exportable timeline.</p></a>
+    <a class="mini-card" href="#performance"><h4>&#128293; Perf HUD &amp; alerts</h4><p>Live <code>fps</code> / <code>frame.ms</code> / memory with threshold alert rules.</p></a>
+    <a class="mini-card" href="#crash"><h4>&#128165; Crash &amp; bug capture</h4><p>Auto-captured, deduped crashes recovered on next boot, plus one-call bug reports.</p></a>
+    <a class="mini-card" href="#nocode"><h4>&#129520; No-code path</h4><p>Bootstrapper component, Welcome window, Control Center, Setup Wizard, Project Settings.</p></a>
+  </div>
+
+  <p>This guide starts with installation and a quick start, walks each module, then covers the no-code editor tooling and the scripting API. Reference &mdash; <a href="#troubleshooting">Troubleshooting</a>, <a href="#faq">FAQ</a> and <a href="#support">Support</a> &mdash; is at the end.</p>
+</section>
+
+<!-- ============================================ -->
+<!--             INSTALLATION                     -->
+<!-- ============================================ -->
+<section class="section" id="installation">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#10515;</span> Installation</h2>
+  <p class="section-desc">Import once. No external packages, no native binaries, no setup step is mandatory.</p>
+
+  <div class="steps">
+    <div class="step"><div class="step-content"><strong>Import the package</strong><br>From <code>Window &rarr; Package Manager &rarr; My Assets</code>, download and import Vantix. It lands at <code>Assets/Vantix/</code>. There are <strong>no external package dependencies</strong>.</div></div>
+    <div class="step"><div class="step-content"><strong>(Optional) Create a settings asset</strong><br><code>Tools &rarr; Vantix &rarr; Create Settings Asset</code> to tune capacities, severity, the kill switch and auto-boot. If you skip this, Vantix uses a built-in default (<code>VantixSettings.GetOrDefault()</code>).</div></div>
+    <div class="step"><div class="step-content"><strong>Press Play</strong><br>On entering Play mode <code>VantixRuntime</code> auto-boots, installs its services, and <code>UIBootstrap</code> spawns the overlay. That's it &mdash; nothing else is required to start collecting diagnostics.</div></div>
+  </div>
+
+  <h3>Requirements</h3>
+  <ul>
+    <li>Unity <strong>2021.3</strong> or newer (tested through Unity 6).</li>
+    <li>Render pipeline: <strong>Built-in</strong>, <strong>URP</strong> or <strong>HDRP</strong> &mdash; the overlay is a screen-space UI canvas.</li>
+    <li>Scripting backend: <strong>Mono</strong> or <strong>IL2CPP</strong> (for IL2CPP, generate the AOT <code>link.xml</code> &mdash; see <a href="#editor-tools">Editor Tools</a>).</li>
+    <li><strong>No external package dependencies.</strong></li>
+  </ul>
+
+  <h3>What gets installed</h3>
+  <pre><code><span class="kw">Assets/Vantix/</span>
+  Runtime/        <span class="cm">// Core (Diagnostics Bus), Logging, Console, Inspection, Performance,</span>
+                  <span class="cm">//   Telemetry, Analytics, Visualization, BugReport, Crash, Session, QA, LiveOps, UI</span>
+  SDK/            <span class="cm">// Public attributes: [VantixCommand]/[VantixVariable]/[VantixWatch]/...</span>
+  Editor/         <span class="cm">// Control Center, Welcome window, Setup Wizard, Dashboard Designer,</span>
+                  <span class="cm">//   Project Settings provider, AOT link.xml generator, CI/build helpers</span>
+  Samples/        <span class="cm">// Showcase scene + sample dashboard</span>
+  Tests/          <span class="cm">// EditMode + PlayMode (run headless via Unity -runTests)</span>
+  Documentation/  <span class="cm">// You are here</span><span class="lang-tag">Project</span></code></pre>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>Kill switch.</strong> <code>VantixSettings.Enabled</code> gates the whole platform. Set it to <code>false</code> (or define <code>VANTIX_DISABLED</code>) and Vantix becomes a safe no-op &mdash; ideal for stripping it from shipping builds without touching your own code.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             QUICK START                      -->
+<!-- ============================================ -->
+<section class="section" id="quickstart">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#9889;</span> Quick Start</h2>
+  <p class="section-desc">Two ways in: the no-code path with one component, and the code path with one method call.</p>
+
+  <h3>No-code path</h3>
+  <div class="steps">
+    <div class="step"><div class="step-content"><strong>Add Vantix to the scene</strong><br><code>GameObject &rarr; Vantix &rarr; Add Vantix To Scene</code> drops a ready-configured <code>[Vantix]</code> object carrying the <strong>Vantix Bootstrapper</strong> component. (Or add the component yourself via <code>Add Component &rarr; Vantix &rarr; Vantix Bootstrapper</code>.)</div></div>
+    <div class="step"><div class="step-content"><strong>Press Play</strong><br>The Bootstrapper initializes Vantix and spawns the overlay &mdash; an always-on performance HUD and a toggleable console.</div></div>
+    <div class="step"><div class="step-content"><strong>Open the console</strong><br>Press the backquote key (<code>`</code>) to toggle the console panel, type a command and press Enter.</div></div>
+  </div>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#128075;</span>
+    <div><strong>New here?</strong> Open the interactive <strong>Welcome scene</strong> (<code>Assets/Vantix/Demo/Scenes/Vantix_Welcome.unity</code>) and press Play for a guided, clickable 5-step tour that boots Vantix, opens the overlay and loads the demo &mdash; no code required. See <a href="#nocode">No-Code&nbsp;Setup</a>.</div>
+  </div>
+
+  <h3>Code path</h3>
+  <p>Vantix is a safe no-op until it initializes, then auto-boots on the first Play frame. Just start using the façades:</p>
+
+  <pre><code><span class="kw">using</span> Vantix.Logging;
+<span class="kw">using</span> Vantix.Core;
+<span class="kw">using</span> Vantix.SDK;
+<span class="kw">using</span> Vantix.Telemetry;
+
+<span class="cm">// 1. Structured logging (channel + typed fields)</span>
+<span class="tp">VantixLog</span>.<span class="fn">Info</span>(<span class="str">"Player spawned"</span>, <span class="str">"gameplay"</span>,
+    <span class="tp">VxField</span>.<span class="fn">Of</span>(<span class="str">"hp"</span>, <span class="num">100</span>), <span class="tp">VxField</span>.<span class="fn">Of</span>(<span class="str">"name"</span>, <span class="str">"hero"</span>));
+
+<span class="cm">// 2. A console command anyone can run in-game</span>
+<span class="kw">public static class</span> <span class="tp">Cheats</span>
+{
+    [<span class="tp">VantixCommand</span>(<span class="str">"heal"</span>, Summary = <span class="str">"Restore player health."</span>)]
+    <span class="kw">public static</span> <span class="tp">string</span> <span class="fn">Heal</span>(<span class="tp">int</span> amount) =&gt; $<span class="str">"healed {amount}"</span>;
+}
+<span class="cm">// then type:  heal 50</span>
+
+<span class="cm">// 3. Track a telemetry event</span>
+<span class="tp">VantixTelemetry</span>.<span class="fn">Track</span>(<span class="str">"level_complete"</span>, <span class="tp">VxField</span>.<span class="fn">Of</span>(<span class="str">"level"</span>, <span class="num">3</span>));<span class="lang-tag">C#</span></code></pre>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#128161;</span>
+    <div><strong>Mix and match.</strong> The no-code Bootstrapper and the code API coexist. If your code (or auto-boot) already started Vantix, the Bootstrapper detects it and defers &mdash; code always wins precedence, so nothing is double-initialized.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             HOW IT WORKS                     -->
+<!-- ============================================ -->
+<section class="section" id="how-it-works">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#9881;</span> How It Works</h2>
+  <p class="section-desc">The Diagnostics Bus is the spine. Everything publishes to it; the Session Recorder unifies it.</p>
+
+  <div class="flow">
+    <span class="flow-node">Your game + modules</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">Publish&lt;T&gt;</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">Diagnostics Bus</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">Channels (ring history)</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">Subscribers</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">Session Recorder</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-node">Unified Timeline</span>
+  </div>
+
+  <ol>
+    <li><code>VantixRuntime.Initialize(settings)</code> brings up the core and installs each module's service (auto-boots in Play mode).</li>
+    <li>Modules publish strongly-typed records &mdash; <code>LogRecord</code>, <code>MetricSample</code>, <code>TelemetryEvent</code> &mdash; via <code>IDiagnosticsBus.Publish&lt;T&gt;(in T)</code>.</li>
+    <li>Each <code>Channel&lt;T&gt;</code> keeps a bounded history ring plus zero-alloc, copy-on-write subscribers, so reading recent history never blocks publishers.</li>
+    <li>Services subscribe to the channels they care about (logging fans to sinks, performance to alerts, analytics to aggregations, &hellip;).</li>
+    <li>The <code>SessionRecorder</code> folds logs, telemetry, metrics and markers into one correlated timeline you can query and export.</li>
+  </ol>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>In-process and allocation-aware.</strong> The bus is pure C#, runs entirely in your process, and is built around ring buffers, an <code>ObjectPool&lt;T&gt;</code> and the low-alloc <code>VxField</code> KVP. There is no server, no socket and no per-frame garbage in steady state.</div>
+  </div>
+
+  <h3>The pieces of Core</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Type</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td><code>VantixRuntime</code></td><td>Lifecycle: <code>Initialize</code> / <code>Shutdown</code> / <code>Flush</code>; exposes <code>Bus</code>, <code>Context</code>, <code>Dispatcher</code>, <code>Clock</code>, <code>Settings</code>, <code>Session</code>.</td></tr>
+      <tr><td><code>IDiagnosticsBus</code> / <code>Channel&lt;T&gt;</code></td><td><code>Publish&lt;T&gt;</code>, <code>Subscribe&lt;T&gt;</code>, <code>GetChannel&lt;T&gt;</code>, <code>NextSequence</code>; bounded history + copy-on-write subscribers.</td></tr>
+      <tr><td><code>RingBuffer&lt;T&gt;</code> / <code>ObjectPool&lt;T&gt;</code></td><td>Bounded buffer with an overflow policy and dropped-count, plus pooling primitives.</td></tr>
+      <tr><td><code>VantixContext</code> / <code>VantixDispatcher</code></td><td>Interface-keyed service registry; main/worker dispatch.</td></tr>
+      <tr><td><code>VxField</code></td><td>Mostly allocation-free typed key/value &mdash; the structured field used across logging, telemetry and metrics.</td></tr>
+      <tr><td><code>VantixSettings</code></td><td>ScriptableObject: kill switch, capacities, severity floor, auto-boot, file logging.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ============================================ -->
+<!--             RUNTIME CONSOLE                  -->
+<!-- ============================================ -->
+<section class="section" id="console">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128421;</span> Runtime Console</h2>
+  <p class="section-desc"><code>Vantix.Console</code> &mdash; an in-game developer console with attribute-driven commands, cvars, autocomplete and history.</p>
+
+  <p>Decorate any method, property or field with <code>[VantixCommand]</code> to turn it into an invokable command; <code>[VantixVariable]</code> exposes a field/property as a runtime variable (cvar) you can read and set from the console.</p>
+
+  <pre><code><span class="kw">using</span> Vantix.SDK;
+
+<span class="kw">public static class</span> <span class="tp">DebugCmds</span>
+{
+    [<span class="tp">VantixCommand</span>(<span class="str">"spawn"</span>, Category = <span class="str">"player"</span>, Summary = <span class="str">"Spawn N enemies."</span>)]
+    <span class="kw">public static</span> <span class="tp">string</span> <span class="fn">Spawn</span>(<span class="tp">int</span> count) =&gt; $<span class="str">"spawned {count}"</span>;
+
+    [<span class="tp">VantixVariable</span>(<span class="str">"god_mode"</span>, Summary = <span class="str">"Invulnerability."</span>, Privileged = <span class="kw">true</span>)]
+    <span class="kw">public static</span> <span class="tp">bool</span> GodMode;
+}<span class="lang-tag">C#</span></code></pre>
+
+  <pre><code><span class="cm">// Execute from code (the overlay does this for you on Enter):</span>
+<span class="tp">CommandResult</span> r = <span class="tp">ConsoleService</span>.<span class="fn">Execute</span>(<span class="str">"spawn 5"</span>);
+<span class="tp">string</span>[] suggestions = <span class="tp">ConsoleService</span>.<span class="fn">Complete</span>(<span class="str">"sp"</span>);   <span class="cm">// autocomplete</span>
+<span class="tp">CommandRegistry</span>.<span class="fn">ScanType</span>(<span class="kw">typeof</span>(<span class="tp">DebugCmds</span>));      <span class="cm">// or manual Register(...)</span><span class="lang-tag">C#</span></code></pre>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Member</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>[VantixCommand]</code></td><td><code>Id</code>, <code>Category</code> (slash/dot path), <code>Summary</code>, <code>Privileged</code> (hidden in non-dev builds).</td></tr>
+      <tr><td><code>[VantixVariable]</code></td><td>Same options &mdash; exposes a field/property as a get/set cvar.</td></tr>
+      <tr><td><code>ConsoleService.Execute(line)</code></td><td>Parses + binds arguments and runs a command &rarr; <code>CommandResult</code>.</td></tr>
+      <tr><td><code>Complete(prefix)</code> / <code>History</code></td><td>Autocomplete suggestions and command history.</td></tr>
+      <tr><td><code>IArgumentConverter</code> / <code>ConverterRegistry</code></td><td>Built-in primitives + enums; register converters for your own types.</td></tr>
+      <tr><td><code>AllowPrivileged</code></td><td>Gate that enables/denies privileged commands and variables.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ============================================ -->
+<!--             RUNTIME INSPECTOR                -->
+<!-- ============================================ -->
+<section class="section" id="inspector">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128270;</span> Runtime Inspector</h2>
+  <p class="section-desc"><code>Vantix.Inspection</code> &mdash; reflect over live objects at runtime, read and edit member values, and watch fields for change.</p>
+
+  <p><code>InspectorService.Inspect(target, label, depth)</code> walks an object into a lazy, bounded <code>InspectorNode</code> tree; values are read and written through cached, AOT-safe reflection. Mark members with <code>[VantixWatch]</code> for change notifications, or a whole type with <code>[VantixInspectable]</code> to surface it.</p>
+
+  <pre><code><span class="kw">using</span> Vantix.Inspection;
+<span class="kw">using</span> Vantix.SDK;
+
+[<span class="tp">VantixInspectable</span>(<span class="str">"Player"</span>)]
+<span class="kw">public class</span> <span class="tp">Player</span> : <span class="tp">MonoBehaviour</span>
+{
+    [<span class="tp">VantixWatch</span>(<span class="str">"Health"</span>)] <span class="kw">public</span> <span class="tp">int</span> hp;
+}
+
+<span class="cm">// Build an inspector tree for any live object:</span>
+<span class="tp">InspectorNode</span> root = <span class="tp">InspectorService</span>.<span class="fn">Inspect</span>(player, <span class="str">"Player"</span>, depth: <span class="num">2</span>);
+<span class="tp">string</span> shown = <span class="tp">ValueFormatter</span>.<span class="fn">Format</span>(player.hp);<span class="lang-tag">C#</span></code></pre>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Member</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>ReflectionCache.GetMembers(type, MemberFilter)</code></td><td>Cached, AOT-safe member discovery.</td></tr>
+      <tr><td><code>InspectableMember.TryGetValue / TrySetValue</code></td><td>Read/write a member value safely.</td></tr>
+      <tr><td><code>InspectorService.Inspect(target, label, depth)</code></td><td>Lazy, depth-bounded <code>InspectorNode</code> tree.</td></tr>
+      <tr><td><code>[VantixWatch]</code> / <code>[VantixInspectable]</code></td><td>Watch a field for change; mark a type as inspectable.</td></tr>
+      <tr><td><code>ValueFormatter.Format(value)</code></td><td>Human-readable formatting for displayed values.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ============================================ -->
+<!--             LOGGING                          -->
+<!-- ============================================ -->
+<section class="section" id="logging">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128221;</span> Logging</h2>
+  <p class="section-desc"><code>Vantix.Logging</code> &mdash; structured, channelled, correlated logging that flows onto the bus and the timeline.</p>
+
+  <p>The <code>VantixLog</code> façade has a level per severity, each taking a message, a channel and optional typed <code>VxField</code> fields. Wrap related work in a <code>LogScope</code> to attach a thread-local correlation id, so everything inside it lines up on the timeline.</p>
+
+  <pre><code><span class="kw">using</span> Vantix.Logging;
+<span class="kw">using</span> Vantix.Core;
+
+<span class="tp">VantixLog</span>.<span class="fn">Trace</span>(<span class="str">"verbose detail"</span>);
+<span class="tp">VantixLog</span>.<span class="fn">Info</span>(<span class="str">"Saved game"</span>, <span class="str">"io"</span>, <span class="tp">VxField</span>.<span class="fn">Of</span>(<span class="str">"slot"</span>, <span class="num">2</span>));
+<span class="tp">VantixLog</span>.<span class="fn">Warn</span>(<span class="str">"Low ammo"</span>, <span class="str">"gameplay"</span>);
+<span class="tp">VantixLog</span>.<span class="fn">Error</span>(<span class="str">"Bad config"</span>, <span class="str">"boot"</span>, <span class="tp">VxField</span>.<span class="fn">Of</span>(<span class="str">"key"</span>, <span class="str">"volume"</span>));
+
+<span class="kw">try</span> { <span class="cm">/* ... */</span> }
+<span class="kw">catch</span> (<span class="tp">Exception</span> e) { <span class="tp">VantixLog</span>.<span class="fn">Exception</span>(e, <span class="str">"gameplay"</span>); }
+
+<span class="kw">using</span> (<span class="kw">new</span> <span class="tp">LogScope</span>())          <span class="cm">// correlate everything in this scope</span>
+{
+    <span class="tp">VantixLog</span>.<span class="fn">Info</span>(<span class="str">"begin checkout"</span>, <span class="str">"shop"</span>);
+    <span class="tp">VantixLog</span>.<span class="fn">Info</span>(<span class="str">"end checkout"</span>, <span class="str">"shop"</span>);
+}<span class="lang-tag">C#</span></code></pre>
+
+  <ul>
+    <li>Severities: <code>Trace</code>, <code>Debug</code>, <code>Info</code>, <code>Warn</code>, <code>Error</code>, <code>Fatal</code>, plus <code>Exception(ex)</code>.</li>
+    <li>Sinks: <code>InMemoryRingSink</code> for recent history, <code>LogFormatter</code> for rendering; <code>UnityLogBridge</code> ingests <code>Debug.Log</code> so existing logs join the bus.</li>
+    <li><code>LoggingService</code> fans bus log records out to sinks; a <code>RollingFileSink</code> persists logs when <strong>File Logging</strong> is enabled; <code>LogRedactor</code> can scrub sensitive fields.</li>
+  </ul>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#128190;</span>
+    <div><strong>Persisting logs.</strong> Logs live in memory by default. Enable <strong>File Logging</strong> (on the Bootstrapper, in the settings asset, or via <code>VantixSettings.FileLogging</code>) to write a rolling file you can collect after a session.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             PERFORMANCE                      -->
+<!-- ============================================ -->
+<section class="section" id="performance">
+  <h2><span class="section-icon" style="background:var(--orange-dim);color:var(--orange)">&#128293;</span> Performance Diagnostics</h2>
+  <p class="section-desc"><code>Vantix.Performance</code> &mdash; live frame, fps and memory metrics with a HUD and threshold alerts.</p>
+
+  <p><code>PerformanceService</code> ticks each frame and publishes <code>frame.ms</code>, <code>fps</code> and memory metrics to the bus; <code>FrameStats</code> tracks avg/min/max/fps. The HUD in the overlay graphs frame time live. Add an <code>AlertRule</code> to fire an action when a metric crosses a threshold.</p>
+
+  <pre><code><span class="kw">using</span> Vantix.Performance;
+<span class="kw">using</span> Vantix.Logging;
+
+service.Alerts.<span class="fn">Add</span>(<span class="kw">new</span> <span class="tp">AlertRule</span>
+{
+    Metric    = <span class="str">"frame.ms"</span>,
+    Op        = <span class="tp">Comparison</span>.Greater,
+    Threshold = <span class="num">33</span>,
+    OnTrigger = (s, r) =&gt; <span class="tp">VantixLog</span>.<span class="fn">Warn</span>(<span class="str">"Frame spike!"</span>, <span class="str">"perf"</span>)
+});<span class="lang-tag">C#</span></code></pre>
+
+  <p>Add your own metric by decorating a method or property with <code>[VantixMetric]</code> &mdash; give it a <code>Name</code> and optional <code>Unit</code>, and it is collected alongside the built-ins.</p>
+
+  <pre><code>[<span class="tp">VantixMetric</span>(<span class="str">"enemies.alive"</span>, Unit = <span class="str">"count"</span>)]
+<span class="kw">public static</span> <span class="tp">int</span> AliveEnemies =&gt; _enemies.Count;<span class="lang-tag">C#</span></code></pre>
+</section>
+
+<!-- ============================================ -->
+<!--             TELEMETRY                        -->
+<!-- ============================================ -->
+<section class="section" id="telemetry">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128225;</span> Telemetry</h2>
+  <p class="section-desc"><code>Vantix.Telemetry</code> &mdash; named events with typed properties, sampled, buffered and flushed.</p>
+
+  <p><code>VantixTelemetry.Track(name, &hellip;)</code> builds a stamped <code>TelemetryEvent</code> (with session id and sequence) and publishes it to the bus, where <code>TelemetryService</code> samples, buffers and flushes it. It is a safe no-op before the runtime initializes.</p>
+
+  <pre><code><span class="kw">using</span> Vantix.Telemetry;
+<span class="kw">using</span> Vantix.Core;
+
+<span class="tp">VantixTelemetry</span>.<span class="fn">Track</span>(<span class="str">"level_complete"</span>,
+    <span class="tp">VxField</span>.<span class="fn">Of</span>(<span class="str">"level"</span>, <span class="num">3</span>),
+    <span class="tp">VxField</span>.<span class="fn">Of</span>(<span class="str">"seconds"</span>, <span class="num">84.2</span>));<span class="lang-tag">C#</span></code></pre>
+
+  <ul>
+    <li><code>TelemetryService</code> applies sampling, keeps a bounded buffer, and <code>Flush()</code> hands batches to its <code>OnFlush</code> sink.</li>
+    <li>Declare an event emitter with <code>[VantixEvent("name")]</code>.</li>
+    <li>Serialization and an <code>HttpTransport</code> are provided for sending events on if you wire a destination.</li>
+  </ul>
+</section>
+
+<!-- ============================================ -->
+<!--             ANALYTICS                        -->
+<!-- ============================================ -->
+<section class="section" id="analytics">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#128202;</span> Analytics</h2>
+  <p class="section-desc"><code>Vantix.Analytics</code> &mdash; on-device aggregation of telemetry and metrics into counts, histograms and KPIs.</p>
+
+  <p><code>AnalyticsService</code> consumes telemetry events and metric samples off the bus and turns them into queryable aggregates &mdash; counters, histograms with percentiles, and named KPIs you define.</p>
+
+  <pre><code><span class="kw">using</span> Vantix.Analytics;
+
+<span class="tp">int</span> wins = analytics.<span class="fn">EventCount</span>(<span class="str">"level_complete"</span>);
+<span class="tp">Histogram</span> h = analytics.<span class="fn">MetricStats</span>(<span class="str">"frame.ms"</span>);   <span class="cm">// min/max/mean/percentile</span>
+
+analytics.<span class="fn">RegisterKpi</span>(<span class="str">"retention"</span>, () =&gt; ComputeRetention());
+<span class="tp">var</span> value = analytics.<span class="fn">EvaluateKpi</span>(<span class="str">"retention"</span>);
+<span class="tp">DevStats</span> snapshot = analytics.<span class="fn">Snapshot</span>();<span class="lang-tag">C#</span></code></pre>
+
+  <ul>
+    <li><code>EventCount(name)</code> &mdash; total occurrences of a telemetry event.</li>
+    <li><code>MetricStats(name)</code> &rarr; <code>Histogram</code> with min/max/mean and percentiles.</li>
+    <li><code>RegisterKpi</code> / <code>EvaluateKpi</code> &mdash; define and read derived metrics.</li>
+    <li><code>Snapshot()</code> &rarr; a <code>DevStats</code> roll-up for display or export.</li>
+  </ul>
+</section>
+
+<!-- ============================================ -->
+<!--             VISUALIZATION                    -->
+<!-- ============================================ -->
+<section class="section" id="visualization">
+  <h2><span class="section-icon" style="background:var(--green-dim);color:var(--green)">&#128200;</span> Visualization &amp; Dashboards</h2>
+  <p class="section-desc"><code>Vantix.Visualization</code> &mdash; mesh-batched charts bound to live data sources, composed into dashboards.</p>
+
+  <p><code>ChartSeries</code> + <code>ChartGeometry</code> build line, bar and range charts drawn by a mesh-batched <code>ChartView : Graphic</code> (one draw, no per-point overhead). Charts bind to an <code>IDataSource</code> &mdash; pull from a metric mean, an event count, a delegate, or a no-code data table.</p>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Type</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>ChartSeries</code> / <code>ChartGeometry</code></td><td>Series data and line/bar/range geometry.</td></tr>
+      <tr><td><code>ChartView : Graphic</code></td><td>Mesh-batched UI chart renderer.</td></tr>
+      <tr><td><code>IDataSource</code></td><td><code>DelegateDataSource</code>, <code>MetricMeanDataSource</code>, <code>EventCountDataSource</code>.</td></tr>
+      <tr><td><code>DashboardModel</code> / <code>DashboardPanel</code></td><td>A dashboard as a set of titled chart panels.</td></tr>
+      <tr><td><code>DashboardConfig</code></td><td>ScriptableObject describing panels (built by the <a href="#editor-tools">Dashboard Designer</a>).</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">&#9432;</span>
+    <div><strong>No-code data.</strong> A <code>VantixDataTable</code> asset (<code>Assets &rarr; Create &rarr; Vantix &rarr; Data Table</code>) holds tabular data &mdash; importable from CSV with the delimiter auto-detected &mdash; and feeds chart series straight from a named column. See <a href="#nocode">No-Code Setup</a>.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             BUG REPORTING                    -->
+<!-- ============================================ -->
+<section class="section" id="bug-reporting">
+  <h2><span class="section-icon" style="background:var(--pink-dim);color:var(--pink)">&#128027;</span> Bug Reporting</h2>
+  <p class="section-desc"><code>Vantix.BugReport</code> &mdash; one-call reports stamped with device, build, session and log breadcrumbs.</p>
+
+  <p><code>BugReportService.CreateReport(&hellip;)</code> snapshots the current device info, build info, session and recent log breadcrumbs into a structured report. Attach files or a screenshot, build a manifest, and submit it through any <code>IVantixTransport</code>.</p>
+
+  <pre><code><span class="kw">using</span> Vantix.BugReport;
+
+<span class="tp">BugReport</span> report = <span class="tp">BugReportBootstrap</span>.Service.<span class="fn">CreateReport</span>(
+    <span class="str">"Stuck in wall"</span>, severity: <span class="tp">BugSeverity</span>.High);
+
+report.<span class="fn">AddAttachment</span>(<span class="str">"save.json"</span>, bytes);
+service.<span class="fn">TryCaptureScreenshot</span>(report);
+service.<span class="fn">Submit</span>(report, transport, dest);<span class="lang-tag">C#</span></code></pre>
+
+  <ul>
+    <li><code>CreateReport(title, notes, severity, repro)</code> &mdash; device/build/session + log breadcrumbs.</li>
+    <li><code>AddAttachment</code>, <code>TryCaptureScreenshot</code>, <code>BuildManifest</code>, <code>Submit(report, transport, dest)</code>.</li>
+    <li>Severities via <code>BugSeverity</code>; payload types <code>BugReport</code> / <code>Attachment</code>.</li>
+  </ul>
+</section>
+
+<!-- ============================================ -->
+<!--             CRASH                            -->
+<!-- ============================================ -->
+<section class="section" id="crash">
+  <h2><span class="section-icon" style="background:var(--pink-dim);color:var(--pink)">&#128165;</span> Crash Diagnostics</h2>
+  <p class="section-desc"><code>Vantix.Crash</code> &mdash; automatic capture, signature-based dedupe, crash-safe persistence and next-boot recovery.</p>
+
+  <p>Unhandled managed exceptions are captured automatically. Each crash is reduced to a normalized <code>CrashSignature</code> so duplicates fold into one <code>CrashGroup</code>; pending crashes are persisted crash-safely and recovered on the next boot, then exported through an <code>ICrashExporter</code>.</p>
+
+  <pre><code><span class="kw">using</span> Vantix.Crash;
+
+<span class="cm">// Manual capture (automatic for unhandled exceptions):</span>
+service.<span class="fn">Capture</span>(exception, isFatal: <span class="kw">false</span>);
+service.<span class="fn">Capture</span>(type, msg, stack, fatal: <span class="kw">true</span>);
+
+<span class="tp">var</span> sig = <span class="tp">CrashSignature</span>.<span class="fn">Compute</span>(exception);   <span class="cm">// dedupe key</span>
+service.<span class="fn">RecoverPersisted</span>();                       <span class="cm">// on next boot</span><span class="lang-tag">C#</span></code></pre>
+
+  <ul>
+    <li><code>Capture(exception, isFatal)</code> / <code>Capture(type, msg, stack, fatal)</code>.</li>
+    <li><code>CrashSignature.Compute</code> &mdash; normalized dedupe; grouping via <code>CrashGroup</code>.</li>
+    <li><code>PersistPending</code> / <code>RecoverPersisted</code> &mdash; crash-safe + next-boot recovery.</li>
+    <li><code>BuildExportPayload</code> + the <code>ICrashExporter</code> seam to ship crashes onward.</li>
+  </ul>
+
+  <div class="callout callout-warn">
+    <span class="callout-icon">&#9888;</span>
+    <div><strong>Scope.</strong> Vantix captures managed (C#) exceptions. Native crashes (engine/plugin-level) are not catchable in managed code and are out of scope.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--             SESSION / TIMELINE              -->
+<!-- ============================================ -->
+<section class="section" id="session">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#9201;</span> Session &amp; Unified Timeline</h2>
+  <p class="section-desc"><code>Vantix.Session</code> &mdash; the cross-correlation differentiator: every signal on one queryable, exportable timeline.</p>
+
+  <p><code>SessionRecorder</code> folds logs, telemetry, metrics and markers into a single timeline. Query by time, kind, severity or correlation id to see <em>exactly</em> what surrounded a spike or an error, then export the whole session for a teammate to import and replay.</p>
+
+  <pre><code><span class="kw">using</span> Vantix.Session;
+
+recorder.<span class="fn">Mark</span>(<span class="str">"boss fight start"</span>);
+recorder.<span class="fn">Record</span>(timelineEvent);
+
+<span class="tp">var</span> hits = recorder.<span class="fn">Query</span>(<span class="kw">new</span> <span class="tp">TimelineFilter</span>
+{
+    Kind     = <span class="tp">TimelineKind</span>.Log,
+    Severity = <span class="tp">LogSeverity</span>.Error
+});
+
+<span class="tp">string</span> json = recorder.<span class="fn">Export</span>();   <span class="cm">// share with a teammate</span>
+recorder.<span class="fn">Import</span>(json);                 <span class="cm">// reload on their machine</span><span class="lang-tag">C#</span></code></pre>
+
+  <ul>
+    <li><code>Mark(label)</code>, <code>Record(event)</code> &mdash; place markers and fold in events.</li>
+    <li><code>Query(TimelineFilter)</code> &mdash; filter by time, kind, severity or correlation.</li>
+    <li><code>Export()</code> / <code>Import()</code> &mdash; portable session snapshots.</li>
+    <li><code>TimelinePlayer</code> &mdash; a scrub cursor for stepping through a session.</li>
+  </ul>
+</section>
+
+<!-- ============================================ -->
+<!--             QA TOOLKIT                       -->
+<!-- ============================================ -->
+<section class="section" id="qa">
+  <h2><span class="section-icon" style="background:var(--green-dim);color:var(--green)">&#9989;</span> QA Toolkit</h2>
+  <p class="section-desc"><code>Vantix.QA</code> &mdash; structured test sessions, annotations, bookmarks and repro recording.</p>
+
+  <p><code>QaService</code> wraps a play session in QA structure: start/end a session, annotate moments, drop bookmarks, flag a bug (which seeds a <code>BugReport</code>), and record reproduction steps.</p>
+
+  <pre><code><span class="kw">using</span> Vantix.QA;
+
+qa.<span class="fn">StartSession</span>(<span class="str">"smoke pass"</span>);
+qa.<span class="fn">Annotate</span>(<span class="str">"weird audio glitch here"</span>);
+qa.<span class="fn">AddBookmark</span>(<span class="str">"level 3 entrance"</span>);
+
+qa.<span class="fn">BeginRepro</span>(<span class="str">"door won't open"</span>);
+qa.<span class="fn">RecordStep</span>(<span class="str">"pull lever"</span>);
+qa.<span class="fn">RecordStep</span>(<span class="str">"walk to door"</span>);
+qa.<span class="fn">EndRepro</span>();
+
+qa.<span class="fn">MarkBug</span>(<span class="str">"door soft-lock"</span>);   <span class="cm">// seeds a BugReport</span>
+qa.<span class="fn">EndSession</span>();<span class="lang-tag">C#</span></code></pre>
+</section>
+
+<!-- ============================================ -->
+<!--             LIVEOPS                          -->
+<!-- ============================================ -->
+<section class="section" id="liveops">
+  <h2><span class="section-icon" style="background:var(--yellow-dim);color:var(--yellow)">&#127919;</span> LiveOps</h2>
+  <p class="section-desc"><code>Vantix.LiveOps</code> &mdash; feature flags, remote config, gated remote control and deterministic experiments.</p>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Service</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><code>FeatureFlagService</code></td><td>Resolves flags with precedence <strong>override &gt; remote &gt; code &gt; default</strong>, with typed getters.</td></tr>
+      <tr><td><code>RemoteConfigService</code></td><td>Parse / cache / offline-fallback of remote configuration values.</td></tr>
+      <tr><td><code>RemoteControlService</code></td><td>Default-deny + token + allow-list + audit &mdash; safe remote command surface.</td></tr>
+      <tr><td><code>Experiment.Bucket</code></td><td>Deterministic A/B bucketing.</td></tr>
+    </tbody>
+  </table></div>
+
+  <pre><code><span class="kw">using</span> Vantix.LiveOps;
+
+<span class="tp">bool</span> on = flags.<span class="fn">GetBool</span>(<span class="str">"new_shop"</span>, <span class="kw">false</span>);
+<span class="tp">int</span>  max = config.<span class="fn">GetInt</span>(<span class="str">"max_party"</span>, <span class="num">4</span>);
+<span class="tp">string</span> arm = <span class="tp">Experiment</span>.<span class="fn">Bucket</span>(userId, <span class="str">"onboarding_v2"</span>);<span class="lang-tag">C#</span></code></pre>
+
+  <div class="callout callout-warn">
+    <span class="callout-icon">&#9888;</span>
+    <div><strong>Remote control is locked down by default.</strong> <code>RemoteControlService</code> denies everything unless a command is explicitly allow-listed, the request carries a valid token, and every invocation is audited.</div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!--        ON-DEVICE DEV OVERLAY (DOMINATORS)    -->
+<!-- ============================================ -->
+<section class="section" id="ondevice">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128241;</span> On-Device Dev Overlay &amp; Dominator Features</h2>
+  <p>The turnkey <strong>Dev Overlay</strong> is a single drop-in &mdash; <code>GameObject &rarr; Vantix &rarr; Add Dev Overlay To Scene</code>, or add the <strong>Vantix Dev Overlay</strong> component &mdash; that assembles a tabbed, on-device developer console: <strong>Console, Logs, Performance, System Info, Options, Bug Reporter</strong>. Toggle it on device with the backquote key, a multi-tap touch gesture, or the on-screen floating button. No scripting required.</p>
+  <ul>
+    <li><strong>Console</strong> &mdash; fuzzy autocomplete with Tab-cycle + ghost completion, severity-colored output, command groups/aliases, persistent history, async/cancellable commands, and Vector/Color argument converters.</li>
+    <li><strong>Logs</strong> &mdash; severity filter + counts, free-text search, consecutive-duplicate collapse, expandable stack traces, copy/clear, color-by-severity.</li>
+    <li><strong>Performance</strong> &mdash; FPS (cur/avg/min/max), frame time, memory (managed/used/reserved), GC gen0&ndash;2 + alloc, render stats (draw calls/batches/tris/verts) and audio level, with basic/advanced modes and threshold color.</li>
+    <li><strong>System Info</strong> &mdash; device/OS/CPU/GPU/RAM, graphics API, quality, build (device id redacted for privacy).</li>
+    <li><strong>Options</strong> &mdash; every registered cvar / <code>[VantixVariable]</code> shown as a toggle/field and written straight back.</li>
+    <li><strong>Bug Reporter</strong> &mdash; title/notes/severity + screenshot, assembling a real report with device/build context and recent log breadcrumbs.</li>
+  </ul>
+  <p><strong>Crash exporters.</strong> Beyond Sentry and Bugsnag, Vantix exports to a <strong>generic webhook</strong> and a <strong>Crashlytics-compatible</strong> JSON format (an original mapping &mdash; <em>not</em> the Firebase native SDK/NDK; native crash/ANR/OOM capture is impossible in managed C# and remains out of scope), with auth headers, enriched breadcrumbs, and an offline queue + retry pipeline.</p>
+  <p><strong>Local remote web console (desktop).</strong> An optional, <em>local-first</em> module serves a browser console over the LAN via an embedded HTTP server (live log stream, remote command execution, system status) &mdash; there is <strong>no cloud backend</strong>. It is <strong>OFF by default</strong>, loopback-bound and token-gated, excluded on WebGL, and experimental on iOS/Android. Start it with the <code>remote.start</code> console command. Never enable it in shipping consumer builds.</p>
+  <p class="muted">All of the above is original, copyright-clean, AOT/IL2CPP-safe managed code, verified by headless Unity 6: <strong>EditMode 286 &middot; PlayMode 33 &middot; IL2CPP + Mono + WebGL builds Succeeded &middot; 0 compile errors</strong>. On-GPU and in-browser appearance is a human-visual pass.</p>
+</section>
+
+<!-- ============================================ -->
+<!--             NO-CODE SETUP                    -->
+<!-- ============================================ -->
+<section class="section" id="nocode">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#129520;</span> No-Code Setup</h2>
+  <p class="section-desc">A complete, no-scripting path: one drop-in component, a Welcome window, a hub, a wizard and Project Settings.</p>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">&#11088;</span>
+    <div><strong>Headline capability.</strong> You can stand up the entire platform &mdash; overlay, console, HUD, file logging &mdash; without writing a line of code. The no-code path is <em>additive</em> to the scripting API and always defers to code that already started Vantix.</div>
+  </div>
+
+  <h3>Vantix Bootstrapper (drop-in component)</h3>
+  <p>The <code>VantixBootstrapper</code> MonoBehaviour is the no-code entry point. Add it via <code>Add Component &rarr; Vantix &rarr; Vantix Bootstrapper</code>, or use the menu below to get a pre-configured object. On <code>Awake</code> it initializes Vantix from its Inspector options &mdash; <strong>but only if Vantix isn't already up</strong> (code and auto-boot win precedence).</p>
+  <ul>
+    <li><strong>Settings Asset</strong> &mdash; optional; empty uses the project default.</li>
+    <li><strong>Show Overlay</strong> &mdash; spawn the HUD + console on play (on by default).</li>
+    <li><strong>Enable File Logging</strong> &mdash; persist logs to a rolling file (overrides the settings asset when ticked).</li>
+  </ul>
+  <p>Its custom inspector adds one-click buttons: <em>Create Settings Asset</em>, <em>Open Control Center</em> and <em>Setup Wizard</em>.</p>
+
+  <h3>GameObject &rarr; Vantix &rarr; Add Vantix To Scene</h3>
+  <p>This menu item creates a <code>[Vantix]</code> GameObject with the Bootstrapper already attached, registers an Undo step, selects and pings it &mdash; then you just press Play.</p>
+
+  <h3>First-run Welcome window</h3>
+  <p>On first import a <strong>Welcome to Vantix</strong> window opens automatically (once; suppressed in batch/CI; dismissible forever). It has buttons to <em>Add Vantix To Scene</em>, open the demo scene, open the interactive Welcome scene, run the Setup Wizard, open this documentation and open the Control Center, plus a 3-step quick start. Re-open it any time from <code>Tools &rarr; Vantix &rarr; Welcome</code>.</p>
+
+  <h3>Interactive Welcome scene</h3>
+  <p>Prefer to learn by doing? Open <code>Assets/Vantix/Demo/Scenes/Vantix_Welcome.unity</code> and press Play &mdash; or generate it head-lessly with <code>Tools &rarr; Vantix &rarr; Build Welcome Scene</code>. It's a guided, in-game <strong>5-step tour</strong> (Welcome &rarr; Add to your scene &rarr; Dev Overlay &rarr; Explore the demo &rarr; Extend &amp; get help) with a step rail and a detail pane, styled to match the asset. Every step has <strong>live</strong> actions that really run: boot Vantix, open the real on-device Dev Overlay on top of the scene, load the full interactive demo, copy ready-to-paste code snippets, and open this documentation. It runs in the Editor, in standalone players and in WebGL, so it doubles as a zero-setup showcase you can hand to teammates.</p>
+
+  <h3>VantixDataTable &mdash; CSV import</h3>
+  <p>Create a data table via <code>Assets &rarr; Create &rarr; Vantix &rarr; Data Table</code>. Import a CSV and Vantix <strong>auto-detects the delimiter</strong> (or pass one explicitly), infers a per-column type (Numeric / Category / Text), and exposes numeric columns by name so a chart series can bind to them with no code.</p>
+  <pre><code><span class="cm">// Equivalent to the Inspector import button:</span>
+<span class="tp">int</span> rows = table.<span class="fn">ImportCsv</span>(csvText);              <span class="cm">// delimiter auto-detected</span>
+<span class="tp">List</span>&lt;<span class="tp">float</span>&gt; fps = table.<span class="fn">NumericColumn</span>(<span class="str">"fps"</span>);<span class="lang-tag">C#</span></code></pre>
+</section>
+
+<!-- ============================================ -->
+<!--             EDITOR TOOLS                     -->
+<!-- ============================================ -->
+<section class="section" id="editor-tools">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128295;</span> Editor Tools</h2>
+  <p class="section-desc">The editor hub, wizard, dashboard designer, settings and the AOT generator &mdash; all under <code>Tools &rarr; Vantix</code>.</p>
+
+  <h3>Control Center</h3>
+  <p><code>Tools &rarr; Vantix &rarr; Control Center</code> &mdash; the editor hub. Shows runtime status (initialized? current session id), quick actions (<em>Create Settings Asset</em>, <em>Generate AOT link.xml + Manifest</em>) and the full module roster.</p>
+
+  <h3>Setup Wizard</h3>
+  <p><code>Tools &rarr; Vantix &rarr; Setup Wizard</code> does one-click project setup: ensures the settings asset, builds a sample scene, creates a sample dashboard, and generates the AOT manifest.</p>
+
+  <h3>Dashboard Designer</h3>
+  <p><code>Tools &rarr; Vantix &rarr; Dashboard Designer</code> composes a <code>DashboardConfig</code> asset of titled chart panels (e.g. FPS as a line, frame.ms as an area, errors as a bar). A sample dashboard can be created in one click.</p>
+
+  <h3>Project Settings &rarr; Vantix</h3>
+  <p>Your <code>VantixSettings</code> are surfaced under <code>Project Settings &rarr; Vantix</code> (it creates the asset if missing), so capacities, severity, the kill switch, auto-boot and file logging are editable in the standard settings UI.</p>
+
+  <h3>AOT link.xml generator</h3>
+  <p><code>Tools &rarr; Vantix &rarr; Generate AOT link.xml + Manifest</code> scans loaded assemblies for the Vantix attributes (and inspectable types) and writes a <code>link.xml</code> plus a registration manifest, so attribute-decorated types survive IL2CPP managed stripping.</p>
+
+  <div class="callout callout-warn">
+    <span class="callout-icon">&#9888;</span>
+    <div><strong>IL2CPP / AOT.</strong> If you ship with IL2CPP, run the link.xml generator before building. Without it, managed stripping can remove reflectively-discovered commands, watches, metrics and inspectable types.</div>
+  </div>
+
+  <h3>Headless / CI</h3>
+  <pre><code><span class="cm"># Run the test suites headless:</span>
+Unity -runTests -batchmode -testPlatform EditMode -testResults results.xml -logFile -
+
+<span class="cm"># Validation + an IL2CPP smoke build:</span>
+Unity -batchmode -quit -executeMethod Vantix.Editor.CI.VantixCI.RunValidation -logFile -
+Unity -batchmode -quit -executeMethod Vantix.Editor.CI.VantixBuild.BuildIl2cppSmoke -logFile -<span class="lang-tag">Shell</span></code></pre>
+</section>
+
+<!-- ============================================ -->
+<!--             SCRIPTING API                    -->
+<!-- ============================================ -->
+<section class="section" id="api">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128217;</span> Scripting API</h2>
+  <p class="section-desc">The façades, attributes and extension seams. Every namespace is under <code>Vantix.*</code>.</p>
+
+  <h3>Façades</h3>
+  <pre><code><span class="cm">// Logging</span>
+<span class="tp">VantixLog</span>.<span class="fn">Info</span>(<span class="str">"msg"</span>, <span class="str">"channel"</span>, <span class="tp">VxField</span>.<span class="fn">Of</span>(<span class="str">"k"</span>, <span class="num">1</span>));
+<span class="tp">VantixLog</span>.<span class="fn">Exception</span>(ex, <span class="str">"channel"</span>);
+
+<span class="cm">// Telemetry</span>
+<span class="tp">VantixTelemetry</span>.<span class="fn">Track</span>(<span class="str">"event_name"</span>, <span class="tp">VxField</span>.<span class="fn">Of</span>(<span class="str">"k"</span>, <span class="str">"v"</span>));
+
+<span class="cm">// Console</span>
+<span class="tp">ConsoleService</span>.<span class="fn">Execute</span>(<span class="str">"command arg"</span>);
+
+<span class="cm">// Lifecycle (auto-boots in Play mode; manual control available)</span>
+<span class="tp">VantixRuntime</span>.<span class="fn">Initialize</span>(settings);
+<span class="tp">VantixRuntime</span>.<span class="fn">Flush</span>();
+<span class="tp">VantixRuntime</span>.<span class="fn">Shutdown</span>();<span class="lang-tag">C#</span></code></pre>
+
+  <h3>Attributes (<code>Vantix.SDK</code>)</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Attribute</th><th>Targets</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>[VantixCommand]</code></td><td>Method / Property / Field</td><td>Executable console command (<code>Id</code>, <code>Category</code>, <code>Summary</code>, <code>Privileged</code>).</td></tr>
+      <tr><td><code>[VantixVariable]</code></td><td>Property / Field</td><td>Runtime variable (cvar) editable from the console.</td></tr>
+      <tr><td><code>[VantixWatch]</code></td><td>Property / Field</td><td>Watched by the inspector for change notifications (<code>Label</code>).</td></tr>
+      <tr><td><code>[VantixEvent]</code></td><td>Method</td><td>Declares a telemetry event emitter (<code>Name</code>).</td></tr>
+      <tr><td><code>[VantixInspectable]</code></td><td>Class / Struct</td><td>Surfaces a type in the runtime inspector (<code>Label</code>).</td></tr>
+      <tr><td><code>[VantixMetric]</code></td><td>Method / Property</td><td>Custom performance metric source (<code>Name</code>, <code>Unit</code>).</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Extension interfaces</h3>
+  <p>Vantix is extensible through public seams &mdash; implement these to plug in your own behavior:</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Interface</th><th>Extend</th></tr></thead>
+    <tbody>
+      <tr><td><code>IVantixSink&lt;T&gt;</code></td><td>Custom log/record sinks.</td></tr>
+      <tr><td><code>IVantixTransport</code></td><td>Where reports/events are sent (built-in: <code>LocalFileTransport</code>, <code>MemoryTransport</code>).</td></tr>
+      <tr><td><code>IVantixStore</code> / <code>IVantixWriter</code> / <code>IVantixReader</code></td><td>Persistence (built-in: <code>FileStore</code>, <code>MemoryStore</code>).</td></tr>
+      <tr><td><code>IArgumentConverter</code></td><td>Console argument types beyond primitives and enums.</td></tr>
+      <tr><td><code>IDataSource</code></td><td>Custom chart data sources.</td></tr>
+      <tr><td><code>ICrashExporter</code></td><td>Ship captured crashes onward.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ============================================ -->
+<!--             TROUBLESHOOTING                  -->
+<!-- ============================================ -->
+<section class="section" id="troubleshooting">
+  <h2><span class="section-icon" style="background:var(--pink-dim);color:var(--pink)">&#128161;</span> Troubleshooting</h2>
+  <p class="section-desc">The issues that come up most, and how to fix them.</p>
+
+  <details open>
+    <summary>The overlay didn't appear</summary>
+    <div class="details-body">
+      <p>Confirm Vantix actually initialized: in <code>Tools &rarr; Vantix &rarr; Control Center</code>, the <em>Initialized</em> row should say <strong>Yes</strong> in Play mode. If you added the <strong>Vantix Bootstrapper</strong>, make sure <em>Show Overlay</em> is ticked. Also check the kill switch &mdash; <code>VantixSettings.Enabled</code> must be <code>true</code> and <code>VANTIX_DISABLED</code> must not be defined. The console panel is hidden until you press the backquote (<code>`</code>) toggle key.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Logs aren't persisting between sessions</summary>
+    <div class="details-body">
+      <p>Logs live in memory by default. Enable <strong>File Logging</strong> &mdash; tick it on the Bootstrapper, set it in the settings asset, or set <code>VantixSettings.FileLogging = true</code>. The <code>RollingFileSink</code> then writes a rolling file you can collect after the session.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>IL2CPP build: commands / watches / metrics missing</summary>
+    <div class="details-body">
+      <p>IL2CPP managed stripping can remove types found only by reflection. Run <code>Tools &rarr; Vantix &rarr; Generate AOT link.xml + Manifest</code> before building &mdash; it scans for the Vantix attributes and writes a <code>link.xml</code> + registration manifest so those types survive. Re-run it whenever you add new decorated types.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Nothing happens on mobile</summary>
+    <div class="details-body">
+      <p>Vantix runs on mobile (Mono and IL2CPP). For IL2CPP targets generate the AOT link.xml first. The overlay's console toggle defaults to the backquote key, which mobile devices don't have &mdash; rebind <code>VantixOverlay.ToggleKey</code> or wire your own UI to <code>ToggleConsole()</code> / <code>SubmitCommand(...)</code>.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>The overlay looks wrong under URP / HDRP</summary>
+    <div class="details-body">
+      <p>The overlay is a screen-space UI canvas and works on Built-in, URP and HDRP. If it isn't visible, make sure there is an active <code>EventSystem</code>/UI camera setup for your pipeline and that no full-screen post effect is drawing over the canvas.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>A console command isn't found</summary>
+    <div class="details-body">
+      <p>Make sure the declaring type was scanned &mdash; <code>CommandRegistry.ScanType(typeof(YourType))</code> &mdash; or registered manually. Check the command's <code>Category</code>/<code>Id</code> spelling with <code>ConsoleService.Complete(prefix)</code>, and confirm it isn't <code>Privileged</code> while <code>AllowPrivileged</code> is off.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ============================================ -->
+<!--                  FAQ                         -->
+<!-- ============================================ -->
+<section class="section" id="faq">
+  <h2><span class="section-icon" style="background:var(--blue-dim);color:var(--blue)">&#10067;</span> FAQ</h2>
+  <p class="section-desc">Quick answers to the questions that come up most.</p>
+
+  <details open>
+    <summary>Do I have to write code to use Vantix?</summary>
+    <div class="details-body">
+      <p>No. Add the <strong>Vantix Bootstrapper</strong> component (or <code>GameObject &rarr; Vantix &rarr; Add Vantix To Scene</code>) and press Play &mdash; you get the overlay, HUD and console with zero scripting. The code API (<code>VantixLog</code>, <code>[VantixCommand]</code>, <code>VantixTelemetry.Track</code>, &hellip;) is there when you want to extend it.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Does it have external dependencies or native plugins?</summary>
+    <div class="details-body">
+      <p>No. Vantix has no external package dependencies and ships no native binaries &mdash; it is pure C#. It runs on Mono and IL2CPP across Unity's targets.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>What does the unified timeline give me?</summary>
+    <div class="details-body">
+      <p>Because every module publishes to one Diagnostics Bus, the <code>SessionRecorder</code> can fold logs, telemetry, metrics and markers onto a single correlated timeline. You can query by time, kind, severity or correlation id to see exactly what surrounded a spike or error &mdash; and export the session for a teammate.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Which render pipelines and Unity versions are supported?</summary>
+    <div class="details-body">
+      <p>Unity 2021.3 and newer (tested through Unity 6), on Built-in, URP and HDRP. The overlay is a screen-space UI canvas, so it is pipeline-agnostic.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Can I strip Vantix from a shipping build?</summary>
+    <div class="details-body">
+      <p>Yes. The kill switch (<code>VantixSettings.Enabled = false</code>) and the <code>VANTIX_DISABLED</code> define turn the whole platform into a safe no-op without touching your call sites.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Does it catch crashes?</summary>
+    <div class="details-body">
+      <p>It captures managed (C#) exceptions automatically, dedupes them by signature, persists pending crashes crash-safely and recovers them on the next boot. Native engine/plugin-level crashes aren't catchable in managed code and are out of scope.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>How do I extend it?</summary>
+    <div class="details-body">
+      <p>Implement the public interfaces in <code>Vantix.SDK</code> / <code>Vantix.Core</code> &mdash; custom commands, argument converters, log sinks, transports, stores, data sources, metric collectors and crash exporters. See the <a href="#api">Scripting API</a>.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Does it run in builds, or only in the editor?</summary>
+    <div class="details-body">
+      <p>The runtime (bus, console, inspector, logging, performance, telemetry, analytics, crash, session, QA, live-ops and the overlay) runs in builds. The Control Center, Welcome window, Setup Wizard, Dashboard Designer, Project Settings and AOT generator are editor-only tooling.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ============================================ -->
+<!--                SUPPORT                       -->
+<!-- ============================================ -->
+<section class="section" id="support">
+  <h2><span class="section-icon" style="background:var(--accent-glow);color:var(--accent-light)">&#128236;</span> Support</h2>
+  <p class="section-desc">Need help? We're here for you.</p>
+
+  <div class="card" style="text-align:center;padding:40px 24px;">
+    <div style="font-size:48px;margin-bottom:16px;">&#128231;</div>
+    <h3 style="border:none;margin-top:0;padding:0;text-align:center;">Get in Touch</h3>
+    <p style="color:var(--text-dim);max-width:480px;margin:8px auto 24px;">Bug reports, feature requests, integration questions &mdash; reach out and we'll get back to you.</p>
+    <a href="mailto:szekipapa77@gmail.com" style="display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,var(--accent),var(--pink));color:#fff;text-decoration:none;border-radius:var(--radius-sm);font-weight:700;font-size:15px;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+      &#9993; szekipapa77@gmail.com
+    </a>
+    <p style="color:var(--text-dim);font-size:13px;margin-top:16px;">We typically respond within 24&ndash;48 hours.</p>
+  </div>
+
+  <div class="card-grid" style="margin-top:16px;">
+    <div class="card">
+      <div class="card-title">&#128172; Before contacting</div>
+      <ul style="padding-left:20px;color:var(--text-dim);font-size:14px;line-height:1.9;">
+        <li>Check the <a href="#troubleshooting">Troubleshooting</a> section</li>
+        <li>Open <strong>Control Center</strong> to confirm Vantix initialized</li>
+        <li>For IL2CPP, run the <strong>AOT link.xml</strong> generator</li>
+        <li>Check the Console for Vantix messages</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">&#128203; Helpful info to include</div>
+      <ul style="padding-left:20px;color:var(--text-dim);font-size:14px;line-height:1.9;">
+        <li>Unity version (e.g. <code>2022.3.20f1</code>)</li>
+        <li>Render pipeline (Built-in / URP / HDRP)</li>
+        <li>Scripting backend (Mono / IL2CPP) + platform</li>
+        <li>Repro steps and the Console log</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout callout-tip" style="margin-top:20px;">
+    <span class="callout-icon">&#11088;</span>
+    <div><strong>Enjoying Vantix?</strong> A review on the Unity Asset Store helps other developers discover the asset and helps us keep improving it. Thank you!</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div style="border-top:1px solid var(--border);padding-top:32px;margin-top:48px;text-align:center;color:var(--text-dim);font-size:13px;">
+  <p>Vantix v1.0 &middot; Built for Unity 2021.3+ &middot; Pure C#, no external dependencies</p>
+  <p style="margin-top:8px;">Support: <a href="mailto:szekipapa77@gmail.com" style="color:var(--accent-light);text-decoration:none;">szekipapa77@gmail.com</a></p>
+</div>
+
+</main>
+
+<!-- SCRIPTS -->
+<script>
+// Search functionality
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+const searchOverlay = document.getElementById('searchOverlay');
+
+const sections = [];
+document.querySelectorAll('.section, .hero').forEach(s => {
+  const h2 = s.querySelector('h2');
+  const h1 = s.querySelector('h1');
+  const desc = s.querySelector('.section-desc');
+  const h3s = s.querySelectorAll('h3');
+  const id = s.id || (s.parentElement && s.parentElement.id) || '';
+  if (!id) return;
+  sections.push({
+    id: id,
+    title: h2 ? h2.textContent.trim() : (h1 ? h1.textContent.trim() : ''),
+    desc: desc ? desc.textContent.trim() : '',
+    content: s.textContent.toLowerCase(),
+    h3: Array.from(h3s).map(h => h.textContent.trim())
+  });
+});
+
+searchInput.addEventListener('input', function() {
+  const q = this.value.toLowerCase().trim();
+  if (q.length < 2) {
+    searchResults.classList.remove('visible');
+    searchOverlay.classList.remove('visible');
+    return;
+  }
+  const matches = sections.filter(s => s.content.includes(q)).slice(0, 8);
+  if (matches.length === 0) {
+    searchResults.innerHTML = '<div style="padding:16px;color:var(--text-dim);text-align:center;">No results found</div>';
+  } else {
+    searchResults.innerHTML = matches.map(m => {
+      const matchH3 = m.h3.find(h => h.toLowerCase().includes(q));
+      return '<a href="#' + m.id + '" class="search-item" onclick="closeSearch()">' +
+        '<div class="search-item-section">' + m.title + '</div>' +
+        '<div class="search-item-title">' + (matchH3 || m.desc || m.title) + '</div>' +
+      '</a>';
+    }).join('');
+  }
+  searchResults.classList.add('visible');
+  searchOverlay.classList.add('visible');
+});
+
+function closeSearch() {
+  searchResults.classList.remove('visible');
+  searchOverlay.classList.remove('visible');
+  searchInput.value = '';
+  document.querySelector('.sidebar').classList.remove('open');
+}
+
+searchOverlay.addEventListener('click', closeSearch);
+
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    searchInput.focus();
+  }
+  if (e.key === 'Escape') closeSearch();
+});
+
+// Active sidebar link via IntersectionObserver
+const navLinks = document.querySelectorAll('.sidebar a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector('.sidebar a[href="#' + entry.target.id + '"]');
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -70% 0px', threshold: 0 });
+
+document.querySelectorAll('.section[id], .hero[id]').forEach(s => observer.observe(s));
+
+// Close mobile sidebar on nav click
+navLinks.forEach(link => {
+  link.addEventListener('click', () => {
+    document.querySelector('.sidebar').classList.remove('open');
+  });
+});
+</script>
+
+</body>
+</html>
