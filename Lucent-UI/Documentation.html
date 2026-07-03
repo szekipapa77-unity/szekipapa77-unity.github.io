@@ -962,6 +962,29 @@ if (reg.TryCreateShape("lc.shape.hexagon", out gen))
 <li><strong>Batch-safe:</strong> <code>LcSdkBootstrap</code> builds the registry headlessly with no UI side effects, and <code>LcWelcomeWindow.AutoOpenOnce</code> bails on its first line under <code>Application.isBatchMode</code>, so CI validation cannot hang.</li>
 <li><strong>No scene litter:</strong> <code>LcSceneScaffold.CreateUnder</code> reuses an existing Canvas and EventSystem, registers Undo, and pings the result -- repeat clicks stay clean.</li>
 </ul>
+
+<h3>Editor tools &amp; menu reference</h3>
+
+<p>Everything is one click from the Unity menus &mdash; no manual wiring:</p>
+
+<ul>
+<li><strong>GameObject &gt; Lucent UI &gt; &hellip;</strong> &mdash; drop a ready, working, sample-populated object into the scene (a Canvas + EventSystem with the Input-System UI module are created if missing, all under one Undo). Groups: <em>Shapes</em> (Circle, Rounded Rect, &hellip;), <em>Effects</em> (Blur Panel, Liquid Glass Card, Shadowed / Glowing / Outlined / Pressed), <em>Buttons</em> (Button, Button with Ripple, Toggle Button &mdash; each with a host <code>LcShape</code> skin so it is visible + clickable immediately), <em>Controls</em> (Slider, Toggle, Dropdown, Input Field, Progress, Tabs, Date / Time Picker, Collapsible), <em>Graphics</em> (Icon, Image 3D), <em>Chart</em> (Line, Area, Bar, Stacked Bar, Pie, Donut, Scatter), <em>Overlays</em> (Modal, Toast, Tooltip), <em>Navigation</em> (Navigation / Focus Controller).</li>
+<li><strong>Assets &gt; Create &gt; Lucent UI &gt; &hellip;</strong> &mdash; author the ScriptableObjects: <em>Palette</em>, <em>Theme Preset</em> (Dark / Light / High Contrast), <em>Term Database</em> (localization), and Button Presets. Each has its own custom inspector.</li>
+<li><strong>Window / Tools &gt; Lucent UI &gt; &hellip;</strong> &mdash; the workflow windows: <em>Welcome</em> (first-run orientation, auto-opens once, re-openable, dismissible), the <em>Hub</em> and <em>Component Creator</em>, <em>Theme Designer</em>, <em>Localization</em>, the <em>Chart Wizard</em> and <em>Scroll Creator</em>, <em>Text &gt; Setup</em>, <em>Layout &gt; Snap Anchor</em>, and <em>Install Blur Renderer Feature</em>.</li>
+</ul>
+
+<h3>Setup: what (rarely) needs a step</h3>
+
+<p>Lucent is zero-setup for the common path &mdash; add a component and press Play. The few features that touch project state are handled for you or clearly guided:</p>
+
+<ul>
+<li><strong>Background blur / liquid glass on URP</strong> &mdash; needs the <code>LcBlurFeature</code> on the active URP renderer for a live scene-color grab. This is <em>auto-installed</em> on first project load (idempotent, batch-guarded), and you can re-run it any time from <strong>Tools &gt; Lucent UI &gt; Install Blur Renderer Feature</strong>. Without it (or on Built-in / where no scene grab exists) the panel degrades to a clean flat tint &mdash; never magenta, never an error.</li>
+<li><strong>Player builds (WebGL / IL2CPP)</strong> &mdash; no manual step: the runtime shaders (canvas, blur, glass, effect-blend) and the SDF/MSDF text shaders ship inside <code>Resources</code> folders, so every build includes them automatically. Nothing to add to Always Included Shaders.</li>
+<li><strong>Live 3D model in UI (<code>LcImage3D</code>)</strong> &mdash; renders a model onto a hidden off-world stage through a dedicated camera on a single <em>Stage Layer</em> (default 31). Keep that layer free of other scene objects, or point the field at any spare layer, so nothing else appears in the 3D thumbnail. The custom inspector reminds you and warns when no Model is assigned.</li>
+<li><strong>SDF / MSDF / 3D extruded text</strong> &mdash; needs a font: a dynamic OS font for uGUI, or a <code>.ttf</code>/<code>.otf</code> imported as a <code>.bytes</code> TextAsset for the SDF atlas + 3D extruder. The inspectors guide the font (and, for 3D, the face material); with no font the panels degrade to a clear note.</li>
+<li><strong>Interactive widgets</strong> &mdash; require the Input System package and an EventSystem; the scaffolding menus create an EventSystem with the correct UI module automatically.</li>
+<li><strong>No-code localization</strong> &mdash; drop an <code>LcLocalizationConfig</code> into your bootstrap scene, assign your Term Databases and a start locale in the Inspector, and every <code>LcLocalize</code> widget resolves with zero code (otherwise Play shows the raw term ids).</li>
+</ul>
 </section>
 <section id="samples-demo">
 <h2 id="samples-demo">Samples &amp; the interactive demo</h2>
@@ -1225,6 +1248,8 @@ if (reg.TryCreateShape("lc.shape.hexagon", out gen))
   <h3>Animated Buttons <span class="badge">Lucent.Buttons</span></h3>
   <ul class="lc-syms">
     <li><code>LcButton</code></li>
+    <li><code>LcToggleButton</code></li>
+    <li><code>LcPanelTransition</code></li>
     <li><code>LcButtonChannel</code></li>
     <li><code>LcChannelKind</code></li>
     <li><code>LcButtonState</code></li>
@@ -1309,8 +1334,6 @@ if (reg.TryCreateShape("lc.shape.hexagon", out gen))
     <li><code>LcLegendEntry</code></li>
     <li><code>LcLegendVisibility</code></li>
     <li><code>LcAxisSide</code></li>
-    <li><code>LcEncoding</code></li>
-    <li><code>LcEncodingSet</code></li>
     <li><code>LcHitTester</code></li>
     <li><code>LcPanZoomController</code></li>
     <li><code>LcSelectionModel</code></li>
@@ -1366,6 +1389,7 @@ if (reg.TryCreateShape("lc.shape.hexagon", out gen))
     <li><code>LcScrollView.SetData&lt;TCell&gt;</code></li>
     <li><code>LcScrollView.SetDataSource</code></li>
     <li><code>LcScrollView.SetGridLayout</code></li>
+    <li><code>LcScrollView.SetAxis</code> / <code>SetHorizontal</code></li>
     <li><code>LcScrollView.SetStaggeredGrid</code></li>
     <li><code>LcScrollView.SetVariableSizes</code></li>
     <li><code>LcScrollView.SetSnapping</code></li>
