@@ -363,6 +363,10 @@ shape.SetStrokeGradient(true, Color.white, Color.cyan, angleDeg: 45f);</code></p
 <li><strong>Pattern</strong> &mdash; a procedural Grid/Checker/Stripe (<code>LcPatternKind</code>). <code>GetModifiedMaterial</code> hands back a per-instance material copy carrying the SHADER agent's pattern uniforms, so each shape patterns independently while the shared material is never mutated.</li>
 </ul>
 
+<h3>Masks, export, and style presets</h3>
+
+<p>Three shape tools are shipped for production workflows, not just demos. <code>LcShapeMask</code> turns any Lucent shape into a soft mask source and <code>LcShapeMaskTarget</code> opts child graphics into that silhouette, so clipped panels keep the same procedural outline and feathering as the visible shape. <strong>GameObject &gt; Lucent UI &gt; Export Shape PNG</strong> writes the current shape style to a PNG through the same CPU raster path used by the preview, including pattern and sprite fills. <code>LcShapeStylePreset</code> stores reusable shape styles as assets, so teams can share card, pill, badge, and panel treatments without copying inspector fields by hand.</p>
+
 <h3>Strokes</h3>
 
 <p>The outline is emitted into the Stroke layer of the same mesh. Width is per-side: the four side toggles collapse into an <code>LcEdgeWidths</code> (Top/Right/Bottom/Left), and any side at width 0 is simply omitted by <code>StrokeRectPerSide</code> &mdash; so &quot;underline only&quot; or &quot;no top border&quot; needs no extra objects. <code>LcStrokeAlign</code> places the centerline Inner, Center, or Outer of the silhouette. Strokes can be solid, <strong>dashed</strong> (<code>DashLength</code>/<code>DashGap</code>, animatable for marching ants), or <strong>dotted</strong> (zero dash length routes to <code>DottedPolyline</code>), and the stroke layer can carry its own independent gradient, separate from the fill.</p>
@@ -605,11 +609,11 @@ LcChartView.Create(canvas.transform)
 
 <p><code>LcChartLayout</code> is a pure box-model solver: from an outer rect it subtracts padding, an optional title band, the legend strip and each axis's reserved thickness to compute the plot rect, then assigns the resulting pixel range back onto each axis's scale. <code>LcAxisRenderer</code> draws baselines, ticks, gridlines, tick labels and titles into the <code>Stroke</code> layer; <code>LcLegendRenderer</code> stacks (vertical sides) or flows (horizontal sides) one swatch + <code>LcTextRun</code> per <code>LcLegendEntry</code>, clipped to its reserved slot. Both emit into the same <code>LcDrawList</code>, so axes and legend batch into the chart's one mesh.</p>
 
-<p>Interaction is device-agnostic and headless-friendly. <code>LcHitTester.NearestIndex</code> does the spatial query against the generator's projected points; <code>LcChartView.OnPointerClick</code> and an optional per-frame hover poll drive an <code>LcSelectionModel</code> and an <code>LcTooltipController</code>. <code>LcPanZoomController</code> mutates scale domains (not pixels) to window the data, clamped to a cumulative zoom range. The <code>LcInputAdapter</code> bridge prefers the new Input System and falls back to the legacy manager (or a zeroed no-op), so the stack imports and runs on any input backend.</p>
+<p>Interaction is device-agnostic and headless-friendly. <code>LcHitTester.NearestIndex</code> does the spatial query against the generator's projected points; <code>LcChartView.OnPointerClick</code> and an optional per-frame hover poll drive an <code>LcSelectionModel</code> and an <code>LcTooltipController</code>. <code>LcPanZoomController</code> mutates scale domains (not pixels) to window the data, clamped to a cumulative zoom range. Pan/zoom applies to the cartesian kinds (line, scatter, area, spline, step, sparkline, bubble, bar with its stacked/grouped variants, multi-axis and combo) and is a clean no-op on the non-cartesian kinds (pie, donut, radar, gauge, histogram, box/violin, heatmap, treemap, waterfall, funnel, sankey, gantt, timeline, sunburst, parallel-coordinates, horizontal-bar) &mdash; queryable up front via <code>LcChartView.SupportsPanZoom</code>. Axis tick labels and gridlines recompute from the windowed domain on every view change, and the plotted series is clipped to the inner plot rect so a pan never overdraws the axis gutter or legend; a band-scale category axis labels each band with its category name centered on the band. The per-frame hover poll resolves the canvas event camera, so it works in Screen Space - Overlay, Screen Space - Camera and World Space alike, and <code>LcChartView.HoverAtScreenPoint(Vector2)</code> drives the same hover from a custom input source. The <code>LcInputAdapter</code> bridge prefers the new Input System and falls back to the legacy manager (or a zeroed no-op), so the stack imports and runs on any input backend.</p>
 
 <h3 id="charts-surfaces">World-space and UI Toolkit surfaces</h3>
 
-<p>Because the chart's output is a backend-neutral <code>LcDrawList</code>, the same chart can target any surface that implements <code>ILcRenderSurface</code> (<code>PlotRect</code> + <code>Submit</code>). <code>LcChartView.RenderToSurface</code> composes the full chart against the surface's plot rect and hands it over &mdash; without <code>Lucent.Charts</code> ever naming a concrete surface assembly. <code>LcWorldSpaceSurface</code> maps the list onto a planar <code>Mesh</code> (a flat quad in the 3D scene for billboards or diegetic HUDs) and is the recommended large-mesh target because it promotes to a 32-bit index buffer above 65535 vertices. <code>LcUIToolkitSurface</code> is a <code>VisualElement</code> that emits the list into its repaint mesh via <code>MeshGenerationContext</code>, so a chart can live inside a UXML/USS hierarchy beside native UITK controls (16-bit indices; y flipped to top-left).</p>
+<p>Because the chart's output is a backend-neutral <code>LcDrawList</code>, the same chart can target any surface that implements <code>ILcRenderSurface</code> (<code>PlotRect</code> + <code>Submit</code>). <code>LcChartView.RenderToSurface</code> composes the full chart against the surface's plot rect and hands it over &mdash; without <code>Lucent.Charts</code> ever naming a concrete surface assembly &mdash; while preserving the live chart's own pointer interactivity (its hit-test points are restored to the component's rect after submitting), so the geometry handed to a retained surface is an independent, stable snapshot. <code>LcWorldSpaceSurface</code> maps the list onto a planar <code>Mesh</code> (a flat quad in the 3D scene for billboards or diegetic HUDs) and is the recommended large-mesh target because it promotes to a 32-bit index buffer above 65535 vertices. <code>LcUIToolkitSurface</code> is a <code>VisualElement</code> that emits the list into its repaint mesh via <code>MeshGenerationContext</code>, so a chart can live inside a UXML/USS hierarchy beside native UITK controls (16-bit indices; y flipped to top-left).</p>
 
 <h3 id="charts-export">Headless export</h3>
 
@@ -626,6 +630,8 @@ string svg = LcVectorExporter.ExportSvg(capture.Last, 800, 600,
 <h3 id="charts-dashboard">Dashboard</h3>
 
 <p><code>LcDashboardView</code> is a <code>MonoBehaviour</code> that hosts <code>LcChartView</code> tiles and only drives their <code>RectTransform</code>s &mdash; each child still batches into its own single mesh. The deterministic <code>LcGridLayoutSolver</code> maps every <code>LcDashboardTile</code> placement (col/row plus span) to a cell rect in a gapped uniform grid; re-layout runs on <code>OnRectTransformDimensionsChange</code> for responsiveness, and width breakpoints (<code>LcGridBreakpoint</code>) can re-shape the column count. The grid + tile placement (not contents) round-trips to portable JSON through <code>LcDashboardDocument</code>, reconstructed against live charts by <code>TileId</code>. <code>LcCrossFilterEngine</code> links a source tile's selection to target tiles: it maps selected rows to category ids, materializes a filtered clone of each target's dataset via <code>LcDataOps</code>, rebinds it and rebuilds &mdash; non-destructive and reversible, since each target's original dataset is cached.</p>
+
+<p>No-code start path: <strong>GameObject &gt; Lucent UI &gt; Dashboard</strong> creates a Canvas/EventSystem if needed and drops a ready 2x2 dashboard with four sample chart tiles. Select the dashboard to edit the grid, tile list, responsive breakpoints, or <code>LcDashboardAsset</code>; the inspector can add another sample tile, apply a layout asset immediately, relayout, or copy the layout JSON. Code and no-code meet at the same calls: <code>AddChart("sales", 0, 0)</code> registers a tile, <code>LinkCrossFilter("sales", "region", "profit")</code> wires linked filtering, and <code>LcDashboardAsset.ApplyTo(view)</code> reapplies a saved layout by tile id.</p>
 
 <h3 id="charts-modules">The five specialist modules</h3>
 
@@ -727,7 +733,7 @@ view.ScrollToIndex(4200, LcScrollSnapAlign.Center, animated: true);  // jump dee
 
 <p>Scroll-driven animation is a pure, testable function. <code>LcScrollAnimator.Evaluate</code> maps a cell's distance-from-viewport-centre in <code>[0..1]</code> to a scale/alpha pair for the <code>FocusScale</code>, <code>Fade</code>, and <code>Depth</code> presets; <code>Parallax</code> is distinct - a signed cross-axis positional shear via <code>EvaluateCrossOffset</code> (antisymmetric, so a cell dead-centre never moves). Every preset can be shaped by an <code>AnimationCurve</code> routed through <code>Lucent.Motion</code>'s deterministic <code>LcEasing</code>. Applying it is alloc-free and writes only on change.</p>
 
-<p class="lc-note"><strong>Gamepad navigation, two ways.</strong> When the view is the EventSystem's selected object, <code>IMoveHandler.OnMove</code> drives a focused cell. With <code>SetControllerNavigation(true)</code> it also polls the New Input System directly (d-pad / left stick + arrow keys, edge/repeat-gated). Either way, focusing an item that lives outside the live window auto-scrolls it into view first - <code>FocusDelta</code> is a pure axis/layout-aware mapping (a List steps along its scroll axis; a Grid steps by one within a line and by <code>crossCount</code> across lines), and <code>OnFocusChanged</code> reports the new index.</p>
+<p class="lc-note"><strong>Gamepad navigation, two ways.</strong> When the view is the EventSystem's selected object, <code>IMoveHandler.OnMove</code> drives a focused cell. With <code>SetControllerNavigation(true)</code> it also polls the New Input System directly (d-pad / left stick + arrow keys, edge/repeat-gated). Either way, focusing an item that is not fully visible in the viewport (including a live but partly-clipped buffer cell) auto-scrolls it into view first - <code>FocusDelta</code> is a pure axis/layout-aware mapping (a List steps along its scroll axis; a Grid steps by one within a line and by <code>crossCount</code> across lines), and <code>OnFocusChanged</code> reports the new index.</p>
 
 <h3>Animated data-ops without a rebind</h3>
 
@@ -738,7 +744,7 @@ view.InsertItems(index, 3);   // existing visible cells slide down (same instanc
 // after data.Move(from, to)
 view.MoveItem(from, to);      // the moved cell keeps its instance and slides to its new slot</code></pre>
 
-<p>The logical state is committed synchronously; the slide/pop is a brief cosmetic coroutine, skipped automatically when a scroll-driven scale animator already owns the cells. Drag-to-reorder (<code>SetReorderable</code>) and sticky section headers (<code>SetSections</code>) and frozen-header virtualized tables (<code>SetTable</code>) ride the same spine.</p>
+<p>The logical state is committed synchronously; the slide/pop is a brief cosmetic coroutine, skipped automatically when a scroll-driven scale animator already owns the cells. Drag-to-reorder (<code>SetReorderable</code>) and sticky section headers (<code>SetSections</code>) and frozen-header virtualized tables (<code>SetTable</code>) ride the same spine. Flex table columns re-resolve responsively &mdash; they lay out correctly even when <code>SetTable</code> runs before the first layout pass (a code-first <code>Start()</code> build against a still-zero-width rect) and re-flow when the view is later resized.</p>
 
 <h3>Theme-bound cells</h3>
 
@@ -813,7 +819,7 @@ if (label.HasVariableAxes) label.SetVariation("wght", 700f);</code></pre>
 <li><strong>No TextMeshPro dependency for Tier 2:</strong> <code>LcSdfText.SetFont(byte[])</code> parses OpenType itself and renders via a <code>MeshRenderer</code> &mdash; no TMP font asset, no native code.</li>
 <li><strong>Real UAX&nbsp;#9, not a fixer:</strong> <code>LcBidi.Resolve</code> implements explicit levels, isolates, paired brackets, and L1&ndash;L4 reordering &mdash; the cases partial RTL plugins get wrong.</li>
 <li><strong>Logical-order animation after visual reordering:</strong> <code>LcProcessedText.VisualToSource</code> maps every displayed glyph back to its source index, so a typewriter reveals RTL text in true reading order.</li>
-<li><strong>Pure, cached, parallelizable core:</strong> immutable results are cached, and <code>LcTextProcessor.ProcessBatch</code> shapes hundreds of strings across all CPU cores.</li>
+<li><strong>Pure, cached, parallelizable core:</strong> immutable results are cached, and <code>LcTextProcessor.ProcessBatch</code> shapes hundreds of strings across all CPU cores on platforms with thread support &mdash; on the WebGL/IL2CPP target (no C# threads) it automatically falls back to the same sequential shaping with identical results.</li>
 <li><strong>Beyond Arabic:</strong> the font-driven <code>LcComplexShaper</code> + <code>LcIndicReorder</code> shape Devanagari, Bengali, Tamil, Thai and more from any font carrying GSUB/GPOS.</li>
 </ul>
 </section>
@@ -848,8 +854,9 @@ LcThemeManager.SetActiveTheme(LcThemeId.Light);
 LcTheme theme = LcSemanticThemes.CreateHighContrast();
 int recolored = LcThemeManager.RebindAll(theme);   // assertable "applied" count
 
-// A widget resolves a semantic token, falling back to its just-works color.
-Color32 surface = LcWidgetKit.Resolve(theme, LcColorKeys.Surface, LcWidgetKit.Surface);</code></pre>
+// Resolve a semantic token yourself, falling back to your own default color.
+Color32 surface;
+if (!theme.TryResolveColor(LcColorKeys.Surface, out surface)) { surface = new Color32(24, 26, 32, 255); }</code></pre>
 
 <p class="lc-note"><strong>Code precedence.</strong> <code>LcThemeManager.Effective(bound)</code> returns a consumer's own explicitly-bound theme when set and only falls back to the app-wide active theme (or literals) when code has not spoken &mdash; the "just-works" default never overrides a value set in code. A fresh domain reset leaves <code>Active == null</code>, so unconfigured surfaces keep their literal colors exactly as if the service did not exist.</p>
 
@@ -871,7 +878,9 @@ loc.TermId = "ui.menu.play";</code></pre>
 
 <h3>Motion &amp; layout</h3>
 
-<p>Widget animation is shared rather than reinvented. <code>Lucent.Motion</code> supplies <code>LcEase</code> (34 named curves) evaluated by <code>LcEasing.Evaluate</code>, an allocation-free <code>LcTweenTimer</code> (<code>Create</code>/<code>Advance</code>/<code>Completed</code>) plus <code>LcTween</code>/<code>LcTweenVector2</code>/<code>LcTweenColor</code> value tweens, a critically-damped <code>LcSpring</code>, and an authorable <code>LcTweenSequence</code> &mdash; this is what drives the modal scale-fade, the toast slide-in, and the accordion's height tween, all on unscaled delta time and pumpable headlessly via each widget's public <code>Tick(float dt)</code>. <code>Lucent.Layout</code> adds flexbox-style arrangement (<code>LcFlexLayout</code> over <code>LcFlexAxis</code>), responsive scaling against breakpoints (<code>LcResponsiveScaler</code>), and content/aspect fitting (<code>LcAutoSize</code>, <code>LcAspectMode</code>).</p>
+<p>Widget animation is shared rather than reinvented. <code>Lucent.Motion</code> supplies <code>LcEase</code> (31 named curves) evaluated by <code>LcEasing.Evaluate</code>, an allocation-free <code>LcTweenTimer</code> (<code>Create</code>/<code>Advance</code>/<code>Completed</code>) plus <code>LcTween</code>/<code>LcTweenVector2</code>/<code>LcTweenColor</code> value tweens, a critically-damped <code>LcSpring</code>, and an authorable <code>LcTweenSequence</code> &mdash; this is what drives the modal scale-fade, the toast slide-in, and the accordion's height tween, all on unscaled delta time and pumpable headlessly via each widget's public <code>Tick(float dt)</code>. <code>Lucent.Layout</code> adds flexbox-style arrangement (<code>LcFlexLayout</code> over <code>LcFlexAxis</code>), responsive scaling against breakpoints (<code>LcResponsiveScaler</code>), and content/aspect fitting (<code>LcAutoSize</code>, <code>LcAspectMode</code>).</p>
+
+<p><code>LcSnapAnchor</code> exposes Unity-style anchor presets at runtime (<code>LcAnchorPreset</code>) and the editor tool <strong>Tools &gt; Lucent UI &gt; Layout &gt; Snap Anchor</strong> applies the same presets to selected RectTransforms with Undo. The lower-level helpers stay pure and testable: <code>LcLayoutMath</code> resolves CanvasScaler-compatible scale and breakpoint selection, <code>LcFlexItem</code>/<code>LcFlexSegment</code> describe weighted row/column distribution, and <code>LcEdges</code> carries padding for layout and auto-size code paths.</p>
 
 <ul class="lc-win">
 <li><strong>348 procedural icons</strong> in <code>LcIconKind</code> &mdash; analytic geometry, no atlas and no import step; every glyph scales crisply, recolors via a theme token, and animates for free.</li>
@@ -968,7 +977,7 @@ if (reg.TryCreateShape("lc.shape.hexagon", out gen))
 <p>Everything is one click from the Unity menus &mdash; no manual wiring:</p>
 
 <ul>
-<li><strong>GameObject &gt; Lucent UI &gt; &hellip;</strong> &mdash; drop a ready, working, sample-populated object into the scene (a Canvas + EventSystem with the Input-System UI module are created if missing, all under one Undo). Groups: <em>Shapes</em> (Circle, Rounded Rect, &hellip;), <em>Effects</em> (Blur Panel, Liquid Glass Card, Shadowed / Glowing / Outlined / Pressed), <em>Buttons</em> (Button, Button with Ripple, Toggle Button &mdash; each with a host <code>LcShape</code> skin so it is visible + clickable immediately), <em>Controls</em> (Slider, Toggle, Dropdown, Input Field, Progress, Tabs, Date / Time Picker, Collapsible), <em>Graphics</em> (Icon, Image 3D), <em>Chart</em> (Line, Area, Bar, Stacked Bar, Pie, Donut, Scatter), <em>Overlays</em> (Modal, Toast, Tooltip), <em>Navigation</em> (Navigation / Focus Controller).</li>
+<li><strong>GameObject &gt; Lucent UI &gt; &hellip;</strong> &mdash; drop a ready, working, sample-populated object into the scene (a Canvas + EventSystem with the Input-System UI module are created if missing, all under one Undo). Groups: <em>Shapes</em> (Circle, Rounded Rect, &hellip;), <em>Effects</em> (Blur Panel, Liquid Glass Card, Shadowed / Glowing / Outlined / Pressed), <em>Buttons</em> (Button, Button with Ripple, Toggle Button &mdash; each with a host <code>LcShape</code> skin so it is visible + clickable immediately), <em>Controls</em> (Slider, Toggle, Dropdown, Input Field, Progress, Tabs, Date / Time Picker, Collapsible), <em>Graphics</em> (Icon, Image 3D), <em>Chart</em> (Line, Area, Bar, Stacked Bar, Pie, Donut, Scatter), <em>Dashboard</em> (2x2 sample chart grid), <em>Overlays</em> (Modal, Toast, Tooltip), <em>Navigation</em> (Navigation / Focus Controller).</li>
 <li><strong>Assets &gt; Create &gt; Lucent UI &gt; &hellip;</strong> &mdash; author the ScriptableObjects: <em>Palette</em>, <em>Theme Preset</em> (Dark / Light / High Contrast), <em>Term Database</em> (localization), and Button Presets. Each has its own custom inspector.</li>
 <li><strong>Window / Tools &gt; Lucent UI &gt; &hellip;</strong> &mdash; the workflow windows: <em>Welcome</em> (first-run orientation, auto-opens once, re-openable, dismissible), the <em>Hub</em> and <em>Component Creator</em>, <em>Theme Designer</em>, <em>Localization</em>, the <em>Chart Wizard</em> and <em>Scroll Creator</em>, <em>Text &gt; Setup</em>, <em>Layout &gt; Snap Anchor</em>, and <em>Install Blur Renderer Feature</em>.</li>
 </ul>
@@ -978,9 +987,9 @@ if (reg.TryCreateShape("lc.shape.hexagon", out gen))
 <p>Lucent is zero-setup for the common path &mdash; add a component and press Play. The few features that touch project state are handled for you or clearly guided:</p>
 
 <ul>
-<li><strong>Background blur / liquid glass on URP</strong> &mdash; needs the <code>LcBlurFeature</code> on the active URP renderer for a live scene-color grab. This is <em>auto-installed</em> on first project load (idempotent, batch-guarded), and you can re-run it any time from <strong>Tools &gt; Lucent UI &gt; Install Blur Renderer Feature</strong>. Without it (or on Built-in / where no scene grab exists) the panel degrades to a clean flat tint &mdash; never magenta, never an error.</li>
+<li><strong>Background blur / liquid glass on URP</strong> &mdash; needs the <code>LcBlurFeature</code> on the active URP renderer for a live scene-color grab. This is <em>auto-installed</em> on first project load (idempotent, batch-guarded), and you can re-run it any time from <strong>Tools &gt; Lucent UI &gt; Install Blur Renderer Feature</strong>. Until it is installed, an active-URP panel samples an unbound (black) scene-color texture &mdash; a near-black slab, never magenta and never an error, but not yet the frosted look; the auto-install covers the common path and the panel's inspector shows a one-click <strong>Install</strong> button whenever the feature is missing. The genuine flat-tinted translucent fallback applies only where no scene-color grab is possible at all &mdash; Built-in with no grab provider, a headless run, or an unrecognized pipeline (i.e. where <code>LcCapabilities.SupportsSceneColorGrab</code> is <code>false</code>); on URP that flag is always <code>true</code>, so a missing feature shows black rather than a tint.</li>
 <li><strong>Player builds (WebGL / IL2CPP)</strong> &mdash; no manual step: the runtime shaders (canvas, blur, glass, effect-blend) and the SDF/MSDF text shaders ship inside <code>Resources</code> folders, so every build includes them automatically. Nothing to add to Always Included Shaders.</li>
-<li><strong>Live 3D model in UI (<code>LcImage3D</code>)</strong> &mdash; renders a model onto a hidden off-world stage through a dedicated camera on a single <em>Stage Layer</em> (default 31). Keep that layer free of other scene objects, or point the field at any spare layer, so nothing else appears in the 3D thumbnail. The custom inspector reminds you and warns when no Model is assigned.</li>
+<li><strong>Live 3D model in UI (<code>LcImage3D</code>)</strong> &mdash; renders a model onto a hidden off-world stage through a dedicated camera on a single <em>Stage Layer</em> (default 31). Keep that layer free of other scene objects, or point the field at any spare layer, so nothing else appears in the 3D thumbnail. The stage camera renders at the target rect's aspect ratio, so the model is never stretched in a non-square UI slot &mdash; no need to keep the rect square. The custom inspector reminds you and warns when no Model is assigned.</li>
 <li><strong>SDF / MSDF / 3D extruded text</strong> &mdash; needs a font: a dynamic OS font for uGUI, or a <code>.ttf</code>/<code>.otf</code> imported as a <code>.bytes</code> TextAsset for the SDF atlas + 3D extruder. The inspectors guide the font (and, for 3D, the face material); with no font the panels degrade to a clear note.</li>
 <li><strong>Interactive widgets</strong> &mdash; require the Input System package and an EventSystem; the scaffolding menus create an EventSystem with the correct UI module automatically.</li>
 <li><strong>No-code localization</strong> &mdash; drop an <code>LcLocalizationConfig</code> into your bootstrap scene, assign your Term Databases and a start locale in the Inspector, and every <code>LcLocalize</code> widget resolves with zero code (otherwise Play shows the raw term ids).</li>
@@ -1107,7 +1116,7 @@ if (reg.TryCreateShape("lc.shape.hexagon", out gen))
 <p>Every Lucent visual is an <code>LcDrawable</code> that tessellates its shape, gradient/pattern/sprite paint, stroke, and its sibling geometry effects (shadow, glow, outline) into a single pooled <code>LcDrawList</code> in painter order, which becomes one <code>CanvasRenderer</code> mesh. Identically-configured elements share one cached material and batch together. The batch is only broken by the things that always break uGUI batching: a non-<code>Normal</code> blend mode (each distinct one gets exactly one extra surface), a child <code>Text</code>/TMP overlay (the one intrinsic extra draw), an interleaved non-Lucent graphic that forces a different material, or a Mask/RectMask2D boundary. Keep effects on <code>Normal</code> blend and elements on the shared material and the batch holds.</p>
 
 <h3 id="faq-glass">My glass / blur panel just shows a flat tint. Why?</h3>
-<p>That is the intentional graceful-degradation path, not a bug. <code>LcBlurPanel</code>/<code>LcGlass</code> sample a global <code>_LucentBlurTex</code> that a per-pipeline backend publishes from the scene color. If no live scene-color grab is available &mdash; for example Built-in with no grab provider attached yet, or a headless run &mdash; <code>LcCapabilities.SupportsSceneColorGrab</code> is <code>false</code> and the panel renders a flat tinted translucent fill instead of magenta. To get the real frosted look, make sure a camera is rendering the scene behind the panel: on URP add the <code>LcBlurFeature</code> to your renderer; on Built-in the <code>LcBlurBuiltInManager</code> auto-attaches its command buffer while a panel is alive. Blur work is ref-count-gated, so it only runs while at least one panel is active.</p>
+<p>That is the intentional graceful-degradation path, not a bug. <code>LcBlurPanel</code>/<code>LcGlass</code> sample a global <code>_LucentBlurTex</code> that a per-pipeline backend publishes from the scene color. If no live scene-color grab is available &mdash; for example Built-in with no grab provider attached yet, or a headless run &mdash; <code>LcCapabilities.SupportsSceneColorGrab</code> is <code>false</code> and the panel renders a flat tinted translucent fill instead of magenta. One case is <em>not</em> a flat tint, though: on URP, <code>SupportsSceneColorGrab</code> is always <code>true</code>, so a URP panel <em>without</em> the <code>LcBlurFeature</code> installed samples an unbound black texture and shows a near-black slab (not a tint) until the feature is added &mdash; auto-installed on first load, or re-added via <strong>Tools &gt; Lucent UI &gt; Install Blur Renderer Feature</strong>. To get the real frosted look, make sure a camera is rendering the scene behind the panel: on URP add the <code>LcBlurFeature</code> to your renderer; on Built-in the <code>LcBlurBuiltInManager</code> auto-attaches its command buffer while a panel is alive. Blur work is ref-count-gated, so it only runs while at least one panel is active.</p>
 
 <h3 id="faq-gc">How does the scroll list stay at 0 GC with thousands of rows?</h3>
 <p><code>LcScrollView</code> never stores your model and never instantiates per row. <code>LcRecycler</code> keeps only <em>visible + 2&times;buffer</em> cells alive, pools the rest, and its hot path uses struct enumerators, a reused scratch list, and no LINQ/closures/boxing. The one subtle source of scroll-time GC &mdash; a redundant <code>RectTransform</code> write that dirties a uGUI <code>Graphic</code> and forces a mesh rebuild &mdash; is avoided by writing <code>sizeDelta</code>/<code>anchoredPosition</code> only when they actually change. If you <em>do</em> see allocation during scroll, it is almost always your own <code>Bind</code> delegate (string concatenation, boxing, LINQ) rather than the recycler; the recycler calls <code>Bind</code> only for the handful of on-screen cells.</p>
@@ -1193,6 +1202,10 @@ if (reg.TryCreateShape("lc.shape.hexagon", out gen))
     <li><code>LcShapeGenerators</code></li>
     <li><code>LcShapeGeometry</code></li>
     <li><code>LcShapeRaycast.PointInPolygon</code></li>
+    <li><code>LcShapeMask</code></li>
+    <li><code>LcShapeMaskTarget</code></li>
+    <li><code>LcShapeStylePreset</code></li>
+    <li><code>LcShapeExport.ExportStylePng</code></li>
     <li><code>ILcSilhouetteSource.TryGetSilhouette</code></li>
     <li><code>LcShape.IsRaycastLocationValid</code></li>
     <li><code>LcShape.SetCornerRadii</code></li>
@@ -1353,6 +1366,9 @@ if (reg.TryCreateShape("lc.shape.hexagon", out gen))
     <li><code>LcGridSpec</code></li>
     <li><code>LcGridLayoutSolver</code></li>
     <li><code>LcDashboardDocument</code></li>
+    <li><code>LcDashboardAsset</code></li>
+    <li><code>LcDashboardMenu.Create</code></li>
+    <li><code>LcDashboardViewEditor</code></li>
     <li><code>LcCrossFilter</code></li>
     <li><code>LcCrossFilterEngine</code></li>
     <li><code>LcKMeans</code></li>
@@ -1497,8 +1513,6 @@ if (reg.TryCreateShape("lc.shape.hexagon", out gen))
 <div class="lc-api-group">
   <h3>Components, Theming &amp; Localization <span class="badge">Lucent.Components &middot; .Theme &middot; .Localization</span></h3>
   <ul class="lc-syms">
-    <li><code>LcWidgetKit</code></li>
-    <li><code>LcPointerRelay</code></li>
     <li><code>LcIcon</code></li>
     <li><code>LcIconKind</code></li>
     <li><code>LcIconGeometry</code></li>
@@ -1561,6 +1575,31 @@ if (reg.TryCreateShape("lc.shape.hexagon", out gen))
     <li><code>LcFlexLayout</code></li>
     <li><code>LcResponsiveScaler</code></li>
     <li><code>LcAutoSize</code></li>
+  </ul>
+</div>
+
+<div class="lc-api-group">
+  <h3>Layout <span class="badge">Lucent.Layout</span></h3>
+  <ul class="lc-syms">
+    <li><code>LcSnapAnchor</code></li>
+    <li><code>LcSnapAnchor.Snap</code></li>
+    <li><code>LcAnchorPreset</code></li>
+    <li><code>LcLayoutMath</code></li>
+    <li><code>LcLayoutMath.ResolveScale</code></li>
+    <li><code>LcLayoutMath.SelectBreakpoint</code></li>
+    <li><code>LcFlexLayout</code></li>
+    <li><code>LcFlexLayout.Resolve</code></li>
+    <li><code>LcFlexLayout.Apply</code></li>
+    <li><code>LcFlexAxis</code></li>
+    <li><code>LcFlexItem</code></li>
+    <li><code>LcFlexSegment</code></li>
+    <li><code>LcResponsiveScaler</code></li>
+    <li><code>LcAutoSize</code></li>
+    <li><code>LcAspectMode</code></li>
+    <li><code>LcEdges</code></li>
+    <li><code>LcBreakpointCriteria</code></li>
+    <li><code>LcScreenMetrics</code></li>
+    <li><code>LcAnchorSnapMenu.Apply</code></li>
   </ul>
 </div>
 
