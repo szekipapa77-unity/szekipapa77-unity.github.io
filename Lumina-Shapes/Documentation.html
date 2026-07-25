@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lumina Shapes — Documentation</title>
+<style>
+  :root{--accent:#b98cff;--bg:#0e1116;--panel:#161b22;--panel2:#1c2230;--ink:#e6edf3;--mut:#9aa7b4;--line:#2a3340;--code:#0b0f14;}
+  *{box-sizing:border-box}
+  body{margin:0;font:16px/1.65 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  header{padding:48px 24px 40px;background:radial-gradient(1200px 400px at 20% -10%,rgba(185,140,255,.18),transparent),var(--panel);border-bottom:1px solid var(--line)}
+  .wrap{max-width:900px;margin:0 auto;padding:0 24px}
+  h1{margin:0 0 6px;font-size:34px;letter-spacing:.3px}
+  h1 span{color:var(--accent)}
+  .tag{color:var(--mut);font-size:18px;margin:0}
+  h2{margin:40px 0 12px;font-size:23px;border-bottom:1px solid var(--line);padding-bottom:8px}
+  h3{margin:26px 0 8px;font-size:18px;color:var(--accent)}
+  code,pre{font-family:"JetBrains Mono",Consolas,Menlo,monospace}
+  code{background:var(--panel2);padding:2px 6px;border-radius:5px;font-size:14px;color:#e5d6ff}
+  pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:16px;overflow:auto;font-size:13.5px;line-height:1.55}
+  pre code{background:none;padding:0;color:#d6e2ee}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14.5px}
+  th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+  th{background:var(--panel2)}
+  .path{background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:6px;padding:8px 12px;margin:8px 0;font-family:"JetBrains Mono",Consolas,monospace;font-size:13.5px}
+  .note{background:rgba(185,140,255,.07);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:12px 16px;margin:14px 0}
+  ul{padding-left:22px}
+  footer{margin-top:48px;padding:26px 0 60px;color:var(--mut);border-top:1px solid var(--line);font-size:14px}
+  a{color:var(--accent)}
+  .pill{display:inline-block;background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:13px;color:var(--mut);margin:2px 6px 2px 0}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Lumina <span>Shapes</span></h1>
+  <p class="tag">Procedural, resolution-independent vector shapes for Unity uGUI.</p>
+  <div style="margin-top:14px">
+    <span class="pill">Unity 6000.0.62f1+</span><span class="pill">uGUI</span>
+    <span class="pill">Any render pipeline</span><span class="pill">No sprites · no materials</span>
+  </div>
+</div></header>
+<main class="wrap">
+
+<h2>1. Overview</h2>
+<p>Lumina Shapes draws crisp, anti-aliased shapes that are <strong>tessellated at runtime</strong> and re-mesh
+live as you edit them. Because they are procedural — no textures, no atlases, no <code>.mat</code> files — they
+stay razor-sharp at any scale and DPI. One shape is one mesh, one draw call.</p>
+
+<h2>2. Requirements</h2>
+<ul>
+  <li>Unity <strong>6000.0.62f1</strong> or newer.</li>
+  <li><code>com.unity.ugui</code> — present in every Unity project.</li>
+  <li>Render-pipeline agnostic (ships its own procedural canvas shader). URP recommended.</li>
+</ul>
+
+<h2>3. Quick start</h2>
+<div class="path">GameObject ▸ Lucent UI ▸ Rounded Panel</div>
+<ol>
+  <li>Create the shape from the menu (a Canvas + EventSystem are created automatically if absent).</li>
+  <li>In the Inspector, change <strong>Shape Kind</strong> and the corner <strong>radius</strong> — the mesh
+      re-tessellates instantly, even outside Play mode.</li>
+</ol>
+
+<h2>4. Create menu</h2>
+<table>
+  <tr><th>Menu (GameObject ▸ Lucent UI ▸ …)</th><th>Result</th></tr>
+  <tr><td>Shape</td><td>A blank <code>LcShape</code> ready to configure.</td></tr>
+  <tr><td>Rounded Panel</td><td>Rounded-rect surface — the “card” primitive.</td></tr>
+  <tr><td>Circle</td><td>Anti-aliased disc.</td></tr>
+  <tr><td>Pill (Capsule)</td><td>Fully-rounded capsule that stays correct at any size.</td></tr>
+</table>
+<p>Add to your own object with <em>Add Component ▸ Lucent UI ▸ Lc Shape</em> (place it under a Canvas).</p>
+
+<h2>5. Shape kinds &amp; styling</h2>
+<p>Set <code>ShapeKind</code> (<code>Lucent.Render.LcShapeKind</code>) to any of rounded-rect, circle,
+pill/capsule, triangle, regular polygon (via <code>SetSides</code>), hexagon, star, ring/arc, chevron and more.
+Fill, per-corner radii, stroke and gradients are all first-class.</p>
+<div class="note">Author a look once and reuse it: <strong>Assets ▸ Create ▸ Lucent UI ▸ Shape Style Preset</strong>.
+The preset’s inspector has an <em>Apply</em> button that pushes the style onto any selected shapes.</div>
+
+<h2>6. Scripting</h2>
+<h3>Build a shape in code</h3>
+<pre><code>using Lucent.Shapes;
+using Lucent.Render;
+using UnityEngine;
+
+var go = new GameObject("Panel", typeof(RectTransform));
+go.transform.SetParent(canvas.transform, false);
+
+var shape = go.AddComponent&lt;LcShape&gt;();
+shape.ShapeKind = LcShapeKind.RoundedRect;
+shape.SetUniformRadius(24f);
+shape.SetFillColor(new Color32(32, 36, 44, 255));
+shape.SetStroke(true, 3f);
+shape.SetStrokeGradient(true, new Color32(120,200,255,255),
+                              new Color32(180,120,255,255), 45f);</code></pre>
+
+<h3>Common API (<code>LcShape</code>)</h3>
+<table>
+  <tr><th>Member</th><th>Purpose</th></tr>
+  <tr><td><code>ShapeKind</code></td><td>The shape family (property).</td></tr>
+  <tr><td><code>SetUniformRadius(float)</code> / <code>SetCornerRadii(LcCorners)</code></td><td>Corner rounding.</td></tr>
+  <tr><td><code>SetFillColor(Color32)</code></td><td>Solid fill.</td></tr>
+  <tr><td><code>SetStroke(bool,float)</code> / <code>SetStrokeWidth(float)</code></td><td>Outline on/off + width.</td></tr>
+  <tr><td><code>SetStrokeGradient(bool,Color32,Color32,float)</code></td><td>Gradient stroke.</td></tr>
+  <tr><td><code>SetGradientAngle(float)</code> / <code>SetFillGradientToken(string)</code></td><td>Fill gradient.</td></tr>
+  <tr><td><code>SetSides(int)</code></td><td>Sides for regular-polygon kinds.</td></tr>
+  <tr><td><code>SetPattern(LcPatternKind)</code></td><td>Fill pattern.</td></tr>
+</table>
+
+<h2>7. Troubleshooting</h2>
+<table>
+  <tr><th>Symptom</th><th>Fix</th></tr>
+  <tr><td>Shape doesn’t appear</td><td>It must be under a <code>Canvas</code>; the GameObject menu wires one for you.</td></tr>
+  <tr><td>Missing in a build (pink/blank)</td><td>Keep <code>Runtime/Shaders/Resources</code> intact — the procedural canvas shader is Resources-referenced so it survives stripping.</td></tr>
+  <tr><td>Edits don’t update the mesh</td><td>Call <code>RebuildFromInspector()</code> after bulk API changes, or toggle the component.</td></tr>
+</table>
+
+<footer>
+  <strong>Lumina Shapes</strong> · v1.0 · Unity 6000.0.62f1<br>
+  Support: <a href="mailto:szekipapa77@gmail.com">szekipapa77@gmail.com</a>
+</footer>
+</main>
+</body>
+</html>

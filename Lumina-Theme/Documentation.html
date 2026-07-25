@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lumina Theme — Documentation</title>
+<style>
+  :root{--accent:#ffc24b;--bg:#0e1116;--panel:#161b22;--panel2:#1c2230;--ink:#e6edf3;--mut:#9aa7b4;--line:#2a3340;--code:#0b0f14;}
+  *{box-sizing:border-box}
+  body{margin:0;font:16px/1.65 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  header{padding:48px 24px 40px;background:radial-gradient(1200px 400px at 20% -10%,rgba(255,194,75,.16),transparent),var(--panel);border-bottom:1px solid var(--line)}
+  .wrap{max-width:900px;margin:0 auto;padding:0 24px}
+  h1{margin:0 0 6px;font-size:34px;letter-spacing:.3px}
+  h1 span{color:var(--accent)}
+  .tag{color:var(--mut);font-size:18px;margin:0}
+  h2{margin:40px 0 12px;font-size:23px;border-bottom:1px solid var(--line);padding-bottom:8px}
+  h3{margin:26px 0 8px;font-size:18px;color:var(--accent)}
+  code,pre{font-family:"JetBrains Mono",Consolas,Menlo,monospace}
+  code{background:var(--panel2);padding:2px 6px;border-radius:5px;font-size:14px;color:#ffe6b0}
+  pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:16px;overflow:auto;font-size:13.5px;line-height:1.55}
+  pre code{background:none;padding:0;color:#d6e2ee}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14.5px}
+  th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+  th{background:var(--panel2)}
+  .path{background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:6px;padding:8px 12px;margin:8px 0;font-family:"JetBrains Mono",Consolas,monospace;font-size:13.5px}
+  .note{background:rgba(255,194,75,.07);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:12px 16px;margin:14px 0}
+  ul{padding-left:22px}
+  footer{margin-top:48px;padding:26px 0 60px;color:var(--mut);border-top:1px solid var(--line);font-size:14px}
+  a{color:var(--accent)}
+  .pill{display:inline-block;background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:13px;color:var(--mut);margin:2px 6px 2px 0}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Lumina <span>Theme</span></h1>
+  <p class="tag">UI theming, design tokens &amp; WCAG accessibility for Unity.</p>
+  <div style="margin-top:14px">
+    <span class="pill">Unity 6000.0.62f1+</span><span class="pill">Any render pipeline</span>
+    <span class="pill">ScriptableObject</span><span class="pill">WCAG AA / AAA</span>
+  </div>
+</div></header>
+<main class="wrap">
+
+<h2>1. Overview</h2>
+<p>Lumina Theme is a lightweight theming engine built on design tokens (colors, gradients, numbers, fonts,
+sprites, audio) stored in a <code>LcTheme</code> ScriptableObject. Author themes visually with the
+<strong>Theme Designer</strong>, verify contrast against <strong>WCAG AA/AAA</strong> as you work, and drive
+your own UI from a single source of truth. Pure C# — no render-pipeline dependency.</p>
+
+<h2>2. Requirements</h2>
+<ul>
+  <li>Unity <strong>6000.0.62f1</strong> or newer.</li>
+  <li>No other dependencies — Built-in RP, URP and HDRP projects all work.</li>
+</ul>
+
+<h2>3. Quick start</h2>
+<ol>
+  <li>Create a theme asset:</li>
+</ol>
+<div class="path">Assets ▸ Create ▸ Lucent UI ▸ Theme Preset ▸ Dark</div>
+<p>(Also available: <em>Light</em>, <em>High Contrast</em>, and <em>Assets ▸ Create ▸ Lucent UI ▸ Palette</em>.)</p>
+<ol start="2">
+  <li>Open the visual editor and tune colors with live contrast feedback:</li>
+</ol>
+<div class="path">Window ▸ Lucent UI ▸ Theme Designer</div>
+<ol start="3">
+  <li>Reference the <code>LcTheme</code> from your scripts and resolve tokens (below).</li>
+</ol>
+
+<h2>4. Using a theme in code</h2>
+<h3>Resolve design tokens</h3>
+<pre><code>using Lucent.Theme;
+using UnityEngine;
+
+public class Panel : MonoBehaviour
+{
+    public LcTheme theme;   // assign your Theme asset in the Inspector
+
+    void Start()
+    {
+        if (theme.TryResolveColor("surface", out Color32 bg))
+            GetComponent&lt;UnityEngine.UI.Graphic&gt;().color = bg;
+
+        float radius = theme.ResolveNumber("radius.card", 12f);
+    }
+}</code></pre>
+
+<h3>Build a theme at runtime</h3>
+<pre><code>using Lucent.Theme;
+
+LcTheme dark  = LcSemanticThemes.CreateDark();
+LcTheme light = LcSemanticThemes.Create(LcThemeId.Light);
+LcTheme hc    = LcSemanticThemes.CreateHighContrast();
+
+dark.SetColor("accent", new UnityEngine.Color32(63, 224, 255, 255));
+string json = dark.ExportJson();   // persist / ship a theme as JSON</code></pre>
+
+<h2>5. Accessibility — <code>LcContrast</code></h2>
+<p>Static WCAG helpers for verifying and choosing readable color pairs.</p>
+<pre><code>using Lucent.Theme;
+using UnityEngine;
+
+float ratio = LcContrast.Ratio(foreground, background);   // e.g. 7.1
+bool  aa    = LcContrast.MeetsAA(foreground, background);          // ≥ 4.5 (or 3.0 large)
+bool  aaa   = LcContrast.MeetsAAA(foreground, background, largeText:true);</code></pre>
+<table>
+  <tr><th>Method</th><th>Returns</th></tr>
+  <tr><td><code>RelativeLuminance(Color)</code></td><td>WCAG relative luminance.</td></tr>
+  <tr><td><code>Ratio(Color a, Color b)</code></td><td>Contrast ratio (1–21).</td></tr>
+  <tr><td><code>MeetsAA(fg, bg, largeText=false)</code></td><td>WCAG AA pass/fail.</td></tr>
+  <tr><td><code>MeetsAAA(fg, bg, largeText=false)</code></td><td>WCAG AAA pass/fail.</td></tr>
+</table>
+
+<h2>6. Palettes</h2>
+<p><code>LcPalette</code> groups named colors (with an optional color-blind-safe variant). Import from common
+formats with <code>LcPaletteImport</code>:</p>
+<pre><code>using Lucent.Theme;
+
+LcPalette p = LcPaletteImport.Import(fileText);      // auto-detects format
+// or: FromHexList / FromGpl (GIMP) / FromCssVariables
+theme.AddPalette(p);</code></pre>
+
+<h2>7. Notes</h2>
+<div class="note">This pack is the theming <strong>engine + tooling</strong>: create, validate and query themes,
+and drive your own UI from them. Lumina widgets that automatically re-skin themselves from the active theme are
+distributed separately.</div>
+
+<footer>
+  <strong>Lumina Theme</strong> · v1.0 · Unity 6000.0.62f1<br>
+  Support: <a href="mailto:szekipapa77@gmail.com">szekipapa77@gmail.com</a>
+</footer>
+</main>
+</body>
+</html>
