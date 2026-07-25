@@ -3,123 +3,750 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lumina Shapes — Documentation</title>
+<title>Lumina Shapes &mdash; Documentation</title>
 <style>
-  :root{--accent:#b98cff;--bg:#0e1116;--panel:#161b22;--panel2:#1c2230;--ink:#e6edf3;--mut:#9aa7b4;--line:#2a3340;--code:#0b0f14;}
-  *{box-sizing:border-box}
-  body{margin:0;font:16px/1.65 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
-  header{padding:48px 24px 40px;background:radial-gradient(1200px 400px at 20% -10%,rgba(185,140,255,.18),transparent),var(--panel);border-bottom:1px solid var(--line)}
-  .wrap{max-width:900px;margin:0 auto;padding:0 24px}
-  h1{margin:0 0 6px;font-size:34px;letter-spacing:.3px}
-  h1 span{color:var(--accent)}
-  .tag{color:var(--mut);font-size:18px;margin:0}
-  h2{margin:40px 0 12px;font-size:23px;border-bottom:1px solid var(--line);padding-bottom:8px}
-  h3{margin:26px 0 8px;font-size:18px;color:var(--accent)}
-  code,pre{font-family:"JetBrains Mono",Consolas,Menlo,monospace}
-  code{background:var(--panel2);padding:2px 6px;border-radius:5px;font-size:14px;color:#e5d6ff}
-  pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:16px;overflow:auto;font-size:13.5px;line-height:1.55}
-  pre code{background:none;padding:0;color:#d6e2ee}
-  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14.5px}
-  th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
-  th{background:var(--panel2)}
-  .path{background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:6px;padding:8px 12px;margin:8px 0;font-family:"JetBrains Mono",Consolas,monospace;font-size:13.5px}
-  .note{background:rgba(185,140,255,.07);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:12px 16px;margin:14px 0}
-  ul{padding-left:22px}
-  footer{margin-top:48px;padding:26px 0 60px;color:var(--mut);border-top:1px solid var(--line);font-size:14px}
-  a{color:var(--accent)}
-  .pill{display:inline-block;background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:13px;color:var(--mut);margin:2px 6px 2px 0}
+:root{
+  --bg0:#0E0B16; --bg1:#171122; --bg2:#221A33;
+  --accent:#7C3AED; --accent-hi:#A78BFA; --glow2:#22D3EE;
+  --text0:#ECEAF5; --text1:#A79FC2;
+  --line:#2C2342; --line-soft:#241B38;
+  --code-bg:#120D1E; --sidebar-w:286px;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; background:var(--bg0); color:var(--text0);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px; line-height:1.65; -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent-hi); text-decoration:none;}
+a:hover{color:var(--glow2); text-decoration:underline;}
+
+/* ---------- Sidebar ---------- */
+.lc-sidebar{
+  position:fixed; top:0; left:0; bottom:0; width:var(--sidebar-w);
+  background:linear-gradient(180deg,#1a1329 0%,var(--bg1) 100%);
+  border-right:1px solid var(--line); overflow-y:auto; padding:22px 0 40px;
+  z-index:20;
+}
+.lc-brand{padding:0 22px 16px; border-bottom:1px solid var(--line-soft); margin-bottom:14px;}
+.lc-brand .logo{display:flex; align-items:center; gap:10px;}
+.lc-brand .dot{
+  width:22px; height:22px; border-radius:7px;
+  background:linear-gradient(135deg,var(--accent) 0%,var(--glow2) 100%);
+  box-shadow:0 0 14px rgba(124,58,237,.6);
+}
+.lc-brand .name{font-size:18px; font-weight:700; letter-spacing:.2px;}
+.lc-brand .ver{font-size:11.5px; color:var(--text1); margin-top:8px; line-height:1.5;}
+.lc-brand .ver code{background:none; color:var(--accent-hi); padding:0;}
+.lc-nav{list-style:none; margin:0; padding:0 12px;}
+.lc-nav li{margin:1px 0;}
+.lc-nav a{
+  display:block; padding:7px 12px; border-radius:8px; color:var(--text1);
+  font-size:13.5px; font-weight:500; border-left:2px solid transparent;
+}
+.lc-nav a:hover{background:var(--bg2); color:var(--text0); text-decoration:none;}
+.lc-nav a .num{color:var(--accent-hi); font-variant-numeric:tabular-nums; margin-right:8px; font-size:12px;}
+.lc-nav .sep{margin:12px 12px 6px; padding-top:12px; border-top:1px solid var(--line-soft);
+  font-size:10.5px; letter-spacing:1.4px; text-transform:uppercase; color:#6f6593;}
+
+/* ---------- Layout ---------- */
+.lc-main{margin-left:var(--sidebar-w); padding:0;}
+.lc-header{
+  position:sticky; top:0; z-index:10;
+  background:rgba(14,11,22,.82); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line); padding:18px 48px;
+}
+.lc-header h1{margin:0; font-size:22px; font-weight:700; letter-spacing:.2px;}
+.lc-header .tag{margin:5px 0 0; color:var(--text1); font-size:14px;}
+.lc-header .pill{
+  display:inline-block; margin-top:0; margin-left:10px; vertical-align:middle;
+  font-size:11px; font-weight:600; color:var(--glow2);
+  border:1px solid rgba(34,211,238,.35); background:rgba(34,211,238,.08);
+  padding:2px 9px; border-radius:999px; letter-spacing:.3px;
+}
+.lc-content{max-width:920px; padding:8px 48px 80px;}
+section{padding-top:26px; scroll-margin-top:84px;}
+
+/* ---------- Typography ---------- */
+h2{
+  font-size:27px; font-weight:700; margin:34px 0 14px; letter-spacing:.1px;
+  padding-bottom:12px; border-bottom:1px solid var(--line);
+}
+h2:after{content:""; display:block; width:56px; height:3px; margin-top:12px;
+  background:linear-gradient(90deg,var(--accent),var(--glow2)); border-radius:2px;}
+h3{font-size:18.5px; font-weight:650; margin:30px 0 10px; color:var(--text0);}
+p{margin:13px 0;}
+strong{color:var(--text0); font-weight:650;}
+em{color:var(--accent-hi); font-style:italic;}
+ul,ol{padding-left:22px;}
+li{margin:6px 0;}
+
+/* ---------- Inline code ---------- */
+code{
+  font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  font-size:13px; background:var(--bg2); color:#d9cffb;
+  padding:1.5px 6px; border-radius:5px; border:1px solid var(--line-soft);
+}
+
+/* ---------- Code blocks ---------- */
+pre.lc-code{
+  background:var(--code-bg); border:1px solid var(--line);
+  border-left:3px solid var(--accent); border-radius:10px;
+  padding:16px 18px; overflow-x:auto; margin:16px 0; line-height:1.55;
+  box-shadow:0 8px 24px rgba(0,0,0,.28);
+}
+pre.lc-code code{
+  background:none; border:none; padding:0; color:#cfc6ea; font-size:13px;
+  white-space:pre;
+}
+
+/* ---------- Callout ---------- */
+.lc-note{
+  background:linear-gradient(90deg,rgba(124,58,237,.12),rgba(34,211,238,.05));
+  border:1px solid var(--line); border-left:3px solid var(--glow2);
+  border-radius:10px; padding:13px 18px; margin:18px 0; color:var(--text0);
+  font-size:14.5px;
+}
+.lc-note strong:first-child{color:var(--glow2);}
+
+/* ---------- Win lists ---------- */
+ul.lc-win{list-style:none; padding-left:4px; margin:18px 0;}
+ul.lc-win li{
+  position:relative; padding:8px 8px 8px 34px; margin:7px 0;
+  background:var(--bg1); border:1px solid var(--line-soft); border-radius:9px;
+  font-size:14.5px;
+}
+ul.lc-win li:before{
+  content:"\2713"; position:absolute; left:11px; top:8px;
+  color:var(--bg0); background:linear-gradient(135deg,var(--accent),var(--glow2));
+  width:17px; height:17px; border-radius:5px; font-size:11px; font-weight:800;
+  display:flex; align-items:center; justify-content:center; line-height:1;
+  box-shadow:0 0 10px rgba(124,58,237,.45);
+}
+
+/* ---------- Tables ---------- */
+table{border-collapse:collapse; width:100%; margin:18px 0; font-size:14px;
+  background:var(--bg1); border:1px solid var(--line); border-radius:10px; overflow:hidden;}
+thead th{
+  background:var(--bg2); color:var(--accent-hi); text-align:left;
+  padding:10px 14px; font-weight:650; border-bottom:1px solid var(--line);
+}
+tbody td{padding:9px 14px; border-bottom:1px solid var(--line-soft); color:var(--text0);}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:rgba(124,58,237,.06);}
+
+/* ---------- API index ---------- */
+.lc-api-group{margin:22px 0;}
+.lc-api-group h3{
+  display:flex; align-items:center; gap:10px; margin-bottom:8px;
+}
+.lc-api-group h3 .badge{
+  font-size:11px; font-weight:600; color:var(--text1);
+  border:1px solid var(--line); border-radius:999px; padding:1px 9px;
+}
+.lc-syms{display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 0; padding:0; list-style:none;}
+.lc-syms li{margin:0;}
+.lc-syms code{
+  font-size:12px; background:var(--bg1); border:1px solid var(--line);
+  color:#cdbff7; padding:3px 8px; border-radius:6px; display:inline-block;
+}
+
+/* ---------- Footer ---------- */
+.lc-footer{
+  border-top:1px solid var(--line); margin-top:40px; padding:26px 48px 60px;
+  color:var(--text1); font-size:13.5px; margin-left:0;
+}
+.lc-footer a{font-weight:600;}
+.lc-footer .meta{margin-top:8px; font-size:12.5px; color:#6f6593;}
+
+/* ---------- Responsive ---------- */
+@media (max-width:900px){
+  :root{--sidebar-w:0px;}
+  .lc-sidebar{position:static; width:100%; height:auto; border-right:none;
+    border-bottom:1px solid var(--line); padding-bottom:18px;}
+  .lc-main{margin-left:0;}
+  .lc-nav{columns:2; column-gap:8px;}
+  .lc-header,.lc-content,.lc-footer{padding-left:20px; padding-right:20px;}
+  h2{font-size:23px;}
+}
 </style>
 </head>
 <body>
-<header><div class="wrap">
-  <h1>Lumina <span>Shapes</span></h1>
-  <p class="tag">Procedural, resolution-independent vector shapes for Unity uGUI.</p>
-  <div style="margin-top:14px">
-    <span class="pill">Unity 6000.0.62f1+</span><span class="pill">uGUI</span>
-    <span class="pill">Any render pipeline</span><span class="pill">No sprites · no materials</span>
+<nav class="lc-sidebar">
+  <div class="lc-brand">
+    <div class="logo"><span class="dot"></span><span class="name">Lumina Shapes</span></div>
+    <div class="ver">Procedural uGUI shapes, strokes &amp; masks<br>v0.1.0 &middot; Unity <code>6000.0.62f1</code>+</div>
   </div>
-</div></header>
-<main class="wrap">
+  <ul class="lc-nav">
+    <li><a href="#overview"><span class="num">1</span>Overview</a></li>
+    <li><a href="#install"><span class="num">2</span>Installation &amp; Requirements</a></li>
+    <li><a href="#quickstart"><span class="num">3</span>Quick Start</a></li>
+    <li><a href="#kinds"><span class="num">4</span>The 12 Shape Kinds</a></li>
+    <li><a href="#fills"><span class="num">5</span>Fills, Gradients &amp; Patterns</a></li>
+    <li><a href="#strokes"><span class="num">6</span>Strokes &amp; Corners</a></li>
+    <li><a href="#masks"><span class="num">7</span>Shape Masks</a></li>
+    <li><a href="#raycast"><span class="num">8</span>Pixel-Accurate Raycasting</a></li>
+    <li><a href="#theming"><span class="num">9</span>Theme Tokens</a></li>
+    <li><a href="#motion"><span class="num">10</span>Motion</a></li>
+    <li><a href="#spine"><span class="num">11</span>The Render Spine</a></li>
+    <li><a href="#editor-tools"><span class="num">12</span>Editor Tools</a></li>
+    <li><a href="#compat"><span class="num">13</span>Compatibility</a></li>
+    <li><a href="#faq"><span class="num">14</span>FAQ &amp; Troubleshooting</a></li>
+    <li class="sep">Reference</li>
+    <li><a href="#api-index"><span class="num">&sect;</span>API Index</a></li>
+  </ul>
+</nav>
+<div class="lc-main">
+  <header class="lc-header">
+    <h1>Lumina Shapes <span class="pill">Unity 6000.0.62f1+</span></h1>
+    <p class="tag">Twelve resolution-independent uGUI shapes with real strokes, gradients, patterns and silhouette masking &mdash; no sprite atlas required.</p>
+  </header>
+  <main class="lc-content">
 
-<h2>1. Overview</h2>
-<p>Lumina Shapes draws crisp, anti-aliased shapes that are <strong>tessellated at runtime</strong> and re-mesh
-live as you edit them. Because they are procedural — no textures, no atlases, no <code>.mat</code> files — they
-stay razor-sharp at any scale and DPI. One shape is one mesh, one draw call.</p>
+<section id="overview">
+<h2>Overview</h2>
 
-<h2>2. Requirements</h2>
-<ul>
-  <li>Unity <strong>6000.0.62f1</strong> or newer.</li>
-  <li><code>com.unity.ugui</code> — present in every Unity project.</li>
-  <li>Render-pipeline agnostic (ships its own procedural canvas shader). URP recommended.</li>
+<p><strong>Lumina Shapes</strong> replaces the sliced-sprite workflow for UI geometry. Instead of authoring a 9-slice PNG for every corner radius and every colour, you drop one <code>LcShape</code> component and set the radius as a number. Geometry is generated procedurally and anti-aliased analytically, so a shape stays crisp at any resolution and any scale.</p>
+
+<ul class="lc-win">
+<li><strong>12 shape kinds</strong> &mdash; rounded rect, circle, ellipse, polygon, star, chamfer, parallelogram, path, arc, pie, ring and capsule.</li>
+<li><strong>Four fill kinds</strong> &mdash; solid, gradient (5 kinds), sprite (with full uGUI Image parity) and procedural pattern.</li>
+<li><strong>Real strokes</strong> &mdash; inner/center/outer alignment, per-side toggles, dashes and stroke gradients.</li>
+<li><strong>Per-corner radii</strong> &mdash; uniform or all four independently, plus a squircle/superellipse exponent.</li>
+<li><strong>Silhouette masking</strong> &mdash; <code>LcShapeMask</code> masks children to the exact shape with a feathered edge.</li>
+<li><strong>Pixel-accurate raycasting</strong> &mdash; clicks inside the bounding box but outside the shape pass through.</li>
+<li><strong>Theme-aware</strong> &mdash; fills and gradients can reference design tokens instead of literal colours.</li>
+<li><strong>Style presets</strong> &mdash; save a configured look as an asset and reapply it anywhere.</li>
 </ul>
 
-<h2>3. Quick start</h2>
-<div class="path">GameObject ▸ Lucent UI ▸ Rounded Panel</div>
-<ol>
-  <li>Create the shape from the menu (a Canvas + EventSystem are created automatically if absent).</li>
-  <li>In the Inspector, change <strong>Shape Kind</strong> and the corner <strong>radius</strong> — the mesh
-      re-tessellates instantly, even outside Play mode.</li>
-</ol>
+<div class="lc-note"><strong>Scope.</strong> Lumina Shapes is the shape and geometry pack. It bundles the Lucent render spine, motion engine and theme runtime because the shapes depend on them &mdash; but it does not include blur, glass or shadow effects (that is <em>Lumina Glass UI</em>), widgets, charts or scroll views.</div>
+</section>
 
-<h2>4. Create menu</h2>
+<section id="install">
+<h2>Installation &amp; Requirements</h2>
+
 <table>
-  <tr><th>Menu (GameObject ▸ Lucent UI ▸ …)</th><th>Result</th></tr>
-  <tr><td>Shape</td><td>A blank <code>LcShape</code> ready to configure.</td></tr>
-  <tr><td>Rounded Panel</td><td>Rounded-rect surface — the “card” primitive.</td></tr>
-  <tr><td>Circle</td><td>Anti-aliased disc.</td></tr>
-  <tr><td>Pill (Capsule)</td><td>Fully-rounded capsule that stays correct at any size.</td></tr>
+<thead><tr><th>Requirement</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td>Unity</td><td><code>6000.0.62f1</code> or newer</td></tr>
+<tr><td>Mandatory dependency</td><td><code>com.unity.ugui</code></td></tr>
+<tr><td>Render pipeline</td><td>None &mdash; Built-in, URP and HDRP all work</td></tr>
+<tr><td>Scripting backend</td><td>Mono and IL2CPP</td></tr>
+<tr><td>Install path</td><td><code>Assets/Lucent/</code></td></tr>
+<tr><td>Assemblies</td><td>7 &mdash; <code>Lucent.Core</code>, <code>Lucent.Render</code> (+ UGui), <code>Lucent.Shapes</code> (+ Editor), <code>Lucent.Motion</code>, <code>Lucent.Theme</code></td></tr>
+<tr><td>Namespaces</td><td><code>Lucent.Shapes</code>, <code>Lucent.Render</code>, <code>Lucent.Theme</code>, <code>Lucent.Motion</code></td></tr>
+<tr><td>Shaders</td><td>4 shaders + 1 compute + 1 cginc, imported automatically</td></tr>
+</tbody>
 </table>
-<p>Add to your own object with <em>Add Component ▸ Lucent UI ▸ Lc Shape</em> (place it under a Canvas).</p>
 
-<h2>5. Shape kinds &amp; styling</h2>
-<p>Set <code>ShapeKind</code> (<code>Lucent.Render.LcShapeKind</code>) to any of rounded-rect, circle,
-pill/capsule, triangle, regular polygon (via <code>SetSides</code>), hexagon, star, ring/arc, chevron and more.
-Fill, per-corner radii, stroke and gradients are all first-class.</p>
-<div class="note">Author a look once and reuse it: <strong>Assets ▸ Create ▸ Lucent UI ▸ Shape Style Preset</strong>.
-The preset’s inspector has an <em>Apply</em> button that pushes the style onto any selected shapes.</div>
+<p>No installer and no setup step. Import and add a component.</p>
 
-<h2>6. Scripting</h2>
-<h3>Build a shape in code</h3>
-<pre><code>using Lucent.Shapes;
+<div class="lc-note"><strong>Multi-pack projects.</strong> Every Lumina pack installs under <code>Assets/Lucent</code> and shares its core files with identical GUIDs, so importing several packs overwrites shared files with byte-identical content. Import order does not matter and duplicate assemblies cannot occur.</div>
+</section>
+
+<section id="quickstart">
+<h2>Quick Start</h2>
+
+<p>The fastest path is the GameObject menu, which creates a correctly configured shape under the selected Canvas:</p>
+
+<table>
+<thead><tr><th>Menu command</th><th>Creates</th></tr></thead>
+<tbody>
+<tr><td><code>GameObject &rarr; Lucent UI &rarr; Shape</code></td><td>A bare <code>LcShape</code> to configure yourself.</td></tr>
+<tr><td><code>GameObject &rarr; Lucent UI &rarr; Rounded Panel</code></td><td>Rounded rect, panel proportions.</td></tr>
+<tr><td><code>GameObject &rarr; Lucent UI &rarr; Circle</code></td><td>Circle.</td></tr>
+<tr><td><code>GameObject &rarr; Lucent UI &rarr; Pill (Capsule)</code></td><td>Capsule / pill.</td></tr>
+</tbody>
+</table>
+
+<p>Or add <code>Add Component &rarr; Lucent UI &rarr; Lc Shape</code> to any RectTransform under a Canvas.</p>
+
+<pre class="lc-code"><code>using Lucent.Shapes;
 using Lucent.Render;
-using UnityEngine;
-
-var go = new GameObject("Panel", typeof(RectTransform));
-go.transform.SetParent(canvas.transform, false);
 
 var shape = go.AddComponent&lt;LcShape&gt;();
+
 shape.ShapeKind = LcShapeKind.RoundedRect;
-shape.SetUniformRadius(24f);
-shape.SetFillColor(new Color32(32, 36, 44, 255));
-shape.SetStroke(true, 3f);
-shape.SetStrokeGradient(true, new Color32(120,200,255,255),
-                              new Color32(180,120,255,255), 45f);</code></pre>
+shape.SetUniformRadius(16f);
+shape.SetFillColor(new Color32(38, 132, 255, 255));
+shape.SetStroke(enabled: true, width: 2f);
+</code></pre>
 
-<h3>Common API (<code>LcShape</code>)</h3>
+<p><code>LcShape</code> derives from <code>LcDrawable</code>, which is a uGUI <code>MaskableGraphic</code> &mdash; so it participates in Canvas batching, masking and the raycast system like any built-in <code>Image</code>.</p>
+</section>
+
+<section id="kinds">
+<h2>The 12 Shape Kinds</h2>
+
+<p>Set <code>ShapeKind</code>, then the parameters that kind uses. Every kind is generated procedurally and stays sharp at any size.</p>
+
 <table>
-  <tr><th>Member</th><th>Purpose</th></tr>
-  <tr><td><code>ShapeKind</code></td><td>The shape family (property).</td></tr>
-  <tr><td><code>SetUniformRadius(float)</code> / <code>SetCornerRadii(LcCorners)</code></td><td>Corner rounding.</td></tr>
-  <tr><td><code>SetFillColor(Color32)</code></td><td>Solid fill.</td></tr>
-  <tr><td><code>SetStroke(bool,float)</code> / <code>SetStrokeWidth(float)</code></td><td>Outline on/off + width.</td></tr>
-  <tr><td><code>SetStrokeGradient(bool,Color32,Color32,float)</code></td><td>Gradient stroke.</td></tr>
-  <tr><td><code>SetGradientAngle(float)</code> / <code>SetFillGradientToken(string)</code></td><td>Fill gradient.</td></tr>
-  <tr><td><code>SetSides(int)</code></td><td>Sides for regular-polygon kinds.</td></tr>
-  <tr><td><code>SetPattern(LcPatternKind)</code></td><td>Fill pattern.</td></tr>
+<thead><tr><th><code>LcShapeKind</code></th><th>Key parameters</th><th>Typical use</th></tr></thead>
+<tbody>
+<tr><td><code>RoundedRect</code></td><td><code>UniformRadius</code> / <code>PerCornerRadius</code>, <code>SuperellipseExponent</code></td><td>Cards, panels, buttons.</td></tr>
+<tr><td><code>Circle</code></td><td>&mdash;</td><td>Avatars, dots, badges.</td></tr>
+<tr><td><code>Ellipse</code></td><td>Rect dimensions</td><td>Stretched circular art.</td></tr>
+<tr><td><code>Polygon</code></td><td><code>Sides</code></td><td>Hexagons, triangles, n-gons.</td></tr>
+<tr><td><code>Star</code></td><td><code>Sides</code>, <code>StarInnerRatio</code></td><td>Ratings, rewards.</td></tr>
+<tr><td><code>Chamfer</code></td><td><code>ChamferSize</code></td><td>Angular, sci-fi framing.</td></tr>
+<tr><td><code>Parallelogram</code></td><td><code>Skew</code></td><td>Sports / racing UI.</td></tr>
+<tr><td><code>Path</code></td><td>Point list</td><td>Arbitrary custom outlines.</td></tr>
+<tr><td><code>Arc</code></td><td><code>ArcStartDeg</code>, <code>ArcEndDeg</code></td><td>Radial progress, dials.</td></tr>
+<tr><td><code>Pie</code></td><td><code>ArcStartDeg</code>, <code>ArcEndDeg</code></td><td>Pie segments, cooldowns.</td></tr>
+<tr><td><code>Ring</code></td><td><code>ArcInnerRatio</code></td><td>Donut gauges, rings.</td></tr>
+<tr><td><code>Capsule</code></td><td>&mdash;</td><td>Pills, tags, toggles.</td></tr>
+</tbody>
 </table>
 
-<h2>7. Troubleshooting</h2>
+<h3>Squircles</h3>
+
+<p><code>SuperellipseExponent</code> (default <code>5</code>) controls how a rounded rect blends from a circular corner into a true superellipse. Raising it produces the continuous-curvature "squircle" corner used by modern mobile UI; a value of <code>2</code> is a plain ellipse-cornered rect.</p>
+
+<h3>Anti-aliasing</h3>
+
+<p><code>AaWidth</code> (default <code>1</code>) is the analytic edge feather in pixels, carried in the geometry rather than resolved by MSAA. That is why a shape stays clean when the Canvas scales, when it is rotated, and on devices with no MSAA budget. Set it to <code>0</code> for a hard pixel edge in a deliberately aliased art style.</p>
+</section>
+
+<section id="fills">
+<h2>Fills, Gradients &amp; Patterns</h2>
+
+<p><code>LcShapeStyle</code> holds everything about how a shape is painted. Reach it through <code>shape.Style</code>.</p>
+
 <table>
-  <tr><th>Symptom</th><th>Fix</th></tr>
-  <tr><td>Shape doesn’t appear</td><td>It must be under a <code>Canvas</code>; the GameObject menu wires one for you.</td></tr>
-  <tr><td>Missing in a build (pink/blank)</td><td>Keep <code>Runtime/Shaders/Resources</code> intact — the procedural canvas shader is Resources-referenced so it survives stripping.</td></tr>
-  <tr><td>Edits don’t update the mesh</td><td>Call <code>RebuildFromInspector()</code> after bulk API changes, or toggle the component.</td></tr>
+<thead><tr><th><code>LcFillKind</code></th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>Solid</code></td><td>One colour (<code>FillColor</code>), or a theme token via <code>FillTokenId</code>.</td></tr>
+<tr><td><code>Gradient</code></td><td>Procedural gradient &mdash; see below.</td></tr>
+<tr><td><code>Sprite</code></td><td>A sprite with full uGUI <code>Image</code> parity.</td></tr>
+<tr><td><code>Pattern</code></td><td>Procedural grid, checker or stripe.</td></tr>
+</tbody>
 </table>
 
-<footer>
-  <strong>Lumina Shapes</strong> · v1.0 · Unity 6000.0.62f1<br>
-  Support: <a href="mailto:szekipapa77@gmail.com">szekipapa77@gmail.com</a>
-</footer>
-</main>
+<h3>Gradients</h3>
+
+<table>
+<thead><tr><th><code>LcGradientKind</code></th><th>Behaviour</th></tr></thead>
+<tbody>
+<tr><td><code>Linear</code></td><td>Straight ramp along <code>GradientAngle</code>.</td></tr>
+<tr><td><code>Radial</code></td><td>Ramp outward from the centre.</td></tr>
+<tr><td><code>Angular</code></td><td>Sweep around the centre (conic).</td></tr>
+<tr><td><code>Stepped</code></td><td>Banded ramp with <code>GradientSteps</code> discrete stops.</td></tr>
+<tr><td><code>Corner4</code></td><td>Bilinear blend between four corner colours (<code>Corner0</code>&hellip;<code>Corner3</code>).</td></tr>
+</tbody>
+</table>
+
+<pre class="lc-code"><code>var style = shape.Style;
+
+style.Fill           = LcFillKind.Gradient;
+style.GradientKind   = LcGradientKind.Linear;
+style.GradientColorA = new Color32(124,  58, 237, 255);
+style.GradientColorB = new Color32( 34, 211, 238, 255);
+shape.SetGradientAngle(45f);
+</code></pre>
+
+<h3>Sprite fill</h3>
+
+<p>When <code>Fill</code> is <code>Sprite</code>, the shape reproduces uGUI <code>Image</code> behaviour: <code>LcImageType</code> selects <code>Simple</code>, <code>Sliced</code>, <code>Tiled</code> or <code>Filled</code>; <code>LcImageFillMethod</code> selects <code>Horizontal</code>, <code>Vertical</code>, <code>Radial90</code>, <code>Radial180</code> or <code>Radial360</code>; and <code>FillAmount</code> plus <code>PreserveAspect</code> behave exactly as you expect. The difference is that the sprite is clipped to the procedural silhouette &mdash; a photo in a squircle needs no pre-masked texture.</p>
+
+<h3>Patterns</h3>
+
+<pre class="lc-code"><code>style.Fill          = LcFillKind.Pattern;
+shape.SetPattern(LcPatternKind.Checker);   // None | Grid | Checker | Stripe
+style.PatternScale  = new Vector2(12f, 12f);
+style.PatternColorA = Color.white;
+style.PatternColorB = Color.black;
+style.PatternAngle  = 45f;
+</code></pre>
+</section>
+
+<section id="strokes">
+<h2>Strokes &amp; Corners</h2>
+
+<h3>Stroke alignment</h3>
+
+<table>
+<thead><tr><th><code>LcStrokeAlign</code></th><th>The stroke sits&hellip;</th></tr></thead>
+<tbody>
+<tr><td><code>Inner</code></td><td>Entirely inside the shape bounds &mdash; outer size unchanged.</td></tr>
+<tr><td><code>Center</code></td><td>Straddling the edge, half in and half out (default).</td></tr>
+<tr><td><code>Outer</code></td><td>Entirely outside &mdash; the shape grows by the stroke width.</td></tr>
+</tbody>
+</table>
+
+<p><code>Inner</code> is usually what you want inside a layout group, because the element's footprint stays exactly what the layout computed.</p>
+
+<h3>Per-side and dashed strokes</h3>
+
+<pre class="lc-code"><code>var style = shape.Style;
+
+shape.SetStroke(enabled: true, width: 2f);
+style.StrokeAlign  = LcStrokeAlign.Inner;
+style.StrokeColor  = new Color32(255, 255, 255, 40);
+
+// Underline only
+style.StrokeSideTop = style.StrokeSideLeft = style.StrokeSideRight = false;
+style.StrokeSideBottom = true;
+
+// Dashes
+style.Dashed     = true;
+style.DashLength = 8f;
+style.DashGap    = 4f;
+</code></pre>
+
+<p>A stroke can also carry its own gradient, independent of the fill:</p>
+
+<pre class="lc-code"><code>shape.SetStrokeGradient(true, new Color32(124,58,237,255), new Color32(34,211,238,255), angleDeg: 90f);
+bool usesGradient = shape.StrokeUsesGradient;
+</code></pre>
+
+<h3>Corners</h3>
+
+<pre class="lc-code"><code>using Lucent.Render;
+
+shape.SetUniformRadius(16f);                          // all four
+shape.SetCornerRadii(new LcCorners(16f, 16f, 0f, 0f)); // TL, TR, BR, BL  -- e.g. a tab
+
+var uniform = LcCorners.Uniform(12f);
+float biggest = uniform.Max;
+var safe = uniform.Clamped(rect.height * 0.5f);       // never exceed half the short side
+</code></pre>
+
+<p><code>LcCorners</code> orders its fields <code>TL, TR, BR, BL</code> &mdash; clockwise from the top-left, matching CSS. Radii larger than half the shorter side are clamped during generation, so an over-large radius degrades to a capsule instead of producing inverted geometry.</p>
+</section>
+
+<section id="masks">
+<h2>Shape Masks</h2>
+
+<p><code>LcShapeMask</code> masks child graphics to a procedural shape silhouette with a soft, feathered edge &mdash; the thing uGUI's rectangular <code>Mask</code> cannot do without a texture.</p>
+
+<p><strong>Add it:</strong> <code>Add Component &rarr; Lucent UI &rarr; Lc Shape Mask</code>, with <code>LcShapeMaskTarget</code> on the children you want clipped.</p>
+
+<table>
+<thead><tr><th>Component</th><th>Role</th></tr></thead>
+<tbody>
+<tr><td><code>LcShapeMask</code></td><td>Owns the silhouette and the feather; masks its subtree.</td></tr>
+<tr><td><code>LcShapeMaskTarget</code></td><td>Marks a child as participating in the mask.</td></tr>
+<tr><td><code>LcShapeSoftMask</code></td><td>The pure coverage maths behind the feathered edge.</td></tr>
+</tbody>
+</table>
+
+<p><code>LcShapeSoftMask.Coverage</code> turns a point plus a silhouette into a 0&ndash;1 coverage value, computed from the unsigned distance to the nearest polygon edge. It is a static function over values, so mask behaviour is unit-testable without a Canvas.</p>
+
+<div class="lc-note"><strong>Avatar in one step.</strong> A circular profile picture is an <code>LcShape</code> (Circle) with an <code>LcShapeMask</code>, and the raw photo as a child. No pre-masked texture, no render texture, no extra draw call for the mask shape itself.</div>
+</section>
+
+<section id="raycast">
+<h2>Pixel-Accurate Raycasting</h2>
+
+<p><code>LcShape</code> implements <code>ICanvasRaycastFilter</code>. A click inside the RectTransform but outside the actual shape passes through to whatever is behind it &mdash; so a circular button is circular to the pointer, not square.</p>
+
+<pre class="lc-code"><code>// Automatic through the uGUI event system:
+bool hit = shape.IsRaycastLocationValid(screenPoint, eventCamera);
+
+// Or test in local space yourself:
+bool inside = shape.ContainsLocalPoint(localPoint, rect);
+</code></pre>
+
+<p>This matters most for overlapping non-rectangular UI &mdash; hex grids, radial menus, star ratings &mdash; where rectangular hit boxes overlap and the wrong element receives the click.</p>
+
+<h3>Silhouette access</h3>
+
+<p><code>LcShape</code> also implements <code>ILcSilhouetteSource</code>, exposing its outline to other systems:</p>
+
+<pre class="lc-code"><code>var points = new List&lt;Vector2&gt;();
+if (shape.TryGetSilhouette(rect, points))
+{
+    // points is the closed outline in local space
+}
+
+int version = shape.SilhouetteVersion;   // bump = silhouette changed; cache against this
+</code></pre>
+
+<p><code>SilhouetteVersion</code> is the cheap change check: cache derived work against it and recompute only when it increments. It is the same contract Lumina Glass UI uses to fit a shadow or glow to a shape without re-deriving the outline every frame.</p>
+</section>
+
+<section id="theming">
+<h2>Theme Tokens</h2>
+
+<p>The Lucent theme runtime ships inside this pack, so a shape can reference a design token instead of a literal colour. Change the token and every shape using it follows.</p>
+
+<pre class="lc-code"><code>using Lucent.Theme;
+
+shape.Theme = myTheme;                       // or leave null to use the global active theme
+LcTheme effective = shape.EffectiveTheme;
+
+shape.Style.FillTokenId = LcColorKeys.Surface;   // solid fill from a token
+shape.SetFillGradientToken(LcGradientKeys.Primary);
+
+Color32 resolved = shape.ResolveFillColor();
+</code></pre>
+
+<p><code>EffectiveTheme</code> resolves the local override first and falls back to <code>LcThemeManager.Active</code>, so most shapes leave <code>Theme</code> empty and simply follow the app-wide theme.</p>
+
+<div class="lc-note"><strong>Full theming tools.</strong> This pack contains the theme <em>runtime</em>. The visual Theme Designer window, palette import, WCAG contrast helpers and the built-in semantic themes are part of <em>Lumina Theme</em>. Both install to the same folder and share the same runtime files, so adding Lumina Theme later upgrades the tooling without touching your shapes.</div>
+</section>
+
+<section id="motion">
+<h2>Motion</h2>
+
+<p>The Lucent motion engine is bundled because shape parameters are worth animating &mdash; a radius easing open, an arc sweeping to a value, a stroke pulsing on focus.</p>
+
+<pre class="lc-code"><code>using Lucent.Motion;
+
+// Tween any float through the shared driver
+LcTween.To(0f, 1f, duration: 0.25f, LcEasing.OutCubic, t =&gt; shape.SetUniformRadius(t * 24f));
+</code></pre>
+
+<table>
+<thead><tr><th>Type</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td><code>LcEasing</code></td><td>Named easing curves.</td></tr>
+<tr><td><code>LcTween</code></td><td>Value tweening.</td></tr>
+<tr><td><code>LcTweenSequence</code></td><td>Chained / staggered tweens.</td></tr>
+<tr><td><code>LcTweenSequenceAsset</code></td><td>Authorable sequence asset (<code>Create &rarr; Lucent &rarr; Motion &rarr; Tween Sequence</code>).</td></tr>
+<tr><td><code>LcSpring</code>, <code>LcMotionDynamics</code></td><td>Spring / physical motion.</td></tr>
+<tr><td><code>LcMotionDriver</code></td><td>The single update pump.</td></tr>
+<tr><td><code>LcPath</code></td><td>Path evaluation.</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="spine">
+<h2>The Render Spine</h2>
+
+<p>Every shape is a <em>generator</em> writing backend-neutral geometry into a draw list, which a <em>surface</em> turns into one native mesh. Understanding this is optional for normal use and essential if you want to add your own shape.</p>
+
+<pre class="lc-code"><code>using Lucent.Render;
+
+var list = new LcDrawList();
+var ctx  = new LcDrawContext(rect, list);
+generator.Generate(ctx);              // ILcShapeGenerator -&gt; LcDrawList
+
+ILcRenderSurface surface = GetComponent&lt;LcUGuiSurface&gt;();
+surface.Submit(list);                 // one CanvasRenderer mesh
+</code></pre>
+
+<h3>Writing a custom shape</h3>
+
+<p>Implement <code>ILcShapeGenerator</code> (or derive from <code>LcShapeGeneratorBase</code>) and write vertices into the context. Your generator then gets strokes, gradients, masking, raycasting and theming for free, because those all operate on the draw list rather than on any particular shape.</p>
+
+<table>
+<thead><tr><th>Type</th><th>Role</th></tr></thead>
+<tbody>
+<tr><td><code>ILcGenerator</code> / <code>ILcShapeGenerator</code></td><td>Produce geometry into a draw context.</td></tr>
+<tr><td><code>LcShapeGeneratorBase</code></td><td>Base class handling the common plumbing.</td></tr>
+<tr><td><code>LcDrawList</code> / <code>LcDrawContext</code></td><td>The neutral geometry buffer and its context.</td></tr>
+<tr><td><code>LcGeometryBuilder</code></td><td>Vertex/triangle emission helpers.</td></tr>
+<tr><td><code>LcPolygonTriangulator</code></td><td>Triangulates arbitrary polygons (the <code>Path</code> kind).</td></tr>
+<tr><td><code>LcRoundedRectGenerator</code></td><td>Reference generator for the most common kind.</td></tr>
+<tr><td><code>ILcRenderSurface</code> / <code>LcUGuiSurface</code></td><td>Turn a draw list into a native mesh.</td></tr>
+<tr><td><code>LcMaterialCache</code></td><td>Shares materials so shapes still batch.</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="editor-tools">
+<h2>Editor Tools</h2>
+
+<h3>Shape inspector</h3>
+
+<p>The custom inspector shows only the parameters the current <code>ShapeKind</code> actually uses &mdash; <code>Sides</code> appears for polygons and stars, arc angles for arcs and pies &mdash; so the panel never presents fields that do nothing. A live preview renders the shape as configured, and <code>RebuildFromInspector()</code> is the hook if you drive the style from your own editor code.</p>
+
+<h3>Shape Style Presets</h3>
+
+<p>Save a configured look as an asset and reapply it across a project:</p>
+
+<pre class="lc-code"><code>Assets &rarr; Create &rarr; Lucent UI &rarr; Shape Style Preset</code></pre>
+
+<p>A preset captures the whole <code>LcShapeStyle</code> &mdash; fill, gradient, pattern, stroke, corners &mdash; which makes it the practical way to keep one card look consistent across dozens of prefabs without nesting them.</p>
+
+<h3>Menu reference</h3>
+
+<table>
+<thead><tr><th>Path</th><th>Result</th></tr></thead>
+<tbody>
+<tr><td><code>GameObject &rarr; Lucent UI &rarr; Shape</code></td><td>Bare shape.</td></tr>
+<tr><td><code>GameObject &rarr; Lucent UI &rarr; Rounded Panel</code></td><td>Preconfigured rounded rect.</td></tr>
+<tr><td><code>GameObject &rarr; Lucent UI &rarr; Circle</code></td><td>Preconfigured circle.</td></tr>
+<tr><td><code>GameObject &rarr; Lucent UI &rarr; Pill (Capsule)</code></td><td>Preconfigured capsule.</td></tr>
+<tr><td><code>Add Component &rarr; Lucent UI &rarr; Lc Shape</code></td><td>Shape on an existing RectTransform.</td></tr>
+<tr><td><code>Add Component &rarr; Lucent UI &rarr; Lc Shape Mask</code></td><td>Silhouette mask.</td></tr>
+<tr><td><code>Add Component &rarr; Lucent UI &rarr; Lc Shape Mask Target</code></td><td>Mark a child as masked.</td></tr>
+<tr><td><code>Assets &rarr; Create &rarr; Lucent UI &rarr; Shape Style Preset</code></td><td>Reusable style asset.</td></tr>
+<tr><td><code>Assets &rarr; Create &rarr; Lucent UI &rarr; Theme</code></td><td>Theme asset (theme runtime is bundled).</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="compat">
+<h2>Compatibility</h2>
+
+<table>
+<thead><tr><th>Area</th><th>Support</th></tr></thead>
+<tbody>
+<tr><td>Render pipelines</td><td>Built-in, URP, HDRP &mdash; no pipeline dependency</td></tr>
+<tr><td>Platforms</td><td>All Unity targets, including WebGL and mobile</td></tr>
+<tr><td>Scripting backend</td><td>Mono, IL2CPP</td></tr>
+<tr><td>Canvas modes</td><td>Screen Space Overlay, Screen Space Camera, World Space</td></tr>
+<tr><td>uGUI integration</td><td><code>MaskableGraphic</code> &mdash; batching, masking and raycasting behave natively</td></tr>
+<tr><td>Source</td><td>Full C# source included (76 scripts, 7 assemblies)</td></tr>
+</tbody>
+</table>
+
+<h3>Performance notes</h3>
+
+<p>Geometry is rebuilt only when something actually changes, not per frame. Shapes sharing a material batch normally through <code>LcMaterialCache</code>. A shape with a pattern or gradient fill costs one mesh and one material &mdash; the same order as an <code>Image</code>, without the texture memory a comparable sprite would need.</p>
+</section>
+
+<section id="faq">
+<h2>FAQ &amp; Troubleshooting</h2>
+
+<h3>My shape is invisible.</h3>
+<p>Check it is under a Canvas, that the RectTransform has non-zero size, and that <code>FillColor</code> alpha is not 0. A <code>FillTokenId</code> pointing at a missing token resolves to the theme's fallback colour, which is often not what you expect.</p>
+
+<h3>The corners look wrong at small sizes.</h3>
+<p>A radius larger than half the shorter side is clamped, so an aggressive radius on a short element becomes a capsule. Use <code>LcCorners.Clamped()</code> to make that explicit in your own code.</p>
+
+<h3>Edges look soft / blurry.</h3>
+<p>That is <code>AaWidth</code> (default <code>1</code> pixel). Set it to <code>0</code> for hard edges. If edges look soft only at certain scales, check the Canvas reference resolution &mdash; the feather is in pixels.</p>
+
+<h3>Clicks are not passing through the transparent corners.</h3>
+<p>Pixel-accurate hit testing runs through <code>ICanvasRaycastFilter</code>, which requires <code>Raycast Target</code> to be enabled on the graphic. If a parent has its own raycast filter it may answer first.</p>
+
+<h3>My mask has a hard edge.</h3>
+<p>Confirm children carry <code>LcShapeMaskTarget</code>, and check the feather width on the mask. A feather of 0 is a hard silhouette by design.</p>
+
+<h3>Can I use my own outline?</h3>
+<p>Yes &mdash; <code>LcShapeKind.Path</code> takes an arbitrary point list and triangulates it with <code>LcPolygonTriangulator</code>. For something more structural, implement <code>ILcShapeGenerator</code>.</p>
+
+<h3>Do shapes batch?</h3>
+<p>Yes, on the same rules as any uGUI graphic: same material and texture, no intervening element that breaks the batch. <code>LcMaterialCache</code> shares materials so identical styles do not each create their own.</p>
+
+<h3>Does this need URP?</h3>
+<p>No. Lumina Shapes has no render-pipeline dependency. Only <em>Lumina Glass UI</em>, which does GPU blur, requires URP for its blur path.</p>
+</section>
+
+<section id="api-index">
+<h2>API Index</h2>
+
+<div class="lc-api-group">
+<h3>Components <span class="badge">Lucent.Shapes</span></h3>
+<ul class="lc-syms">
+<li><code>LcShape</code></li>
+<li><code>LcShapeMask</code></li>
+<li><code>LcShapeMaskTarget</code></li>
+<li><code>LcShapeSoftMask</code></li>
+<li><code>LcShapeStylePreset</code></li>
+</ul>
+</div>
+
+<div class="lc-api-group">
+<h3>LcShape members <span class="badge">runtime</span></h3>
+<ul class="lc-syms">
+<li><code>ShapeKind</code></li>
+<li><code>Style</code></li>
+<li><code>Theme</code></li>
+<li><code>EffectiveTheme</code></li>
+<li><code>SilhouetteVersion</code></li>
+<li><code>ActiveGeneratorId</code></li>
+<li><code>SetUniformRadius</code></li>
+<li><code>SetCornerRadii</code></li>
+<li><code>SetFillColor</code></li>
+<li><code>SetStroke</code></li>
+<li><code>SetStrokeWidth</code></li>
+<li><code>SetStrokeGradient</code></li>
+<li><code>StrokeUsesGradient</code></li>
+<li><code>SetGradientAngle</code></li>
+<li><code>SetFillGradientToken</code></li>
+<li><code>SetSides</code></li>
+<li><code>SetPattern</code></li>
+<li><code>ResolveFillColor</code></li>
+<li><code>ContainsLocalPoint</code></li>
+<li><code>IsRaycastLocationValid</code></li>
+<li><code>TryGetSilhouette</code></li>
+<li><code>RebuildFromInspector</code></li>
+</ul>
+</div>
+
+<div class="lc-api-group">
+<h3>Style &amp; enums <span class="badge">Lucent.Shapes</span></h3>
+<ul class="lc-syms">
+<li><code>LcShapeStyle</code></li>
+<li><code>LcShapeKind</code></li>
+<li><code>LcFillKind</code></li>
+<li><code>LcGradientKind</code></li>
+<li><code>LcPatternKind</code></li>
+<li><code>LcImageType</code></li>
+<li><code>LcImageFillMethod</code></li>
+<li><code>LcStrokeAlign</code></li>
+<li><code>LcStrokeCap</code></li>
+<li><code>LcCorners</code></li>
+<li><code>LcEdgeWidths</code></li>
+<li><code>LcShapeGradientTokens</code></li>
+</ul>
+</div>
+
+<div class="lc-api-group">
+<h3>Render spine <span class="badge">Lucent.Render</span></h3>
+<ul class="lc-syms">
+<li><code>ILcGenerator</code></li>
+<li><code>ILcShapeGenerator</code></li>
+<li><code>ILcRenderSurface</code></li>
+<li><code>ILcSilhouetteSource</code></li>
+<li><code>LcDrawList</code></li>
+<li><code>LcDrawContext</code></li>
+<li><code>LcDrawLayer</code></li>
+<li><code>LcDrawStats</code></li>
+<li><code>LcVertex</code></li>
+<li><code>LcGradient</code></li>
+<li><code>LcGeometryBuilder</code></li>
+<li><code>LcPolygonTriangulator</code></li>
+<li><code>LcRoundedRectGenerator</code></li>
+<li><code>LcShapeGeneratorBase</code></li>
+<li><code>LcUGuiSurface</code></li>
+<li><code>LcDrawable</code></li>
+<li><code>LcMaterialCache</code></li>
+<li><code>LcMesh3D</code></li>
+<li><code>LcMarkerShape</code></li>
+</ul>
+</div>
+
+<div class="lc-api-group">
+<h3>Motion <span class="badge">Lucent.Motion</span></h3>
+<ul class="lc-syms">
+<li><code>LcEasing</code></li>
+<li><code>LcTween</code></li>
+<li><code>LcTweenSequence</code></li>
+<li><code>LcTweenSequenceAsset</code></li>
+<li><code>LcSpring</code></li>
+<li><code>LcMotionDynamics</code></li>
+<li><code>LcMotionDriver</code></li>
+<li><code>LcPath</code></li>
+</ul>
+</div>
+
+<div class="lc-api-group">
+<h3>Theme runtime <span class="badge">Lucent.Theme</span></h3>
+<ul class="lc-syms">
+<li><code>LcTheme</code></li>
+<li><code>LcThemeManager</code></li>
+<li><code>LcPalette</code></li>
+<li><code>LcContrast</code></li>
+<li><code>LcColorKeys</code></li>
+<li><code>LcGradientKeys</code></li>
+<li><code>LcNumberKeys</code></li>
+<li><code>LcAssetKeys</code></li>
+</ul>
+</div>
+</section>
+
+  </main>
+  <footer class="lc-footer">
+    <p><strong>Lumina Shapes</strong> 0.1.0 &mdash; 12 procedural uGUI shape kinds with real strokes, gradients, patterns, silhouette masking and pixel-accurate raycasting. Targets Unity 6000.0.62f1+ &middot; one mandatory dependency (<code>com.unity.ugui</code>) &middot; no render-pipeline dependency.</p>
+    <p>Questions, bug reports, or feature requests &mdash; include your Unity version and active render pipeline: <a href="mailto:szekipapa77@gmail.com">szekipapa77@gmail.com</a></p>
+    <p class="meta">&copy; 2026 Lumina Shapes. Documentation generated as a single self-contained file &mdash; works offline and on GitHub Pages.</p>
+  </footer>
+</div>
 </body>
 </html>

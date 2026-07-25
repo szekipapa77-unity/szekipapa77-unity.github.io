@@ -3,125 +3,683 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lumina Layout — Documentation</title>
+<title>Lumina Layout &mdash; Documentation</title>
 <style>
-  :root{--accent:#5fd68a;--bg:#0e1116;--panel:#161b22;--panel2:#1c2230;--ink:#e6edf3;--mut:#9aa7b4;--line:#2a3340;--code:#0b0f14;}
-  *{box-sizing:border-box}
-  body{margin:0;font:16px/1.65 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
-  header{padding:48px 24px 40px;background:radial-gradient(1200px 400px at 20% -10%,rgba(95,214,138,.16),transparent),var(--panel);border-bottom:1px solid var(--line)}
-  .wrap{max-width:900px;margin:0 auto;padding:0 24px}
-  h1{margin:0 0 6px;font-size:34px;letter-spacing:.3px}
-  h1 span{color:var(--accent)}
-  .tag{color:var(--mut);font-size:18px;margin:0}
-  h2{margin:40px 0 12px;font-size:23px;border-bottom:1px solid var(--line);padding-bottom:8px}
-  h3{margin:26px 0 8px;font-size:18px;color:var(--accent)}
-  code,pre{font-family:"JetBrains Mono",Consolas,Menlo,monospace}
-  code{background:var(--panel2);padding:2px 6px;border-radius:5px;font-size:14px;color:#c9f2d8}
-  pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:16px;overflow:auto;font-size:13.5px;line-height:1.55}
-  pre code{background:none;padding:0;color:#d6e2ee}
-  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14.5px}
-  th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
-  th{background:var(--panel2)}
-  .path{background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:6px;padding:8px 12px;margin:8px 0;font-family:"JetBrains Mono",Consolas,monospace;font-size:13.5px}
-  .note{background:rgba(95,214,138,.07);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:12px 16px;margin:14px 0}
-  ul{padding-left:22px}
-  footer{margin-top:48px;padding:26px 0 60px;color:var(--mut);border-top:1px solid var(--line);font-size:14px}
-  a{color:var(--accent)}
-  .pill{display:inline-block;background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:13px;color:var(--mut);margin:2px 6px 2px 0}
+:root{
+  --bg0:#0E0B16; --bg1:#171122; --bg2:#221A33;
+  --accent:#7C3AED; --accent-hi:#A78BFA; --glow2:#22D3EE;
+  --text0:#ECEAF5; --text1:#A79FC2;
+  --line:#2C2342; --line-soft:#241B38;
+  --code-bg:#120D1E; --sidebar-w:286px;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; background:var(--bg0); color:var(--text0);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px; line-height:1.65; -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent-hi); text-decoration:none;}
+a:hover{color:var(--glow2); text-decoration:underline;}
+
+/* ---------- Sidebar ---------- */
+.lc-sidebar{
+  position:fixed; top:0; left:0; bottom:0; width:var(--sidebar-w);
+  background:linear-gradient(180deg,#1a1329 0%,var(--bg1) 100%);
+  border-right:1px solid var(--line); overflow-y:auto; padding:22px 0 40px;
+  z-index:20;
+}
+.lc-brand{padding:0 22px 16px; border-bottom:1px solid var(--line-soft); margin-bottom:14px;}
+.lc-brand .logo{display:flex; align-items:center; gap:10px;}
+.lc-brand .dot{
+  width:22px; height:22px; border-radius:7px;
+  background:linear-gradient(135deg,var(--accent) 0%,var(--glow2) 100%);
+  box-shadow:0 0 14px rgba(124,58,237,.6);
+}
+.lc-brand .name{font-size:18px; font-weight:700; letter-spacing:.2px;}
+.lc-brand .ver{font-size:11.5px; color:var(--text1); margin-top:8px; line-height:1.5;}
+.lc-brand .ver code{background:none; color:var(--accent-hi); padding:0;}
+.lc-nav{list-style:none; margin:0; padding:0 12px;}
+.lc-nav li{margin:1px 0;}
+.lc-nav a{
+  display:block; padding:7px 12px; border-radius:8px; color:var(--text1);
+  font-size:13.5px; font-weight:500; border-left:2px solid transparent;
+}
+.lc-nav a:hover{background:var(--bg2); color:var(--text0); text-decoration:none;}
+.lc-nav a .num{color:var(--accent-hi); font-variant-numeric:tabular-nums; margin-right:8px; font-size:12px;}
+.lc-nav .sep{margin:12px 12px 6px; padding-top:12px; border-top:1px solid var(--line-soft);
+  font-size:10.5px; letter-spacing:1.4px; text-transform:uppercase; color:#6f6593;}
+
+/* ---------- Layout ---------- */
+.lc-main{margin-left:var(--sidebar-w); padding:0;}
+.lc-header{
+  position:sticky; top:0; z-index:10;
+  background:rgba(14,11,22,.82); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line); padding:18px 48px;
+}
+.lc-header h1{margin:0; font-size:22px; font-weight:700; letter-spacing:.2px;}
+.lc-header .tag{margin:5px 0 0; color:var(--text1); font-size:14px;}
+.lc-header .pill{
+  display:inline-block; margin-top:0; margin-left:10px; vertical-align:middle;
+  font-size:11px; font-weight:600; color:var(--glow2);
+  border:1px solid rgba(34,211,238,.35); background:rgba(34,211,238,.08);
+  padding:2px 9px; border-radius:999px; letter-spacing:.3px;
+}
+.lc-content{max-width:920px; padding:8px 48px 80px;}
+section{padding-top:26px; scroll-margin-top:84px;}
+
+/* ---------- Typography ---------- */
+h2{
+  font-size:27px; font-weight:700; margin:34px 0 14px; letter-spacing:.1px;
+  padding-bottom:12px; border-bottom:1px solid var(--line);
+}
+h2:after{content:""; display:block; width:56px; height:3px; margin-top:12px;
+  background:linear-gradient(90deg,var(--accent),var(--glow2)); border-radius:2px;}
+h3{font-size:18.5px; font-weight:650; margin:30px 0 10px; color:var(--text0);}
+p{margin:13px 0;}
+strong{color:var(--text0); font-weight:650;}
+em{color:var(--accent-hi); font-style:italic;}
+ul,ol{padding-left:22px;}
+li{margin:6px 0;}
+
+/* ---------- Inline code ---------- */
+code{
+  font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  font-size:13px; background:var(--bg2); color:#d9cffb;
+  padding:1.5px 6px; border-radius:5px; border:1px solid var(--line-soft);
+}
+
+/* ---------- Code blocks ---------- */
+pre.lc-code{
+  background:var(--code-bg); border:1px solid var(--line);
+  border-left:3px solid var(--accent); border-radius:10px;
+  padding:16px 18px; overflow-x:auto; margin:16px 0; line-height:1.55;
+  box-shadow:0 8px 24px rgba(0,0,0,.28);
+}
+pre.lc-code code{
+  background:none; border:none; padding:0; color:#cfc6ea; font-size:13px;
+  white-space:pre;
+}
+
+/* ---------- Callout ---------- */
+.lc-note{
+  background:linear-gradient(90deg,rgba(124,58,237,.12),rgba(34,211,238,.05));
+  border:1px solid var(--line); border-left:3px solid var(--glow2);
+  border-radius:10px; padding:13px 18px; margin:18px 0; color:var(--text0);
+  font-size:14.5px;
+}
+.lc-note strong:first-child{color:var(--glow2);}
+
+/* ---------- Win lists ---------- */
+ul.lc-win{list-style:none; padding-left:4px; margin:18px 0;}
+ul.lc-win li{
+  position:relative; padding:8px 8px 8px 34px; margin:7px 0;
+  background:var(--bg1); border:1px solid var(--line-soft); border-radius:9px;
+  font-size:14.5px;
+}
+ul.lc-win li:before{
+  content:"\2713"; position:absolute; left:11px; top:8px;
+  color:var(--bg0); background:linear-gradient(135deg,var(--accent),var(--glow2));
+  width:17px; height:17px; border-radius:5px; font-size:11px; font-weight:800;
+  display:flex; align-items:center; justify-content:center; line-height:1;
+  box-shadow:0 0 10px rgba(124,58,237,.45);
+}
+
+/* ---------- Tables ---------- */
+table{border-collapse:collapse; width:100%; margin:18px 0; font-size:14px;
+  background:var(--bg1); border:1px solid var(--line); border-radius:10px; overflow:hidden;}
+thead th{
+  background:var(--bg2); color:var(--accent-hi); text-align:left;
+  padding:10px 14px; font-weight:650; border-bottom:1px solid var(--line);
+}
+tbody td{padding:9px 14px; border-bottom:1px solid var(--line-soft); color:var(--text0);}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:rgba(124,58,237,.06);}
+
+/* ---------- API index ---------- */
+.lc-api-group{margin:22px 0;}
+.lc-api-group h3{
+  display:flex; align-items:center; gap:10px; margin-bottom:8px;
+}
+.lc-api-group h3 .badge{
+  font-size:11px; font-weight:600; color:var(--text1);
+  border:1px solid var(--line); border-radius:999px; padding:1px 9px;
+}
+.lc-syms{display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 0; padding:0; list-style:none;}
+.lc-syms li{margin:0;}
+.lc-syms code{
+  font-size:12px; background:var(--bg1); border:1px solid var(--line);
+  color:#cdbff7; padding:3px 8px; border-radius:6px; display:inline-block;
+}
+
+/* ---------- Footer ---------- */
+.lc-footer{
+  border-top:1px solid var(--line); margin-top:40px; padding:26px 48px 60px;
+  color:var(--text1); font-size:13.5px; margin-left:0;
+}
+.lc-footer a{font-weight:600;}
+.lc-footer .meta{margin-top:8px; font-size:12.5px; color:#6f6593;}
+
+/* ---------- Responsive ---------- */
+@media (max-width:900px){
+  :root{--sidebar-w:0px;}
+  .lc-sidebar{position:static; width:100%; height:auto; border-right:none;
+    border-bottom:1px solid var(--line); padding-bottom:18px;}
+  .lc-main{margin-left:0;}
+  .lc-nav{columns:2; column-gap:8px;}
+  .lc-header,.lc-content,.lc-footer{padding-left:20px; padding-right:20px;}
+  h2{font-size:23px;}
+}
 </style>
 </head>
 <body>
-<header><div class="wrap">
-  <h1>Lumina <span>Layout</span></h1>
-  <p class="tag">Safe Area &amp; responsive scaling for Unity uGUI.</p>
-  <div style="margin-top:14px">
-    <span class="pill">Unity 6000.0.62f1+</span><span class="pill">uGUI</span>
-    <span class="pill">Any render pipeline</span><span class="pill">Testable providers</span>
+<nav class="lc-sidebar">
+  <div class="lc-brand">
+    <div class="logo"><span class="dot"></span><span class="name">Lumina Layout</span></div>
+    <div class="ver">Safe Area &amp; Responsive Scaling for uGUI<br>v0.1.0 &middot; Unity <code>6000.0.62f1</code>+</div>
   </div>
-</div></header>
-<main class="wrap">
+  <ul class="lc-nav">
+    <li><a href="#overview"><span class="num">1</span>Overview</a></li>
+    <li><a href="#install"><span class="num">2</span>Installation &amp; Requirements</a></li>
+    <li><a href="#safe-area"><span class="num">3</span>Safe Area</a></li>
+    <li><a href="#scaler"><span class="num">4</span>Responsive Scaler</a></li>
+    <li><a href="#breakpoints"><span class="num">5</span>Breakpoints</a></li>
+    <li><a href="#flex"><span class="num">6</span>Flexible Layout Solver</a></li>
+    <li><a href="#autosize"><span class="num">7</span>Auto-Size &amp; Aspect</a></li>
+    <li><a href="#anchors"><span class="num">8</span>Anchor Snapping</a></li>
+    <li><a href="#editor-tools"><span class="num">9</span>Editor Tools</a></li>
+    <li><a href="#testing"><span class="num">10</span>Testing &amp; Determinism</a></li>
+    <li><a href="#compat"><span class="num">11</span>Compatibility</a></li>
+    <li><a href="#faq"><span class="num">12</span>FAQ &amp; Troubleshooting</a></li>
+    <li class="sep">Reference</li>
+    <li><a href="#api-index"><span class="num">&sect;</span>API Index</a></li>
+  </ul>
+</nav>
+<div class="lc-main">
+  <header class="lc-header">
+    <h1>Lumina Layout <span class="pill">Unity 6000.0.62f1+</span></h1>
+    <p class="tag">Notch-safe panels and one responsive scale factor that drives every font, padding and border in your UI.</p>
+  </header>
+  <main class="lc-content">
 
-<h2>1. Overview</h2>
-<p>Lumina Layout gives you two dependable building blocks for UI that fits every screen: a
-<strong>Safe Area</strong> fitter that insets content away from notches, rounded corners and home indicators,
-and a <strong>Responsive Scaler</strong> that rescales your UI by width/height breakpoints. Both use injectable
-providers so they’re unit-testable and simulator-friendly. The pack also bundles the layout math helpers
-<code>LcAutoSize</code>, <code>LcFlexLayout</code> and <code>LcLayoutMath</code>.</p>
+<section id="overview">
+<h2>Overview</h2>
 
-<h2>2. Requirements</h2>
-<ul>
-  <li>Unity <strong>6000.0.62f1</strong> or newer.</li>
-  <li><code>com.unity.ugui</code> — present in every Unity project.</li>
-  <li>No render-pipeline dependency.</li>
+<p><strong>Lumina Layout</strong> solves the two layout problems every shipped mobile UI runs into: <em>the screen is not a rectangle you control</em>, and <em>the screen is not the size you designed for</em>. It ships two drop-in components and four pure static solvers, with no render-pipeline dependency and no setup step.</p>
+
+<ul class="lc-win">
+<li><strong>Safe Area</strong> &mdash; <code>LcSafeArea</code> insets a panel away from notches, rounded corners and the home indicator, per edge, and re-applies on orientation change.</li>
+<li><strong>Responsive Scaler</strong> &mdash; <code>LcResponsiveScaler</code> resolves one scale factor from a reference design and hands you scaled font / padding / border / spacing values.</li>
+<li><strong>Breakpoints</strong> &mdash; per-screen-config overrides selected by width, orientation, aspect range and touch capability.</li>
+<li><strong>Flex solver</strong> &mdash; <code>LcFlexLayout</code> distributes weighted space with per-item margins and spacing.</li>
+<li><strong>Auto-size &amp; aspect</strong> &mdash; <code>LcAutoSize</code> fits a RectTransform to content and applies aspect locks (letterbox / envelope).</li>
+<li><strong>Anchor snapping</strong> &mdash; <code>LcSnapAnchor</code> plus a full editor menu for the 15 uGUI anchor presets.</li>
 </ul>
 
-<h2>3. Safe Area</h2>
-<h3>Quick start</h3>
-<ol>
-  <li>Select a full-screen UI panel and add the component:</li>
-</ol>
-<div class="path">Add Component ▸ Lucent UI ▸ Layout ▸ Lc Safe Area</div>
-<ol start="2">
-  <li>In the Game view, choose a notched device (or open the Device Simulator).</li>
-  <li>The panel insets on the enabled edges. Toggle edges per-side in the Inspector.</li>
-</ol>
-<h3>API</h3>
-<table>
-  <tr><th>Member</th><th>Purpose</th></tr>
-  <tr><td><code>ApplyLeft / ApplyRight / ApplyTop / ApplyBottom</code></td><td>Per-edge inset toggles (properties; re-apply on change).</td></tr>
-  <tr><td><code>Apply()</code></td><td>Force a re-fit (e.g. after a manual orientation change).</td></tr>
-</table>
-<pre><code>using Lucent.Layout;
+<h3>Design notes</h3>
 
-var safe = panel.AddComponent&lt;LcSafeArea&gt;();
-safe.ApplyTop = true;
-safe.ApplyBottom = true;
-safe.Apply();</code></pre>
-<div class="note">Safe Area accepts injectable safe-area &amp; screen-size providers, so you can drive it from
-tests or a custom device profile instead of the live <code>Screen.safeArea</code>.</div>
+<p>The two MonoBehaviours are thin. All the real math lives in <code>static</code> classes &mdash; <code>LcLayoutMath</code>, <code>LcFlexLayout</code>, <code>LcAutoSize</code>, <code>LcSnapAnchor</code> &mdash; which take plain values and return plain values. That split is deliberate: you can unit-test every layout decision without a scene, a Canvas, or play mode, and you can call the solvers from your own components without adopting ours.</p>
 
-<h2>4. Responsive Scaler</h2>
-<h3>Quick start</h3>
-<div class="path">Add Component ▸ Lucent/Layout ▸ Lc Responsive Scaler</div>
-<p>Set your <strong>Reference Resolution</strong> and base metrics; resize the Game view and the UI rescales.</p>
-<h3>API</h3>
+<p>The scaler recomputes <em>only when the resolution actually changes</em>. In the steady state it costs nothing per frame and allocates nothing.</p>
+
+<div class="lc-note"><strong>Scope.</strong> Lumina Layout is a focused layout pack, not the full Lucent UI suite. It contains no widgets, shapes, effects or charts. It installs under <code>Assets/Lucent</code> and shares the Lucent core, so it sits alongside the other Lumina packs without conflict.</div>
+</section>
+
+<section id="install">
+<h2>Installation &amp; Requirements</h2>
+
 <table>
-  <tr><th>Member</th><th>Purpose</th></tr>
-  <tr><td><code>ReferenceResolution</code>, <code>MatchWidthOrHeight</code></td><td>Design resolution &amp; match axis.</td></tr>
-  <tr><td><code>BaseFontSize / BasePadding / BaseBorder / BaseSpacing</code></td><td>Base metrics to scale from.</td></tr>
-  <tr><td><code>CurrentScale</code>, <code>ActiveBreakpoint</code></td><td>Current computed scale &amp; breakpoint index.</td></tr>
-  <tr><td><code>ScaledFontSize / ScaledPadding / …</code></td><td>Convenience scaled values.</td></tr>
-  <tr><td><code>Scale(float baseValue)</code></td><td>Scale any value by the current factor.</td></tr>
-  <tr><td><code>Refresh()</code></td><td>Recompute now (after a resolution change).</td></tr>
+<thead><tr><th>Requirement</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td>Unity</td><td><code>6000.0.62f1</code> or newer</td></tr>
+<tr><td>Mandatory dependency</td><td><code>com.unity.ugui</code> (present in every new project)</td></tr>
+<tr><td>Render pipeline</td><td>None &mdash; Built-in, URP and HDRP all work</td></tr>
+<tr><td>Scripting backend</td><td>Mono and IL2CPP</td></tr>
+<tr><td>Install path</td><td><code>Assets/Lucent/</code></td></tr>
+<tr><td>Assemblies</td><td><code>Lucent.Core</code>, <code>Lucent.Layout</code>, <code>Lucent.Layout.Editor</code></td></tr>
+<tr><td>Namespace</td><td><code>Lucent.Layout</code></td></tr>
+</tbody>
 </table>
-<pre><code>using Lucent.Layout;
+
+<p>Import the package. There is no installer, no scriptable-object to create, and no manager to drop in the scene. Add a component and it works.</p>
+
+<div class="lc-note"><strong>Multi-pack projects.</strong> Every Lumina pack installs under <code>Assets/Lucent</code> and shares the same core files with the same GUIDs. Importing a second pack overwrites the shared core with byte-identical content &mdash; it never produces duplicate assemblies. Import order does not matter.</div>
+</section>
+
+<section id="safe-area">
+<h2>Safe Area</h2>
+
+<p><code>LcSafeArea</code> anchors the RectTransform it sits on to <code>Screen.safeArea</code>, so a full-screen panel is inset away from notches, cutouts, rounded corners and the home indicator.</p>
+
+<p><strong>Add it:</strong> <code>Add Component &rarr; Lucent UI &rarr; Layout &rarr; Lc Safe Area</code>, on a RectTransform that stretches to fill its Canvas.</p>
+
+<h3>Per-edge opt-out</h3>
+
+<p>A panel often wants the top inset (notch) but not the bottom, or vice versa. Each edge is independently switchable, and toggling one re-applies immediately while the component is active:</p>
+
+<pre class="lc-code"><code>using Lucent.Layout;
+
+var safe = panel.GetComponent&lt;LcSafeArea&gt;();
+
+safe.ApplyTop    = true;   // avoid the notch
+safe.ApplyBottom = false;  // let the panel run under the home indicator
+safe.ApplyLeft   = true;   // landscape cutouts
+safe.ApplyRight  = true;
+</code></pre>
+
+<table>
+<thead><tr><th>Member</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>ApplyLeft</code></td><td>Inset the left edge to <code>safeArea.xMin</code>.</td></tr>
+<tr><td><code>ApplyRight</code></td><td>Inset the right edge to <code>safeArea.xMax</code>.</td></tr>
+<tr><td><code>ApplyTop</code></td><td>Inset the top edge to <code>safeArea.yMax</code>.</td></tr>
+<tr><td><code>ApplyBottom</code></td><td>Inset the bottom edge to <code>safeArea.yMin</code>.</td></tr>
+<tr><td><code>Apply()</code></td><td>Fit to the current safe area now, honoring the opt-outs.</td></tr>
+</tbody>
+</table>
+
+<h3>Automatic re-application</h3>
+
+<p>The component watches for safe-area and orientation changes and re-fits itself. You do not need to call <code>Apply()</code> from an orientation callback &mdash; call it only when you have changed the edge flags from code in a frame where you need the result immediately.</p>
+
+<h3>Desktop and headless</h3>
+
+<p>On platforms where the safe area is the entire screen &mdash; desktop, editor, headless CI &mdash; the component resolves to a full-stretch no-op. There is no branch to write in your own code and no visual difference between a device without a notch and a desktop build.</p>
+</section>
+
+<section id="scaler">
+<h2>Responsive Scaler</h2>
+
+<p><code>LcResponsiveScaler</code> computes one scale factor for the current screen against a reference design, then exposes your authored base values already multiplied by it.</p>
+
+<p><strong>Add it:</strong> <code>Add Component &rarr; Lucent &rarr; Layout &rarr; Lc Responsive Scaler</code>.</p>
+
+<pre class="lc-code"><code>using Lucent.Layout;
 
 var scaler = GetComponent&lt;LcResponsiveScaler&gt;();
-scaler.ReferenceResolution = new UnityEngine.Vector2(1920f, 1080f);
-scaler.BaseFontSize = 32f;
 
-float fontPx = scaler.ScaledFontSize;      // 32 * CurrentScale
-float pad    = scaler.Scale(16f);          // any value, scaled</code></pre>
+scaler.ReferenceResolution = new Vector2(1920f, 1080f);
+scaler.MatchWidthOrHeight  = 0.5f;   // 0 = match width, 1 = match height
+scaler.BaseFontSize        = 16f;
+scaler.BasePadding         = 8f;
 
-<h2>5. Layout math helpers</h2>
-<ul>
-  <li><code>LcAutoSize</code> — <code>SetSize</code>, <code>FitContent</code>, <code>ApplyAspect</code>
-      (aspect-lock a <code>RectTransform</code> to content or a ratio).</li>
-  <li><code>LcFlexLayout</code> — weighted flex distribution along an axis with per-item margins.</li>
-  <li><code>LcLayoutMath</code> — <code>ResolveScale</code>, <code>SelectBreakpoint</code>, screen-metric utils.</li>
-</ul>
+label.fontSize = Mathf.RoundToInt(scaler.ScaledFontSize);
+layout.padding = (int)scaler.ScaledPadding;
 
-<h2>6. Troubleshooting</h2>
+// Any authored value, scaled on demand:
+float scaledIconSize = scaler.Scale(24f);
+</code></pre>
+
+<h3>Resolved output</h3>
+
 <table>
-  <tr><th>Symptom</th><th>Fix</th></tr>
-  <tr><td>Safe Area doesn’t inset</td><td>The device must report a non-full <code>Screen.safeArea</code>; use a notched preset or the Device Simulator. Ensure the panel is full-screen (stretch anchors).</td></tr>
-  <tr><td>Scaler not updating</td><td>Call <code>Refresh()</code> after changing the resolution at runtime.</td></tr>
+<thead><tr><th>Member</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>CurrentScale</code></td><td>The resolved, clamped scale factor for the current screen.</td></tr>
+<tr><td><code>ScaledFontSize</code></td><td><code>BaseFontSize * CurrentScale</code>.</td></tr>
+<tr><td><code>ScaledPadding</code></td><td><code>BasePadding * CurrentScale</code>.</td></tr>
+<tr><td><code>ScaledBorder</code></td><td><code>BaseBorder * CurrentScale</code>.</td></tr>
+<tr><td><code>ScaledSpacing</code></td><td><code>BaseSpacing * CurrentScale</code>.</td></tr>
+<tr><td><code>Scale(float)</code></td><td>Scale any authored value on demand.</td></tr>
+<tr><td><code>ActiveBreakpoint</code></td><td>Index of the breakpoint currently in force, or <code>-1</code>.</td></tr>
+<tr><td><code>ScaleChanged</code></td><td><code>event Action&lt;float&gt;</code> raised when the resolved scale changes.</td></tr>
+<tr><td><code>Refresh()</code></td><td>Force a recompute (after changing settings from code).</td></tr>
+</tbody>
 </table>
 
-<footer>
-  <strong>Lumina Layout</strong> · v1.0 · Unity 6000.0.62f1<br>
-  Support: <a href="mailto:szekipapa77@gmail.com">szekipapa77@gmail.com</a>
-</footer>
-</main>
+<h3>React to changes, don't poll</h3>
+
+<pre class="lc-code"><code>void OnEnable()  { scaler.ScaleChanged += OnScaleChanged; }
+void OnDisable() { scaler.ScaleChanged -= OnScaleChanged; }
+
+void OnScaleChanged(float scale)
+{
+    // Fired only when the resolution actually changed.
+    Restyle();
+}
+</code></pre>
+
+<h3>Scale clamp and blend mode</h3>
+
+<p><code>MinScale</code> / <code>MaxScale</code> bound the result (defaults <code>0.5</code> and <code>4</code>) so an extreme aspect never produces unreadable or absurd UI. <code>UseLogBlend</code> selects how the width and height ratios are combined:</p>
+
+<ul>
+<li><strong>Log blend</strong> (default, <code>true</code>) &mdash; matches Unity's <code>CanvasScaler</code> behaviour exactly. Use this when the scaler runs alongside a CanvasScaler and the two must agree.</li>
+<li><strong>Linear blend</strong> (<code>false</code>) &mdash; a straight linear interpolation between the two ratios via <code>LcLayoutMath.ResolveScaleLinear</code>.</li>
+</ul>
+
+<h3>Drive targets</h3>
+
+<p>The <em>Scale Targets</em> array holds RectTransforms whose uniform <code>localScale</code> is set to the resolved scale on every change. It is the zero-code path: assign a root and the whole subtree scales.</p>
+</section>
+
+<section id="breakpoints">
+<h2>Breakpoints</h2>
+
+<p>A breakpoint is a per-screen-config override. It activates when the current screen satisfies <em>all</em> of its constraints, and while active its reference resolution, match value and multiplier replace the scaler defaults.</p>
+
+<table>
+<thead><tr><th>Field</th><th>Constraint</th></tr></thead>
+<tbody>
+<tr><td><code>Name</code></td><td>Label for editor/debug only; not used in the math.</td></tr>
+<tr><td><code>MinWidth</code></td><td>Activates when screen width &ge; this value (pixels).</td></tr>
+<tr><td><code>Orientation</code></td><td><code>LcOrientationConstraint</code> &mdash; restrict to one orientation, or <code>Any</code>.</td></tr>
+<tr><td><code>MinAspect</code> / <code>MaxAspect</code></td><td>Aspect (width/height) range. <code>0</code> means no bound on that side.</td></tr>
+<tr><td><code>Touch</code></td><td><code>LcTouchConstraint</code> &mdash; touch, non-touch, or <code>Any</code>.</td></tr>
+<tr><td><code>Reference</code></td><td>Reference resolution while active. <code>(0,0)</code> keeps the scaler default.</td></tr>
+<tr><td><code>Match</code></td><td>Match width-or-height while active.</td></tr>
+<tr><td><code>ScaleMultiplier</code></td><td>Extra multiplier on the resolved scale. <code>0</code> is treated as <code>1</code>.</td></tr>
+</tbody>
+</table>
+
+<h3>Selection rule</h3>
+
+<p>Among all qualifying entries, <strong>the highest <code>MinWidth</code> wins</strong>. When two qualifying entries share the same <code>MinWidth</code>, the one listed <em>first</em> wins &mdash; so put the most specific entry at the top of the list to break a tie deliberately.</p>
+
+<pre class="lc-code"><code>// Phone (default)  -> scaler defaults, no breakpoint needed
+// Tablet           -> MinWidth 1024, Touch = Touch
+// Desktop          -> MinWidth 1280, Touch = NonTouch
+
+var criteria = new List&lt;LcBreakpointCriteria&gt;();
+// ...fill from your breakpoints...
+int index = LcLayoutMath.SelectBreakpoint(criteria, metrics);   // -1 = none qualified
+</code></pre>
+
+<p>The same selection logic is available in a simpler width-only form, <code>LcLayoutMath.SelectBreakpoint(IReadOnlyList&lt;float&gt; minWidths, float currentWidth)</code>, when width is the only axis you care about.</p>
+</section>
+
+<section id="flex">
+<h2>Flexible Layout Solver</h2>
+
+<p><code>LcFlexLayout</code> distributes a length among weighted items, reserving fixed margins and inter-item spacing first. It is the solver behind proportional rows and columns, and it is pure &mdash; no Canvas, no components, no side effects.</p>
+
+<pre class="lc-code"><code>using Lucent.Layout;
+using System.Collections.Generic;
+
+var items = new List&lt;LcFlexItem&gt;
+{
+    LcFlexItem.Weighted(1f),                 // 1 share
+    new LcFlexItem(2f, marginBefore: 8f),    // 2 shares, 8px gap before
+    LcFlexItem.Weighted(1f),
+};
+
+var segments = new List&lt;LcFlexSegment&gt;();
+LcFlexLayout.Resolve(available: 600f, items: items, spacing: 12f, output: segments);
+
+// segments[i].Position and segments[i].Size are the resolved placements.
+</code></pre>
+
+<p>An item with a non-positive weight contributes no size but still reserves its margins &mdash; useful for a collapsed pane that must keep its gutter.</p>
+
+<h3>Writing the result onto RectTransforms</h3>
+
+<p><code>Apply</code> takes the same inputs plus an axis, container padding and the targets, and writes the resolved segments straight onto the RectTransforms:</p>
+
+<pre class="lc-code"><code>LcFlexLayout.Apply(
+    LcFlexAxis.Horizontal,
+    containerLength: rect.rect.width,
+    padding: LcEdges.All(16f),
+    spacing: 12f,
+    /* items and target RectTransforms */ );
+</code></pre>
+
+<p><code>LcFlexAxis.Horizontal</code> flows children left-to-right and <code>Size</code> means width; <code>LcFlexAxis.Vertical</code> flows top-to-bottom and <code>Size</code> means height.</p>
+
+<div class="lc-note"><strong>Why a solver and not a LayoutGroup.</strong> <code>Resolve</code> is deterministic and allocation-free into a caller-owned list, so you can run it in a test, in a job-prep step, or many times per frame while dragging a splitter &mdash; none of which is comfortable with uGUI's layout rebuild cycle.</div>
+</section>
+
+<section id="autosize">
+<h2>Auto-Size &amp; Aspect</h2>
+
+<p><code>LcAutoSize</code> is a set of static helpers for sizing a RectTransform. Every entry point runs through <code>Resolve</code>, so you may pass a <code>RectTransform</code>, any <code>Component</code>, or a uGUI <code>Graphic</code> interchangeably &mdash; there is no overload hunting.</p>
+
+<pre class="lc-code"><code>using Lucent.Layout;
+
+LcAutoSize.SetSize(panel, new Vector2(320f, 180f));
+LcAutoSize.SetWidth(panel, 320f);
+LcAutoSize.SetHeight(panel, 180f);
+
+// Fit to measured content plus padding
+LcAutoSize.FitContent(panel, contentSize, padding: 12f);
+LcAutoSize.FitContent(panel, contentSize, new LcEdges(16f, 16f, 8f, 8f));
+</code></pre>
+
+<h3>LcEdges</h3>
+
+<p>Float-precision edge insets. Unity's <code>RectOffset</code> is integer-only, which quietly loses sub-pixel padding once a responsive scale is applied &mdash; <code>LcEdges</code> exists to avoid that.</p>
+
+<pre class="lc-code"><code>var uniform = LcEdges.All(12f);
+var custom  = new LcEdges(left: 16f, right: 16f, top: 8f, bottom: 8f);
+float h = custom.Horizontal;   // Left + Right
+float v = custom.Vertical;     // Top + Bottom
+</code></pre>
+
+<h3>Aspect locking</h3>
+
+<table>
+<thead><tr><th><code>LcAspectMode</code></th><th>Behaviour</th></tr></thead>
+<tbody>
+<tr><td><code>WidthControlsHeight</code></td><td>Keep width, derive <code>height = width / aspect</code>.</td></tr>
+<tr><td><code>HeightControlsWidth</code></td><td>Keep height, derive <code>width = height * aspect</code>.</td></tr>
+<tr><td><code>FitInside</code></td><td>Shrink to fit the aspect inside the current box (letterbox).</td></tr>
+<tr><td><code>Envelope</code></td><td>Grow to cover the current box at the target aspect (crop).</td></tr>
+</tbody>
+</table>
+
+<pre class="lc-code"><code>// 16:9 video frame, letterboxed inside whatever box it is given
+LcAutoSize.ApplyAspect(videoFrame, 16f / 9f, LcAspectMode.FitInside);
+
+// Or compute without writing:
+Vector2 size = LcAutoSize.AspectLockSize(current, 16f / 9f, LcAspectMode.FitInside);
+</code></pre>
+</section>
+
+<section id="anchors">
+<h2>Anchor Snapping</h2>
+
+<p><code>LcSnapAnchor</code> resolves and applies the 15 uGUI anchor presets by name, at runtime or from the editor menu. Preset names follow the uGUI inspector layout, so what you read in code matches what you clicked in the anchor popup.</p>
+
+<table>
+<thead><tr><th>Group</th><th>Presets</th></tr></thead>
+<tbody>
+<tr><td>Point (9)</td><td><code>TopLeft</code> <code>TopCenter</code> <code>TopRight</code> <code>MiddleLeft</code> <code>MiddleCenter</code> <code>MiddleRight</code> <code>BottomLeft</code> <code>BottomCenter</code> <code>BottomRight</code></td></tr>
+<tr><td>Vertical stretch (3)</td><td><code>StretchLeft</code> <code>StretchCenter</code> <code>StretchRight</code></td></tr>
+<tr><td>Horizontal stretch (3)</td><td><code>StretchTop</code> <code>StretchMiddle</code> <code>StretchBottom</code></td></tr>
+</tbody>
+</table>
+
+<pre class="lc-code"><code>using Lucent.Layout;
+
+// Snap, adjusting the pivot to match the preset (default)
+LcSnapAnchor.Snap(badge, LcAnchorPreset.TopRight);
+
+// Snap but keep the element where it is on screen
+LcSnapAnchor.Snap(badge, LcAnchorPreset.TopRight, setPivot: true, keepWorldPosition: true);
+
+// Just read the numbers
+LcSnapAnchor.GetAnchors(LcAnchorPreset.BottomCenter, out var min, out var max, out var pivot);
+</code></pre>
+
+<div class="lc-note"><strong><code>keepWorldPosition</code>.</strong> Re-anchoring normally moves an element, because the same offsets mean something different against a new anchor. Pass <code>keepWorldPosition: true</code> to re-anchor <em>without</em> the element appearing to jump &mdash; the offsets are recomputed to preserve its current position.</div>
+</section>
+
+<section id="editor-tools">
+<h2>Editor Tools</h2>
+
+<h3>Anchor snap menu</h3>
+
+<p>The anchor presets are exposed as editor commands so you can re-anchor a selection without opening the anchor popup. Both a <code>Tools</code> entry and a right-click context entry are registered, and each is validated &mdash; the command greys out when the selection has no RectTransform.</p>
+
+<table>
+<thead><tr><th>Command</th><th>Effect</th></tr></thead>
+<tbody>
+<tr><td>Top Left / Top Right</td><td>Snap to the matching corner preset.</td></tr>
+<tr><td>Bottom Left / Bottom Right</td><td>Snap to the matching corner preset.</td></tr>
+<tr><td>Middle Center</td><td>Center both axes.</td></tr>
+<tr><td>Stretch Full</td><td>Stretch both axes to fill the parent.</td></tr>
+<tr><td>Stretch Horizontal</td><td>Stretch the horizontal axis only.</td></tr>
+<tr><td>Stretch Vertical</td><td>Stretch the vertical axis only.</td></tr>
+</tbody>
+</table>
+
+<p>Snapping from the menu is undoable with <kbd>Ctrl</kbd>+<kbd>Z</kbd> like any other inspector change.</p>
+
+<h3>Component menu paths</h3>
+
+<table>
+<thead><tr><th>Component</th><th>Add Component path</th></tr></thead>
+<tbody>
+<tr><td><code>LcSafeArea</code></td><td><code>Lucent UI &rarr; Layout &rarr; Lc Safe Area</code></td></tr>
+<tr><td><code>LcResponsiveScaler</code></td><td><code>Lucent &rarr; Layout &rarr; Lc Responsive Scaler</code></td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="testing">
+<h2>Testing &amp; Determinism</h2>
+
+<p>Both components accept injected providers, so you can simulate any device without owning one. This is the difference between a safe-area implementation you can test in CI and one you can only test by borrowing a phone.</p>
+
+<pre class="lc-code"><code>// Simulate a notched 1170x2532 portrait screen in an edit-mode test.
+safe.ScreenSizeProvider = () =&gt; new Vector2(1170f, 2532f);
+safe.SafeAreaProvider   = () =&gt; new Rect(0f, 102f, 1170f, 2298f);
+safe.Apply();
+
+Assert.AreEqual(expectedTopInset, panel.offsetMax.y * -1f, 0.01f);
+</code></pre>
+
+<table>
+<thead><tr><th>Provider</th><th>On</th><th>Default</th></tr></thead>
+<tbody>
+<tr><td><code>SafeAreaProvider</code></td><td><code>LcSafeArea</code></td><td>Live <code>Screen.safeArea</code></td></tr>
+<tr><td><code>ScreenSizeProvider</code></td><td><code>LcSafeArea</code></td><td>Live <code>Screen</code> size</td></tr>
+<tr><td><code>ResolutionProvider</code></td><td><code>LcResponsiveScaler</code></td><td>Live screen resolution</td></tr>
+<tr><td><code>TouchProvider</code></td><td><code>LcResponsiveScaler</code></td><td>Live touch capability</td></tr>
+</tbody>
+</table>
+
+<p>The static solvers need no injection at all &mdash; they are pure functions over values, so a test is just a call and an assert.</p>
+</section>
+
+<section id="compat">
+<h2>Compatibility</h2>
+
+<table>
+<thead><tr><th>Area</th><th>Support</th></tr></thead>
+<tbody>
+<tr><td>Render pipelines</td><td>Built-in, URP, HDRP &mdash; no pipeline dependency</td></tr>
+<tr><td>Platforms</td><td>All Unity targets. Safe-area insets are meaningful on iOS/Android; elsewhere they resolve to a no-op</td></tr>
+<tr><td>Scripting backend</td><td>Mono, IL2CPP</td></tr>
+<tr><td>Managed stripping</td><td>Safe at <code>High</code> &mdash; no reflection over runtime types</td></tr>
+<tr><td>Canvas modes</td><td>Screen Space Overlay, Screen Space Camera, World Space</td></tr>
+<tr><td>Source</td><td>Full C# source included</td></tr>
+<tr><td>Allocation</td><td>Zero steady-state allocation in both components</td></tr>
+</tbody>
+</table>
+
+<p><code>LcResponsiveScaler</code> composes with Unity's <code>CanvasScaler</code> rather than replacing it. Leave the CanvasScaler doing pixel/reference scaling and use Lumina Layout for the <em>authored values</em> &mdash; font sizes, padding, borders, spacing &mdash; that a CanvasScaler cannot touch. With <code>UseLogBlend</code> left on, both agree on the same scale curve.</p>
+</section>
+
+<section id="faq">
+<h2>FAQ &amp; Troubleshooting</h2>
+
+<h3>My safe-area panel fills the whole screen in the editor.</h3>
+<p>Expected. The editor Game view usually reports the full screen as safe. Pick a device profile with a cutout in the Game view aspect dropdown, or inject a <code>SafeAreaProvider</code> to simulate one.</p>
+
+<h3>The panel is inset, but it jumps on rotation.</h3>
+<p>Make sure the RectTransform is a direct full-stretch child of the Canvas and that no parent LayoutGroup is also driving it. Two things writing the same rect will fight; <code>LcSafeArea</code> should own the rect it is on.</p>
+
+<h3>Nothing scales when I change the resolution.</h3>
+<p>The scaler recomputes only when the resolution genuinely changes. If you changed <code>ReferenceResolution</code> or a breakpoint from code, call <code>Refresh()</code> to force a recompute.</p>
+
+<h3>Two breakpoints both qualify. Which wins?</h3>
+<p>Highest <code>MinWidth</code>. On a tie, the entry listed first. Order the list most-specific-first.</p>
+
+<h3>Why is my <code>ScaleMultiplier</code> of 0 being ignored?</h3>
+<p>A multiplier of <code>0</code> is treated as <code>1</code>, so an unset field in a freshly added breakpoint does not collapse your UI to nothing. Use a small value like <code>0.01f</code> if you genuinely want near-zero.</p>
+
+<h3>Can I use the solvers without the components?</h3>
+<p>Yes. <code>LcFlexLayout</code>, <code>LcAutoSize</code>, <code>LcSnapAnchor</code> and <code>LcLayoutMath</code> are static and depend on nothing in this package beyond <code>Lucent.Core</code>. Call them from your own MonoBehaviours.</p>
+
+<h3>Does this conflict with the other Lumina packs or with Lucent UI?</h3>
+<p>No. All packs install to <code>Assets/Lucent</code> with shared GUIDs on the shared core, so importing several produces an idempotent overwrite rather than duplicate assemblies.</p>
+
+<h3>Elements move when I snap their anchors.</h3>
+<p>That is the default: offsets mean something different against a new anchor. Pass <code>keepWorldPosition: true</code> to <code>Snap</code>.</p>
+</section>
+
+<section id="api-index">
+<h2>API Index</h2>
+
+<div class="lc-api-group">
+<h3>Components <span class="badge">Lucent.Layout</span></h3>
+<ul class="lc-syms">
+<li><code>LcSafeArea</code></li>
+<li><code>LcResponsiveScaler</code></li>
+</ul>
+</div>
+
+<div class="lc-api-group">
+<h3>Responsive math <span class="badge">static</span></h3>
+<ul class="lc-syms">
+<li><code>LcLayoutMath.DefaultReference</code></li>
+<li><code>LcLayoutMath.ResolveScale</code></li>
+<li><code>LcLayoutMath.ResolveScaleLinear</code></li>
+<li><code>LcLayoutMath.ClampScale</code></li>
+<li><code>LcLayoutMath.Scale</code></li>
+<li><code>LcLayoutMath.SelectBreakpoint</code></li>
+<li><code>LcScreenMetrics</code></li>
+<li><code>LcBreakpointCriteria</code></li>
+<li><code>LcScreenBreakpoint</code></li>
+<li><code>LcOrientationConstraint</code></li>
+<li><code>LcTouchConstraint</code></li>
+</ul>
+</div>
+
+<div class="lc-api-group">
+<h3>Flex solver <span class="badge">static</span></h3>
+<ul class="lc-syms">
+<li><code>LcFlexLayout.Resolve</code></li>
+<li><code>LcFlexLayout.Apply</code></li>
+<li><code>LcFlexItem</code></li>
+<li><code>LcFlexItem.Weighted</code></li>
+<li><code>LcFlexSegment</code></li>
+<li><code>LcFlexAxis</code></li>
+</ul>
+</div>
+
+<div class="lc-api-group">
+<h3>Auto-size <span class="badge">static</span></h3>
+<ul class="lc-syms">
+<li><code>LcAutoSize.Resolve</code></li>
+<li><code>LcAutoSize.SetSize</code></li>
+<li><code>LcAutoSize.SetWidth</code></li>
+<li><code>LcAutoSize.SetHeight</code></li>
+<li><code>LcAutoSize.FitContent</code></li>
+<li><code>LcAutoSize.AspectLockSize</code></li>
+<li><code>LcAutoSize.ApplyAspect</code></li>
+<li><code>LcEdges</code></li>
+<li><code>LcEdges.All</code></li>
+<li><code>LcAspectMode</code></li>
+</ul>
+</div>
+
+<div class="lc-api-group">
+<h3>Anchors <span class="badge">static</span></h3>
+<ul class="lc-syms">
+<li><code>LcSnapAnchor.GetAnchors</code></li>
+<li><code>LcSnapAnchor.Snap</code></li>
+<li><code>LcAnchorPreset</code></li>
+</ul>
+</div>
+</section>
+
+  </main>
+  <footer class="lc-footer">
+    <p><strong>Lumina Layout</strong> 0.1.0 &mdash; safe-area insets and responsive scaling for uGUI. Targets Unity 6000.0.62f1+ &middot; one mandatory dependency (<code>com.unity.ugui</code>) &middot; no render-pipeline dependency, no setup step.</p>
+    <p>Questions, bug reports, or feature requests &mdash; include your Unity version and target platform: <a href="mailto:szekipapa77@gmail.com">szekipapa77@gmail.com</a></p>
+    <p class="meta">&copy; 2026 Lumina Layout. Documentation generated as a single self-contained file &mdash; works offline and on GitHub Pages.</p>
+  </footer>
+</div>
 </body>
 </html>

@@ -3,132 +3,785 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lumina Theme — Documentation</title>
+<title>Lumina Theme &mdash; Documentation</title>
 <style>
-  :root{--accent:#ffc24b;--bg:#0e1116;--panel:#161b22;--panel2:#1c2230;--ink:#e6edf3;--mut:#9aa7b4;--line:#2a3340;--code:#0b0f14;}
-  *{box-sizing:border-box}
-  body{margin:0;font:16px/1.65 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
-  header{padding:48px 24px 40px;background:radial-gradient(1200px 400px at 20% -10%,rgba(255,194,75,.16),transparent),var(--panel);border-bottom:1px solid var(--line)}
-  .wrap{max-width:900px;margin:0 auto;padding:0 24px}
-  h1{margin:0 0 6px;font-size:34px;letter-spacing:.3px}
-  h1 span{color:var(--accent)}
-  .tag{color:var(--mut);font-size:18px;margin:0}
-  h2{margin:40px 0 12px;font-size:23px;border-bottom:1px solid var(--line);padding-bottom:8px}
-  h3{margin:26px 0 8px;font-size:18px;color:var(--accent)}
-  code,pre{font-family:"JetBrains Mono",Consolas,Menlo,monospace}
-  code{background:var(--panel2);padding:2px 6px;border-radius:5px;font-size:14px;color:#ffe6b0}
-  pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:16px;overflow:auto;font-size:13.5px;line-height:1.55}
-  pre code{background:none;padding:0;color:#d6e2ee}
-  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14.5px}
-  th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
-  th{background:var(--panel2)}
-  .path{background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:6px;padding:8px 12px;margin:8px 0;font-family:"JetBrains Mono",Consolas,monospace;font-size:13.5px}
-  .note{background:rgba(255,194,75,.07);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:12px 16px;margin:14px 0}
-  ul{padding-left:22px}
-  footer{margin-top:48px;padding:26px 0 60px;color:var(--mut);border-top:1px solid var(--line);font-size:14px}
-  a{color:var(--accent)}
-  .pill{display:inline-block;background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:13px;color:var(--mut);margin:2px 6px 2px 0}
+:root{
+  --bg0:#0E0B16; --bg1:#171122; --bg2:#221A33;
+  --accent:#7C3AED; --accent-hi:#A78BFA; --glow2:#22D3EE;
+  --text0:#ECEAF5; --text1:#A79FC2;
+  --line:#2C2342; --line-soft:#241B38;
+  --code-bg:#120D1E; --sidebar-w:286px;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; background:var(--bg0); color:var(--text0);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px; line-height:1.65; -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent-hi); text-decoration:none;}
+a:hover{color:var(--glow2); text-decoration:underline;}
+
+/* ---------- Sidebar ---------- */
+.lc-sidebar{
+  position:fixed; top:0; left:0; bottom:0; width:var(--sidebar-w);
+  background:linear-gradient(180deg,#1a1329 0%,var(--bg1) 100%);
+  border-right:1px solid var(--line); overflow-y:auto; padding:22px 0 40px;
+  z-index:20;
+}
+.lc-brand{padding:0 22px 16px; border-bottom:1px solid var(--line-soft); margin-bottom:14px;}
+.lc-brand .logo{display:flex; align-items:center; gap:10px;}
+.lc-brand .dot{
+  width:22px; height:22px; border-radius:7px;
+  background:linear-gradient(135deg,var(--accent) 0%,var(--glow2) 100%);
+  box-shadow:0 0 14px rgba(124,58,237,.6);
+}
+.lc-brand .name{font-size:18px; font-weight:700; letter-spacing:.2px;}
+.lc-brand .ver{font-size:11.5px; color:var(--text1); margin-top:8px; line-height:1.5;}
+.lc-brand .ver code{background:none; color:var(--accent-hi); padding:0;}
+.lc-nav{list-style:none; margin:0; padding:0 12px;}
+.lc-nav li{margin:1px 0;}
+.lc-nav a{
+  display:block; padding:7px 12px; border-radius:8px; color:var(--text1);
+  font-size:13.5px; font-weight:500; border-left:2px solid transparent;
+}
+.lc-nav a:hover{background:var(--bg2); color:var(--text0); text-decoration:none;}
+.lc-nav a .num{color:var(--accent-hi); font-variant-numeric:tabular-nums; margin-right:8px; font-size:12px;}
+.lc-nav .sep{margin:12px 12px 6px; padding-top:12px; border-top:1px solid var(--line-soft);
+  font-size:10.5px; letter-spacing:1.4px; text-transform:uppercase; color:#6f6593;}
+
+/* ---------- Layout ---------- */
+.lc-main{margin-left:var(--sidebar-w); padding:0;}
+.lc-header{
+  position:sticky; top:0; z-index:10;
+  background:rgba(14,11,22,.82); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line); padding:18px 48px;
+}
+.lc-header h1{margin:0; font-size:22px; font-weight:700; letter-spacing:.2px;}
+.lc-header .tag{margin:5px 0 0; color:var(--text1); font-size:14px;}
+.lc-header .pill{
+  display:inline-block; margin-top:0; margin-left:10px; vertical-align:middle;
+  font-size:11px; font-weight:600; color:var(--glow2);
+  border:1px solid rgba(34,211,238,.35); background:rgba(34,211,238,.08);
+  padding:2px 9px; border-radius:999px; letter-spacing:.3px;
+}
+.lc-content{max-width:920px; padding:8px 48px 80px;}
+section{padding-top:26px; scroll-margin-top:84px;}
+
+/* ---------- Typography ---------- */
+h2{
+  font-size:27px; font-weight:700; margin:34px 0 14px; letter-spacing:.1px;
+  padding-bottom:12px; border-bottom:1px solid var(--line);
+}
+h2:after{content:""; display:block; width:56px; height:3px; margin-top:12px;
+  background:linear-gradient(90deg,var(--accent),var(--glow2)); border-radius:2px;}
+h3{font-size:18.5px; font-weight:650; margin:30px 0 10px; color:var(--text0);}
+p{margin:13px 0;}
+strong{color:var(--text0); font-weight:650;}
+em{color:var(--accent-hi); font-style:italic;}
+ul,ol{padding-left:22px;}
+li{margin:6px 0;}
+
+/* ---------- Inline code ---------- */
+code{
+  font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  font-size:13px; background:var(--bg2); color:#d9cffb;
+  padding:1.5px 6px; border-radius:5px; border:1px solid var(--line-soft);
+}
+
+/* ---------- Code blocks ---------- */
+pre.lc-code{
+  background:var(--code-bg); border:1px solid var(--line);
+  border-left:3px solid var(--accent); border-radius:10px;
+  padding:16px 18px; overflow-x:auto; margin:16px 0; line-height:1.55;
+  box-shadow:0 8px 24px rgba(0,0,0,.28);
+}
+pre.lc-code code{
+  background:none; border:none; padding:0; color:#cfc6ea; font-size:13px;
+  white-space:pre;
+}
+
+/* ---------- Callout ---------- */
+.lc-note{
+  background:linear-gradient(90deg,rgba(124,58,237,.12),rgba(34,211,238,.05));
+  border:1px solid var(--line); border-left:3px solid var(--glow2);
+  border-radius:10px; padding:13px 18px; margin:18px 0; color:var(--text0);
+  font-size:14.5px;
+}
+.lc-note strong:first-child{color:var(--glow2);}
+
+/* ---------- Win lists ---------- */
+ul.lc-win{list-style:none; padding-left:4px; margin:18px 0;}
+ul.lc-win li{
+  position:relative; padding:8px 8px 8px 34px; margin:7px 0;
+  background:var(--bg1); border:1px solid var(--line-soft); border-radius:9px;
+  font-size:14.5px;
+}
+ul.lc-win li:before{
+  content:"\2713"; position:absolute; left:11px; top:8px;
+  color:var(--bg0); background:linear-gradient(135deg,var(--accent),var(--glow2));
+  width:17px; height:17px; border-radius:5px; font-size:11px; font-weight:800;
+  display:flex; align-items:center; justify-content:center; line-height:1;
+  box-shadow:0 0 10px rgba(124,58,237,.45);
+}
+
+/* ---------- Tables ---------- */
+table{border-collapse:collapse; width:100%; margin:18px 0; font-size:14px;
+  background:var(--bg1); border:1px solid var(--line); border-radius:10px; overflow:hidden;}
+thead th{
+  background:var(--bg2); color:var(--accent-hi); text-align:left;
+  padding:10px 14px; font-weight:650; border-bottom:1px solid var(--line);
+}
+tbody td{padding:9px 14px; border-bottom:1px solid var(--line-soft); color:var(--text0);}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:rgba(124,58,237,.06);}
+
+/* ---------- API index ---------- */
+.lc-api-group{margin:22px 0;}
+.lc-api-group h3{
+  display:flex; align-items:center; gap:10px; margin-bottom:8px;
+}
+.lc-api-group h3 .badge{
+  font-size:11px; font-weight:600; color:var(--text1);
+  border:1px solid var(--line); border-radius:999px; padding:1px 9px;
+}
+.lc-syms{display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 0; padding:0; list-style:none;}
+.lc-syms li{margin:0;}
+.lc-syms code{
+  font-size:12px; background:var(--bg1); border:1px solid var(--line);
+  color:#cdbff7; padding:3px 8px; border-radius:6px; display:inline-block;
+}
+
+/* ---------- Footer ---------- */
+.lc-footer{
+  border-top:1px solid var(--line); margin-top:40px; padding:26px 48px 60px;
+  color:var(--text1); font-size:13.5px; margin-left:0;
+}
+.lc-footer a{font-weight:600;}
+.lc-footer .meta{margin-top:8px; font-size:12.5px; color:#6f6593;}
+
+/* ---------- Responsive ---------- */
+@media (max-width:900px){
+  :root{--sidebar-w:0px;}
+  .lc-sidebar{position:static; width:100%; height:auto; border-right:none;
+    border-bottom:1px solid var(--line); padding-bottom:18px;}
+  .lc-main{margin-left:0;}
+  .lc-nav{columns:2; column-gap:8px;}
+  .lc-header,.lc-content,.lc-footer{padding-left:20px; padding-right:20px;}
+  h2{font-size:23px;}
+}
 </style>
 </head>
 <body>
-<header><div class="wrap">
-  <h1>Lumina <span>Theme</span></h1>
-  <p class="tag">UI theming, design tokens &amp; WCAG accessibility for Unity.</p>
-  <div style="margin-top:14px">
-    <span class="pill">Unity 6000.0.62f1+</span><span class="pill">Any render pipeline</span>
-    <span class="pill">ScriptableObject</span><span class="pill">WCAG AA / AAA</span>
+<nav class="lc-sidebar">
+  <div class="lc-brand">
+    <div class="logo"><span class="dot"></span><span class="name">Lumina Theme</span></div>
+    <div class="ver">Theme Designer, Palettes &amp; WCAG Contrast<br>v0.1.0 &middot; Unity <code>6000.0.62f1</code>+</div>
   </div>
-</div></header>
-<main class="wrap">
+  <ul class="lc-nav">
+    <li><a href="#overview"><span class="num">1</span>Overview</a></li>
+    <li><a href="#install"><span class="num">2</span>Installation &amp; Requirements</a></li>
+    <li><a href="#theme-asset"><span class="num">3</span>The Theme Asset</a></li>
+    <li><a href="#tokens"><span class="num">4</span>Design Tokens</a></li>
+    <li><a href="#palettes"><span class="num">5</span>Palettes</a></li>
+    <li><a href="#semantic"><span class="num">6</span>Built-in Semantic Themes</a></li>
+    <li><a href="#contrast"><span class="num">7</span>WCAG Contrast</a></li>
+    <li><a href="#runtime"><span class="num">8</span>Runtime Switching</a></li>
+    <li><a href="#json"><span class="num">9</span>JSON &amp; Palette Import</a></li>
+    <li><a href="#designer"><span class="num">10</span>Theme Designer</a></li>
+    <li><a href="#compat"><span class="num">11</span>Compatibility</a></li>
+    <li><a href="#faq"><span class="num">12</span>FAQ &amp; Troubleshooting</a></li>
+    <li class="sep">Reference</li>
+    <li><a href="#api-index"><span class="num">&sect;</span>API Index</a></li>
+  </ul>
+</nav>
+<div class="lc-main">
+  <header class="lc-header">
+    <h1>Lumina Theme <span class="pill">Unity 6000.0.62f1+</span></h1>
+    <p class="tag">One source of truth for UI colors, gradients, sizes, fonts and sounds &mdash; with contrast checking built into the authoring loop.</p>
+  </header>
+  <main class="lc-content">
 
-<h2>1. Overview</h2>
-<p>Lumina Theme is a lightweight theming engine built on design tokens (colors, gradients, numbers, fonts,
-sprites, audio) stored in a <code>LcTheme</code> ScriptableObject. Author themes visually with the
-<strong>Theme Designer</strong>, verify contrast against <strong>WCAG AA/AAA</strong> as you work, and drive
-your own UI from a single source of truth. Pure C# — no render-pipeline dependency.</p>
+<section id="overview">
+<h2>Overview</h2>
 
-<h2>2. Requirements</h2>
-<ul>
-  <li>Unity <strong>6000.0.62f1</strong> or newer.</li>
-  <li>No other dependencies — Built-in RP, URP and HDRP projects all work.</li>
+<p><strong>Lumina Theme</strong> is a lightweight theming engine for Unity. It keeps UI colors, gradients, numbers, fonts, sprites and audio references in ScriptableObject theme assets, gives you a visual Theme Designer window, and includes WCAG AA/AAA contrast helpers so readability is something you check <em>while designing</em> rather than after a QA pass.</p>
+
+<ul class="lc-win">
+<li><strong>Token-based themes</strong> &mdash; one <code>LcTheme</code> asset holds colors, gradients, numbers, fonts, sprites and audio under stable string keys.</li>
+<li><strong>Theme Designer window</strong> &mdash; edit every token category with a live preview, full Undo support, and one-click semantic presets.</li>
+<li><strong>WCAG contrast</strong> &mdash; <code>LcContrast</code> computes relative luminance and contrast ratios and answers AA/AAA directly.</li>
+<li><strong>Palettes</strong> &mdash; multiple named palettes per theme, each with an optional color-blind-safe variant you can flip globally.</li>
+<li><strong>Five built-in themes</strong> &mdash; Dark, Light, High Contrast, Scientific and Financial, generated in code.</li>
+<li><strong>Import / export</strong> &mdash; versioned JSON round-trip, plus palette import from GIMP <code>.gpl</code>, hex lists and CSS custom properties.</li>
+<li><strong>Runtime switching</strong> &mdash; <code>LcThemeManager</code> swaps the active theme and rebinds every consumer.</li>
 </ul>
 
-<h2>3. Quick start</h2>
-<ol>
-  <li>Create a theme asset:</li>
-</ol>
-<div class="path">Assets ▸ Create ▸ Lucent UI ▸ Theme Preset ▸ Dark</div>
-<p>(Also available: <em>Light</em>, <em>High Contrast</em>, and <em>Assets ▸ Create ▸ Lucent UI ▸ Palette</em>.)</p>
-<ol start="2">
-  <li>Open the visual editor and tune colors with live contrast feedback:</li>
-</ol>
-<div class="path">Window ▸ Lucent UI ▸ Theme Designer</div>
-<ol start="3">
-  <li>Reference the <code>LcTheme</code> from your scripts and resolve tokens (below).</li>
-</ol>
+<p>The package is pure C#, source-included and render-pipeline independent. It installs under <code>Assets/Lucent</code>.</p>
 
-<h2>4. Using a theme in code</h2>
-<h3>Resolve design tokens</h3>
-<pre><code>using Lucent.Theme;
-using UnityEngine;
+<div class="lc-note"><strong>Scope.</strong> Lumina Theme is the theming engine, not the full Lucent UI suite. It does not ship widgets, shapes or effects, and it does not automatically restyle third-party UI. It gives you the token store, the authoring tool and the binding API; you decide what reads from it. The <a href="#runtime">Runtime Switching</a> section shows the two-line consumer pattern.</div>
+</section>
 
-public class Panel : MonoBehaviour
-{
-    public LcTheme theme;   // assign your Theme asset in the Inspector
+<section id="install">
+<h2>Installation &amp; Requirements</h2>
 
-    void Start()
-    {
-        if (theme.TryResolveColor("surface", out Color32 bg))
-            GetComponent&lt;UnityEngine.UI.Graphic&gt;().color = bg;
-
-        float radius = theme.ResolveNumber("radius.card", 12f);
-    }
-}</code></pre>
-
-<h3>Build a theme at runtime</h3>
-<pre><code>using Lucent.Theme;
-
-LcTheme dark  = LcSemanticThemes.CreateDark();
-LcTheme light = LcSemanticThemes.Create(LcThemeId.Light);
-LcTheme hc    = LcSemanticThemes.CreateHighContrast();
-
-dark.SetColor("accent", new UnityEngine.Color32(63, 224, 255, 255));
-string json = dark.ExportJson();   // persist / ship a theme as JSON</code></pre>
-
-<h2>5. Accessibility — <code>LcContrast</code></h2>
-<p>Static WCAG helpers for verifying and choosing readable color pairs.</p>
-<pre><code>using Lucent.Theme;
-using UnityEngine;
-
-float ratio = LcContrast.Ratio(foreground, background);   // e.g. 7.1
-bool  aa    = LcContrast.MeetsAA(foreground, background);          // ≥ 4.5 (or 3.0 large)
-bool  aaa   = LcContrast.MeetsAAA(foreground, background, largeText:true);</code></pre>
 <table>
-  <tr><th>Method</th><th>Returns</th></tr>
-  <tr><td><code>RelativeLuminance(Color)</code></td><td>WCAG relative luminance.</td></tr>
-  <tr><td><code>Ratio(Color a, Color b)</code></td><td>Contrast ratio (1–21).</td></tr>
-  <tr><td><code>MeetsAA(fg, bg, largeText=false)</code></td><td>WCAG AA pass/fail.</td></tr>
-  <tr><td><code>MeetsAAA(fg, bg, largeText=false)</code></td><td>WCAG AAA pass/fail.</td></tr>
+<thead><tr><th>Requirement</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td>Unity</td><td><code>6000.0.62f1</code> or newer</td></tr>
+<tr><td>Mandatory dependency</td><td><code>com.unity.ugui</code></td></tr>
+<tr><td>Render pipeline</td><td>None &mdash; Built-in, URP and HDRP all work</td></tr>
+<tr><td>Scripting backend</td><td>Mono and IL2CPP</td></tr>
+<tr><td>Install path</td><td><code>Assets/Lucent/</code></td></tr>
+<tr><td>Assemblies</td><td><code>Lucent.Core</code>, <code>Lucent.Theme</code>, <code>Lucent.Theme.Editor</code></td></tr>
+<tr><td>Namespace</td><td><code>Lucent.Theme</code></td></tr>
+</tbody>
 </table>
 
-<h2>6. Palettes</h2>
-<p><code>LcPalette</code> groups named colors (with an optional color-blind-safe variant). Import from common
-formats with <code>LcPaletteImport</code>:</p>
-<pre><code>using Lucent.Theme;
+<p>Import, then create your first theme with <code>Assets &rarr; Create &rarr; Lucent UI &rarr; Theme</code>, or start from a preset (see <a href="#semantic">Built-in Semantic Themes</a>).</p>
 
-LcPalette p = LcPaletteImport.Import(fileText);      // auto-detects format
-// or: FromHexList / FromGpl (GIMP) / FromCssVariables
-theme.AddPalette(p);</code></pre>
+<div class="lc-note"><strong>Multi-pack projects.</strong> Every Lumina pack installs under <code>Assets/Lucent</code> and shares the same core files with the same GUIDs, so importing several packs is an idempotent overwrite &mdash; never duplicate assemblies. Lumina Shapes and Lumina Glass UI both include this theme runtime, so a shape's fill can reference a theme token out of the box.</div>
+</section>
 
-<h2>7. Notes</h2>
-<div class="note">This pack is the theming <strong>engine + tooling</strong>: create, validate and query themes,
-and drive your own UI from them. Lumina widgets that automatically re-skin themselves from the active theme are
-distributed separately.</div>
+<section id="theme-asset">
+<h2>The Theme Asset</h2>
 
-<footer>
-  <strong>Lumina Theme</strong> · v1.0 · Unity 6000.0.62f1<br>
-  Support: <a href="mailto:szekipapa77@gmail.com">szekipapa77@gmail.com</a>
-</footer>
-</main>
+<p><code>LcTheme</code> is a <code>ScriptableObject</code>. Create one per visual identity &mdash; usually one per shipped theme, not one per screen.</p>
+
+<pre class="lc-code"><code>Assets &rarr; Create &rarr; Lucent UI &rarr; Theme        // creates "LcTheme.asset"</code></pre>
+
+<h3>Reading tokens</h3>
+
+<p>Every category has a <code>TryResolve*</code> method that reports whether the key existed, and colors additionally have convenience getters that fall back rather than fail.</p>
+
+<pre class="lc-code"><code>using Lucent.Theme;
+
+// Falls back to the theme's FallbackColor if the key is missing
+Color32 bg = theme.ResolveColor(LcColorKeys.Background);
+
+// Falls back to a value you choose
+Color32 accent = theme.ResolveColor(LcColorKeys.Accent, Color.magenta);
+
+// Branch on presence
+if (theme.TryResolveColor(LcColorKeys.Focus, out Color32 focus))
+    outline.color = focus;
+
+float radius = theme.ResolveNumber(LcNumberKeys.RadiusMd, 8f);
+
+if (theme.TryResolveGradient(LcGradientKeys.Primary, out LcGradientToken g)) { /* ... */ }
+if (theme.TryResolveFontAsset(LcAssetKeys.FontDefault, out Font font)) { /* ... */ }
+if (theme.TryResolveSprite(LcAssetKeys.SpriteCheck, out Sprite check)) { /* ... */ }
+if (theme.TryResolveAudio(LcAssetKeys.AudioClick, out LcAudioToken click)) { /* ... */ }
+</code></pre>
+
+<h3>Writing tokens</h3>
+
+<pre class="lc-code"><code>theme.SetColor(LcColorKeys.Primary, new Color32(124, 58, 237, 255));
+theme.SetNumber(LcNumberKeys.RadiusLg, 16f);
+theme.SetFont(LcAssetKeys.FontDefault, myFont, sizeScale: 1.1f);
+theme.SetSprite(LcAssetKeys.SpriteChevron, chevronSprite);
+theme.SetAudio(LcAssetKeys.AudioClick, clickClip, volume: 0.8f);
+theme.SetGradient(myGradientToken);
+</code></pre>
+
+<p>Each setter marks the theme changed and raises <code>Changed</code>, so bound UI updates without an explicit refresh call.</p>
+
+<h3>Theme-level members</h3>
+
+<table>
+<thead><tr><th>Member</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>Id</code></td><td>Stable string identity for the theme.</td></tr>
+<tr><td><code>FallbackColor</code></td><td>Returned by <code>ResolveColor</code> when a key is missing.</td></tr>
+<tr><td><code>ActivePalette</code></td><td>Name of the palette currently supplying colors.</td></tr>
+<tr><td><code>UseColorBlindSafe</code></td><td>Flip every palette to its color-blind-safe variant.</td></tr>
+<tr><td><code>Palettes</code></td><td>Read-only list of palettes on this theme.</td></tr>
+<tr><td><code>ColorResolver</code></td><td><code>Func&lt;string, Color32&gt;</code> override &mdash; intercept every color lookup.</td></tr>
+<tr><td><code>Changed</code></td><td><code>event Action</code> raised on any mutation.</td></tr>
+<tr><td><code>AddPalette()</code></td><td>Append a palette.</td></tr>
+<tr><td><code>CopyFrom()</code></td><td>Replace all content from another theme.</td></tr>
+<tr><td><code>MarkChanged()</code></td><td>Raise <code>Changed</code> manually after a bulk edit.</td></tr>
+</tbody>
+</table>
+
+<div class="lc-note"><strong><code>ColorResolver</code>.</strong> Setting this replaces the whole color lookup path. It is the hook for a computed theme &mdash; deriving shades from one seed color, applying a colour-grading filter, or pulling from a live remote config &mdash; without changing any calling code.</div>
+</section>
+
+<section id="tokens">
+<h2>Design Tokens</h2>
+
+<p>Tokens are addressed by string key. Constants for the standard set live in <code>LcColorKeys</code>, <code>LcGradientKeys</code>, <code>LcNumberKeys</code> and <code>LcAssetKeys</code> &mdash; use them instead of literals so a typo is a compile error rather than a silent fallback.</p>
+
+<h3>Color keys <span style="color:#A79FC2;font-size:14px">(16)</span></h3>
+
+<table>
+<thead><tr><th>Constant</th><th>Key</th><th>Role</th></tr></thead>
+<tbody>
+<tr><td><code>Background</code></td><td><code>color.background</code></td><td>Page / root background.</td></tr>
+<tr><td><code>Surface</code></td><td><code>color.surface</code></td><td>Card and panel fill.</td></tr>
+<tr><td><code>SurfaceAlt</code></td><td><code>color.surfaceAlt</code></td><td>Alternate surface for banding and nesting.</td></tr>
+<tr><td><code>Primary</code></td><td><code>color.primary</code></td><td>Primary action.</td></tr>
+<tr><td><code>OnPrimary</code></td><td><code>color.onPrimary</code></td><td>Content drawn on <code>Primary</code>.</td></tr>
+<tr><td><code>Secondary</code></td><td><code>color.secondary</code></td><td>Secondary action.</td></tr>
+<tr><td><code>OnSecondary</code></td><td><code>color.onSecondary</code></td><td>Content drawn on <code>Secondary</code>.</td></tr>
+<tr><td><code>Accent</code></td><td><code>color.accent</code></td><td>Highlight / emphasis.</td></tr>
+<tr><td><code>Text</code></td><td><code>color.text</code></td><td>Body text.</td></tr>
+<tr><td><code>TextMuted</code></td><td><code>color.textMuted</code></td><td>De-emphasised text.</td></tr>
+<tr><td><code>Border</code></td><td><code>color.border</code></td><td>Dividers and outlines.</td></tr>
+<tr><td><code>Focus</code></td><td><code>color.focus</code></td><td>Keyboard / gamepad focus ring.</td></tr>
+<tr><td><code>Success</code> <code>Warning</code> <code>Error</code> <code>Info</code></td><td><code>color.success</code> &hellip;</td><td>Status colors.</td></tr>
+</tbody>
+</table>
+
+<p>The <code>Primary</code>/<code>OnPrimary</code> pairing is deliberate: it gives you both halves of every contrast check without guessing which foreground belongs on which background.</p>
+
+<h3>Number keys</h3>
+
+<table>
+<thead><tr><th>Group</th><th>Keys</th></tr></thead>
+<tbody>
+<tr><td>Spacing</td><td><code>spacing.xs</code> <code>spacing.sm</code> <code>spacing.md</code> <code>spacing.lg</code> <code>spacing.xl</code></td></tr>
+<tr><td>Radius</td><td><code>radius.sm</code> <code>radius.md</code> <code>radius.lg</code> <code>radius.pill</code></td></tr>
+<tr><td>Border</td><td><code>border.width</code></td></tr>
+<tr><td>Type</td><td><code>font.scale</code> <code>font.size.caption</code> <code>font.size.body</code> <code>font.size.title</code> <code>font.size.display</code></td></tr>
+</tbody>
+</table>
+
+<h3>Gradient and asset keys</h3>
+
+<table>
+<thead><tr><th>Group</th><th>Keys</th></tr></thead>
+<tbody>
+<tr><td>Gradients</td><td><code>gradient.primary</code> <code>gradient.surface</code> <code>gradient.accent</code></td></tr>
+<tr><td>Fonts</td><td><code>font.default</code> <code>font.mono</code></td></tr>
+<tr><td>Sprites</td><td><code>sprite.check</code> <code>sprite.chevron</code> <code>sprite.close</code></td></tr>
+<tr><td>Audio</td><td><code>audio.click</code> <code>audio.hover</code> <code>audio.toggle</code></td></tr>
+</tbody>
+</table>
+
+<h3>Gradient tokens</h3>
+
+<p><code>LcGradientToken</code> carries a shape (<code>LcGradientShape</code>), an angle in degrees, and either a stop array or four corner colors:</p>
+
+<table>
+<thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>Shape</code></td><td>Linear, angular, corner-4 and related shapes.</td></tr>
+<tr><td><code>Angle</code></td><td>Degrees &mdash; linear direction, or the angular reference.</td></tr>
+<tr><td><code>Stops</code></td><td><code>LcColorStop[]</code> &mdash; each a <code>Position</code> (0&ndash;1) and a <code>Color</code>.</td></tr>
+<tr><td><code>C0</code>&hellip;<code>C3</code></td><td>Corner-4 colors: bottom-left, bottom-right, top-right, top-left.</td></tr>
+</tbody>
+</table>
+
+<p>Keys are plain strings, so nothing stops you defining your own namespace &mdash; <code>color.brand.hero</code>, <code>spacing.card.gutter</code> &mdash; alongside the standard set.</p>
+</section>
+
+<section id="palettes">
+<h2>Palettes</h2>
+
+<p>A theme can hold several named palettes. Only one is active at a time (<code>ActivePalette</code>), which makes a palette the right unit for a seasonal recolour, a per-faction tint, or a light/dark pair that shares every non-color token.</p>
+
+<pre class="lc-code"><code>using Lucent.Theme;
+
+var palette = new LcPalette("winter", winterColors, winterColorBlindSafe);
+theme.AddPalette(palette);
+theme.ActivePalette = "winter";
+</code></pre>
+
+<h3>Color-blind-safe variants</h3>
+
+<p>Each palette may carry a parallel <code>ColorBlindSafe</code> array. Flipping one flag on the theme swaps every palette to its safe variant &mdash; no per-color branching in your UI code:</p>
+
+<pre class="lc-code"><code>theme.UseColorBlindSafe = accessibilityOptions.colorBlindMode;
+
+// Per-palette query
+if (palette.HasColorBlindSafe)
+    palette.TryResolve(LcColorKeys.Success, colorBlindSafe: true, out Color32 c);
+</code></pre>
+
+<div class="lc-note"><strong>Design tip.</strong> A color-blind-safe variant is most valuable on the status colors &mdash; <code>Success</code>, <code>Warning</code>, <code>Error</code>, <code>Info</code> &mdash; where red/green is doing the semantic work. Pair the recolour with a shape or icon difference; color alone is never sufficient for WCAG.</div>
+</section>
+
+<section id="semantic">
+<h2>Built-in Semantic Themes</h2>
+
+<p>Five complete themes are generated in code, so you can start from a coherent set rather than an empty asset.</p>
+
+<table>
+<thead><tr><th><code>LcThemeId</code></th><th>Factory</th><th>Intent</th></tr></thead>
+<tbody>
+<tr><td><code>Dark</code></td><td><code>LcSemanticThemes.CreateDark()</code></td><td>Dark-first application UI.</td></tr>
+<tr><td><code>Light</code></td><td><code>LcSemanticThemes.CreateLight()</code></td><td>Light-first application UI.</td></tr>
+<tr><td><code>HighContrast</code></td><td><code>LcSemanticThemes.CreateHighContrast()</code></td><td>Accessibility mode targeting AAA.</td></tr>
+<tr><td><code>Scientific</code></td><td><code>LcSemanticThemes.CreateScientific()</code></td><td>Data/plot presentation.</td></tr>
+<tr><td><code>Financial</code></td><td><code>LcSemanticThemes.CreateFinancial()</code></td><td>Dense financial readouts.</td></tr>
+</tbody>
+</table>
+
+<pre class="lc-code"><code>using Lucent.Theme;
+
+LcTheme dark = LcSemanticThemes.Create(LcThemeId.Dark);
+LcNumberToken[] numbers = LcSemanticThemes.DefaultNumbers();   // the standard spacing/radius/type ramp
+</code></pre>
+
+<p>Three of them are also available as menu commands that create a real asset on disk:</p>
+
+<pre class="lc-code"><code>Assets &rarr; Create &rarr; Lucent UI &rarr; Theme Preset &rarr; Dark
+Assets &rarr; Create &rarr; Lucent UI &rarr; Theme Preset &rarr; Light
+Assets &rarr; Create &rarr; Lucent UI &rarr; Theme Preset &rarr; High Contrast
+</code></pre>
+</section>
+
+<section id="contrast">
+<h2>WCAG Contrast</h2>
+
+<p><code>LcContrast</code> implements the WCAG 2.x relative-luminance and contrast-ratio formulas. It is a static class over plain colors &mdash; usable in a test, in an editor tool, or at runtime.</p>
+
+<pre class="lc-code"><code>using Lucent.Theme;
+
+float ratio = LcContrast.Ratio(foreground, background);   // 1.0 .. 21.0
+
+bool okBody    = LcContrast.MeetsAA(foreground, background);
+bool okHeading = LcContrast.MeetsAA(foreground, background, largeText: true);
+bool strict    = LcContrast.MeetsAAA(foreground, background);
+
+float luminance = LcContrast.RelativeLuminance(background);
+</code></pre>
+
+<table>
+<thead><tr><th>Threshold</th><th>Constant</th><th>Ratio</th><th>Applies to</th></tr></thead>
+<tbody>
+<tr><td>AA, normal text</td><td><code>LcContrast.AaNormal</code></td><td>4.5 : 1</td><td>Body copy</td></tr>
+<tr><td>AA, large text</td><td><code>LcContrast.AaLarge</code></td><td>3 : 1</td><td>&ge; 18pt, or 14pt bold</td></tr>
+<tr><td>AAA, normal text</td><td><code>LcContrast.AaaNormal</code></td><td>7 : 1</td><td>Body copy, strict</td></tr>
+<tr><td>AAA, large text</td><td><code>LcContrast.AaaLarge</code></td><td>4.5 : 1</td><td>Headings, strict</td></tr>
+</tbody>
+</table>
+
+<h3>Guard your theme in CI</h3>
+
+<p>Because the checks are pure functions over a theme's tokens, contrast becomes a unit test rather than a review comment:</p>
+
+<pre class="lc-code"><code>[Test]
+public void BodyTextMeetsAaOnEverySurface()
+{
+    var theme = LcSemanticThemes.Create(LcThemeId.Dark);
+    Color32 text = theme.ResolveColor(LcColorKeys.Text);
+
+    Assert.IsTrue(LcContrast.MeetsAA(text, theme.ResolveColor(LcColorKeys.Background)));
+    Assert.IsTrue(LcContrast.MeetsAA(text, theme.ResolveColor(LcColorKeys.Surface)));
+    Assert.IsTrue(LcContrast.MeetsAA(text, theme.ResolveColor(LcColorKeys.SurfaceAlt)));
+}
+</code></pre>
+
+<div class="lc-note"><strong>Alpha.</strong> The WCAG formula is defined for opaque colors. Composite any translucent foreground over its actual backdrop before measuring, otherwise the ratio describes a color nobody sees.</div>
+</section>
+
+<section id="runtime">
+<h2>Runtime Switching</h2>
+
+<p><code>LcThemeManager</code> is a static hub holding the active theme and rebinding consumers when it changes.</p>
+
+<pre class="lc-code"><code>using Lucent.Theme;
+
+LcThemeManager.SetActiveTheme(myDarkTheme);       // by asset
+LcTheme light = LcThemeManager.SetActiveTheme(LcThemeId.Light);   // by built-in id
+
+LcTheme active = LcThemeManager.Active;
+bool has       = LcThemeManager.HasActiveTheme;
+int consumers  = LcThemeManager.ConsumerCount;
+
+LcThemeManager.ClearActiveTheme();
+</code></pre>
+
+<h3>The consumer pattern</h3>
+
+<p>A consumer holds an optional theme reference and asks the manager for the <em>effective</em> one. <code>Effective</code> returns the bound theme when there is one and the global active theme otherwise &mdash; so a widget can override its theme locally without any extra branching:</p>
+
+<pre class="lc-code"><code>public sealed class MyPanel : MonoBehaviour
+{
+    [SerializeField] LcTheme _theme;      // optional local override
+
+    void OnEnable()  { LcThemeManager.Changed += Restyle; Restyle(); }
+    void OnDisable() { LcThemeManager.Changed -= Restyle; }
+
+    void Restyle()
+    {
+        LcTheme theme = LcThemeManager.Effective(_theme);
+        if (theme == null) return;
+
+        background.color = theme.ResolveColor(LcColorKeys.Surface);
+        label.color      = theme.ResolveColor(LcColorKeys.Text);
+    }
+}
+</code></pre>
+
+<h3>Rebinding</h3>
+
+<p><code>RebindAll(theme)</code> pushes a theme onto every live consumer and returns how many it touched &mdash; a useful assertion in a test, and a useful log line when a theme swap appears to do nothing.</p>
+
+<pre class="lc-code"><code>int rebound = LcThemeManager.RebindAll(newTheme);
+Debug.Log($"Rebound {rebound} consumers");
+</code></pre>
+</section>
+
+<section id="json">
+<h2>JSON &amp; Palette Import</h2>
+
+<h3>Theme JSON</h3>
+
+<p>Themes round-trip through a versioned JSON document (<code>schema: "lucent.theme"</code>, version <code>1</code>) carrying colors, gradients, numbers, font/sprite/audio references and all palettes.</p>
+
+<pre class="lc-code"><code>using Lucent.Theme;
+
+string json = theme.ExportJson();
+theme.ExportJsonFile(Application.dataPath + "/theme.json");
+
+bool ok = theme.ImportJson(json);      // false if the document is invalid
+
+// Or drive the serializer directly
+string doc = LcThemeJson.Export(theme);
+LcThemeJson.Import(theme, doc);
+</code></pre>
+
+<div class="lc-note"><strong>Asset references across JSON.</strong> Fonts, sprites and audio clips are serialised as references, not embedded binaries. Exporting a theme and importing it into a project that lacks those assets restores every color and number, and leaves the asset slots empty. Colors, gradients and numbers are always fully portable.</div>
+
+<h3>Palette import</h3>
+
+<p><code>LcPaletteImport</code> reads palettes from formats designers already produce &mdash; no manual retyping of hex codes.</p>
+
+<pre class="lc-code"><code>using Lucent.Theme;
+
+// Detect the format automatically
+LcPalette p = LcPaletteImport.Import(fileText, paletteName: "brand");
+
+// Or be explicit
+LcPalette gpl = LcPaletteImport.FromGpl(gimpText, "brand");        // GIMP .gpl
+LcPalette hex = LcPaletteImport.FromHexList(hexText, "brand");      // one hex per line
+LcPalette css = LcPaletteImport.FromCssVariables(cssText, "brand"); // --token: #rrggbb
+
+LcPaletteFormat detected = LcPaletteImport.Detect(fileText);
+
+if (LcPaletteImport.TryParseCssColor("#7C3AED", out Color32 c)) { /* ... */ }
+</code></pre>
+
+<p>The Theme Designer exposes the same importer behind a file picker accepting <code>gpl</code>, <code>txt</code>, <code>css</code>, <code>hex</code> and <code>csv</code>.</p>
+</section>
+
+<section id="designer">
+<h2>Theme Designer</h2>
+
+<p>Open it from either <code>Window &rarr; Lucent UI &rarr; Theme Designer</code> or <code>Tools &rarr; Lucent UI &rarr; Theme Designer</code>.</p>
+
+<p>Assign a theme at the top of the window; everything below edits that asset in place, and every edit is recorded with <code>Undo</code>, so <kbd>Ctrl</kbd>+<kbd>Z</kbd> behaves exactly as it does in the inspector.</p>
+
+<h3>Sections</h3>
+
+<table>
+<thead><tr><th>Foldout</th><th>What you can do</th></tr></thead>
+<tbody>
+<tr><td><strong>Color Tokens</strong></td><td>Edit every color token with a color field.</td></tr>
+<tr><td><strong>Gradient Tokens</strong></td><td>Set shape, angle and start/end colors per gradient.</td></tr>
+<tr><td><strong>Font Token</strong></td><td>Assign the font and its size scale.</td></tr>
+<tr><td><strong>Palettes</strong></td><td>Add palettes, pick the active one, import from file.</td></tr>
+</tbody>
+</table>
+
+<h3>Semantic presets</h3>
+
+<p>One-click <strong>Dark</strong>, <strong>Light</strong> and <strong>High Contrast</strong> buttons load a complete built-in theme into the asset you are editing &mdash; the fastest way to get a coherent starting point before customising.</p>
+
+<h3>Live preview</h3>
+
+<p>A preview strip renders representative UI with the current tokens, so a change to <code>color.surface</code> or <code>radius.md</code> is visible immediately, without entering play mode.</p>
+
+<h3>Applying a theme across the scene</h3>
+
+<p><code>LcThemeApply.Apply(theme)</code> walks the scene and assigns the theme to every component exposing an <code>LcTheme</code> serialized field &mdash; public or <code>[SerializeField]</code> private &mdash; returning the number of components it touched.</p>
+
+<pre class="lc-code"><code>int touched = LcThemeApply.Apply(myTheme);
+</code></pre>
+
+<h3>Editor menu reference</h3>
+
+<table>
+<thead><tr><th>Menu path</th><th>Action</th></tr></thead>
+<tbody>
+<tr><td><code>Window &rarr; Lucent UI &rarr; Theme Designer</code></td><td>Open the designer.</td></tr>
+<tr><td><code>Tools &rarr; Lucent UI &rarr; Theme Designer</code></td><td>Open the designer.</td></tr>
+<tr><td><code>Assets &rarr; Create &rarr; Lucent UI &rarr; Theme</code></td><td>New empty theme asset.</td></tr>
+<tr><td><code>Assets &rarr; Create &rarr; Lucent UI &rarr; Palette</code></td><td>New palette asset.</td></tr>
+<tr><td><code>Assets &rarr; Create &rarr; Lucent UI &rarr; Theme Preset &rarr; Dark / Light / High Contrast</code></td><td>New theme from a built-in preset.</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="compat">
+<h2>Compatibility</h2>
+
+<table>
+<thead><tr><th>Area</th><th>Support</th></tr></thead>
+<tbody>
+<tr><td>Render pipelines</td><td>Built-in, URP, HDRP &mdash; no pipeline dependency</td></tr>
+<tr><td>Platforms</td><td>All Unity targets, including WebGL</td></tr>
+<tr><td>Scripting backend</td><td>Mono, IL2CPP</td></tr>
+<tr><td>UI systems</td><td>Engine-agnostic token store &mdash; usable from uGUI, UI Toolkit or your own renderer</td></tr>
+<tr><td>Source</td><td>Full C# source included</td></tr>
+<tr><td>JSON schema</td><td><code>lucent.theme</code> version 1</td></tr>
+<tr><td>Palette formats</td><td>GIMP <code>.gpl</code>, hex lists, CSS custom properties</td></tr>
+</tbody>
+</table>
+
+<p>Because the theme is a plain token store, nothing in this package assumes uGUI. Its resolvers return <code>Color32</code>, <code>float</code>, <code>Font</code>, <code>Sprite</code> and <code>AudioClip</code> &mdash; feed them to whatever draws your UI.</p>
+</section>
+
+<section id="faq">
+<h2>FAQ &amp; Troubleshooting</h2>
+
+<h3>Does this automatically restyle my existing UI?</h3>
+<p>No, and that is deliberate. Lumina Theme is the token store and authoring tool; you decide which components read from it. The consumer pattern in <a href="#runtime">Runtime Switching</a> is about eight lines. <code>LcThemeApply.Apply</code> automates <em>assigning</em> the theme to components that already expose an <code>LcTheme</code> field.</p>
+
+<h3>Every color comes back the same wrong colour.</h3>
+<p>That is <code>FallbackColor</code> &mdash; the key is missing. Check spelling against the <code>LcColorKeys</code> constants, and confirm <code>ActivePalette</code> names a palette that actually exists.</p>
+
+<h3>I changed a token from code but nothing updated.</h3>
+<p>The setters raise <code>Changed</code> automatically. If you mutated an array in place instead, call <code>MarkChanged()</code>. Also confirm your consumer subscribed to <code>LcThemeManager.Changed</code>.</p>
+
+<h3>A theme swap did nothing.</h3>
+<p>Check the return value of <code>RebindAll</code>, or read <code>ConsumerCount</code>. Zero means no consumer is subscribed &mdash; usually a component that subscribes in <code>OnEnable</code> but was never enabled.</p>
+
+<h3>Which contrast threshold applies to my label?</h3>
+<p>Large text is 18pt or larger, or 14pt bold; everything else is normal text. When unsure, use the normal-text threshold &mdash; it is stricter.</p>
+
+<h3>My exported JSON lost the fonts.</h3>
+<p>Expected. Asset references cannot survive a plain JSON document into a project that lacks those assets. Colors, gradients and numbers always round-trip.</p>
+
+<h3>Can several themes be active at once?</h3>
+<p>One global active theme, plus any number of local overrides. A component with its own <code>LcTheme</code> reference keeps it; <code>Effective()</code> resolves the precedence.</p>
+
+<h3>Is it safe with managed code stripping?</h3>
+<p>Yes. Token lookup is dictionary-based over strings, not reflection over types.</p>
+</section>
+
+<section id="api-index">
+<h2>API Index</h2>
+
+<div class="lc-api-group">
+<h3>Theme <span class="badge">Lucent.Theme</span></h3>
+<ul class="lc-syms">
+<li><code>LcTheme</code></li>
+<li><code>LcTheme.ResolveColor</code></li>
+<li><code>LcTheme.TryResolveColor</code></li>
+<li><code>LcTheme.TryResolveGradient</code></li>
+<li><code>LcTheme.TryResolveNumber</code></li>
+<li><code>LcTheme.ResolveNumber</code></li>
+<li><code>LcTheme.TryResolveFont</code></li>
+<li><code>LcTheme.TryResolveFontAsset</code></li>
+<li><code>LcTheme.TryResolveSprite</code></li>
+<li><code>LcTheme.TryResolveAudio</code></li>
+<li><code>LcTheme.SetColor</code></li>
+<li><code>LcTheme.SetGradient</code></li>
+<li><code>LcTheme.SetNumber</code></li>
+<li><code>LcTheme.SetFont</code></li>
+<li><code>LcTheme.SetSprite</code></li>
+<li><code>LcTheme.SetAudio</code></li>
+<li><code>LcTheme.AddPalette</code></li>
+<li><code>LcTheme.CopyFrom</code></li>
+<li><code>LcTheme.MarkChanged</code></li>
+<li><code>LcTheme.ColorResolver</code></li>
+<li><code>LcTheme.Changed</code></li>
+</ul>
+</div>
+
+<div class="lc-api-group">
+<h3>Manager <span class="badge">static</span></h3>
+<ul class="lc-syms">
+<li><code>LcThemeManager.Active</code></li>
+<li><code>LcThemeManager.HasActiveTheme</code></li>
+<li><code>LcThemeManager.ConsumerCount</code></li>
+<li><code>LcThemeManager.SetActiveTheme</code></li>
+<li><code>LcThemeManager.ClearActiveTheme</code></li>
+<li><code>LcThemeManager.RebindAll</code></li>
+<li><code>LcThemeManager.Effective</code></li>
+<li><code>LcThemeManager.Changed</code></li>
+</ul>
+</div>
+
+<div class="lc-api-group">
+<h3>Tokens <span class="badge">keys &amp; types</span></h3>
+<ul class="lc-syms">
+<li><code>LcColorKeys</code></li>
+<li><code>LcGradientKeys</code></li>
+<li><code>LcNumberKeys</code></li>
+<li><code>LcAssetKeys</code></li>
+<li><code>LcColorToken</code></li>
+<li><code>LcGradientToken</code></li>
+<li><code>LcColorStop</code></li>
+<li><code>LcNumberToken</code></li>
+<li><code>LcFontToken</code></li>
+<li><code>LcAudioToken</code></li>
+<li><code>LcTokenCategory</code></li>
+<li><code>LcGradientShape</code></li>
+<li><code>LcThemeId</code></li>
+</ul>
+</div>
+
+<div class="lc-api-group">
+<h3>Palettes <span class="badge">Lucent.Theme</span></h3>
+<ul class="lc-syms">
+<li><code>LcPalette</code></li>
+<li><code>LcPalette.TryResolve</code></li>
+<li><code>LcPalette.HasColorBlindSafe</code></li>
+<li><code>LcPaletteImport.Import</code></li>
+<li><code>LcPaletteImport.Detect</code></li>
+<li><code>LcPaletteImport.FromGpl</code></li>
+<li><code>LcPaletteImport.FromHexList</code></li>
+<li><code>LcPaletteImport.FromCssVariables</code></li>
+<li><code>LcPaletteImport.TryParseCssColor</code></li>
+<li><code>LcPaletteFormat</code></li>
+</ul>
+</div>
+
+<div class="lc-api-group">
+<h3>Contrast &amp; presets <span class="badge">static</span></h3>
+<ul class="lc-syms">
+<li><code>LcContrast.Ratio</code></li>
+<li><code>LcContrast.RelativeLuminance</code></li>
+<li><code>LcContrast.MeetsAA</code></li>
+<li><code>LcContrast.MeetsAAA</code></li>
+<li><code>LcContrast.AaNormal</code></li>
+<li><code>LcContrast.AaLarge</code></li>
+<li><code>LcContrast.AaaNormal</code></li>
+<li><code>LcContrast.AaaLarge</code></li>
+<li><code>LcSemanticThemes.Create</code></li>
+<li><code>LcSemanticThemes.CreateDark</code></li>
+<li><code>LcSemanticThemes.CreateLight</code></li>
+<li><code>LcSemanticThemes.CreateHighContrast</code></li>
+<li><code>LcSemanticThemes.CreateScientific</code></li>
+<li><code>LcSemanticThemes.CreateFinancial</code></li>
+<li><code>LcSemanticThemes.DefaultNumbers</code></li>
+</ul>
+</div>
+
+<div class="lc-api-group">
+<h3>Serialization &amp; editor <span class="badge">Lucent.Theme(.Editor)</span></h3>
+<ul class="lc-syms">
+<li><code>LcThemeJson.Export</code></li>
+<li><code>LcThemeJson.Import</code></li>
+<li><code>LcThemeJson.Schema</code></li>
+<li><code>LcThemeJson.SchemaVersion</code></li>
+<li><code>LcThemeDesignerWindow</code></li>
+<li><code>LcThemeApply.Apply</code></li>
+</ul>
+</div>
+</section>
+
+  </main>
+  <footer class="lc-footer">
+    <p><strong>Lumina Theme</strong> 0.1.0 &mdash; ScriptableObject themes, design tokens, palettes and WCAG AA/AAA contrast for Unity. Targets Unity 6000.0.62f1+ &middot; one mandatory dependency (<code>com.unity.ugui</code>) &middot; no render-pipeline dependency.</p>
+    <p>Questions, bug reports, or feature requests &mdash; include your Unity version and target platform: <a href="mailto:szekipapa77@gmail.com">szekipapa77@gmail.com</a></p>
+    <p class="meta">&copy; 2026 Lumina Theme. Documentation generated as a single self-contained file &mdash; works offline and on GitHub Pages.</p>
+  </footer>
+</div>
 </body>
 </html>

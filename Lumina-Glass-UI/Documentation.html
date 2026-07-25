@@ -3,145 +3,825 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lumina Glass UI — Documentation</title>
+<title>Lumina Glass UI &mdash; Documentation</title>
 <style>
-  :root{--accent:#3fe0ff;--bg:#0e1116;--panel:#161b22;--panel2:#1c2230;--ink:#e6edf3;--mut:#9aa7b4;--line:#2a3340;--code:#0b0f14;}
-  *{box-sizing:border-box}
-  body{margin:0;font:16px/1.65 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
-  header{padding:48px 24px 40px;background:radial-gradient(1200px 400px at 20% -10%,rgba(63,224,255,.18),transparent),var(--panel);border-bottom:1px solid var(--line)}
-  .wrap{max-width:900px;margin:0 auto;padding:0 24px}
-  h1{margin:0 0 6px;font-size:34px;letter-spacing:.3px}
-  h1 span{color:var(--accent)}
-  .tag{color:var(--mut);font-size:18px;margin:0}
-  h2{margin:40px 0 12px;font-size:23px;border-bottom:1px solid var(--line);padding-bottom:8px}
-  h3{margin:26px 0 8px;font-size:18px;color:var(--accent)}
-  code,pre{font-family:"JetBrains Mono",Consolas,Menlo,monospace}
-  code{background:var(--panel2);padding:2px 6px;border-radius:5px;font-size:14px;color:#cfe9ff}
-  pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:16px;overflow:auto;font-size:13.5px;line-height:1.55}
-  pre code{background:none;padding:0;color:#d6e2ee}
-  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14.5px}
-  th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
-  th{background:var(--panel2)}
-  .path{background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:6px;padding:8px 12px;margin:8px 0;font-family:"JetBrains Mono",Consolas,monospace;font-size:13.5px}
-  .note{background:rgba(63,224,255,.07);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:12px 16px;margin:14px 0}
-  .warn{background:rgba(255,196,64,.08);border-left-color:#ffc440}
-  ul{padding-left:22px}
-  footer{margin-top:48px;padding:26px 0 60px;color:var(--mut);border-top:1px solid var(--line);font-size:14px}
-  a{color:var(--accent)}
-  .pill{display:inline-block;background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:13px;color:var(--mut);margin:2px 6px 2px 0}
+:root{
+  --bg0:#0E0B16; --bg1:#171122; --bg2:#221A33;
+  --accent:#7C3AED; --accent-hi:#A78BFA; --glow2:#22D3EE;
+  --text0:#ECEAF5; --text1:#A79FC2;
+  --line:#2C2342; --line-soft:#241B38;
+  --code-bg:#120D1E; --sidebar-w:286px;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; background:var(--bg0); color:var(--text0);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px; line-height:1.65; -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent-hi); text-decoration:none;}
+a:hover{color:var(--glow2); text-decoration:underline;}
+
+/* ---------- Sidebar ---------- */
+.lc-sidebar{
+  position:fixed; top:0; left:0; bottom:0; width:var(--sidebar-w);
+  background:linear-gradient(180deg,#1a1329 0%,var(--bg1) 100%);
+  border-right:1px solid var(--line); overflow-y:auto; padding:22px 0 40px;
+  z-index:20;
+}
+.lc-brand{padding:0 22px 16px; border-bottom:1px solid var(--line-soft); margin-bottom:14px;}
+.lc-brand .logo{display:flex; align-items:center; gap:10px;}
+.lc-brand .dot{
+  width:22px; height:22px; border-radius:7px;
+  background:linear-gradient(135deg,var(--accent) 0%,var(--glow2) 100%);
+  box-shadow:0 0 14px rgba(124,58,237,.6);
+}
+.lc-brand .name{font-size:18px; font-weight:700; letter-spacing:.2px;}
+.lc-brand .ver{font-size:11.5px; color:var(--text1); margin-top:8px; line-height:1.5;}
+.lc-brand .ver code{background:none; color:var(--accent-hi); padding:0;}
+.lc-nav{list-style:none; margin:0; padding:0 12px;}
+.lc-nav li{margin:1px 0;}
+.lc-nav a{
+  display:block; padding:7px 12px; border-radius:8px; color:var(--text1);
+  font-size:13.5px; font-weight:500; border-left:2px solid transparent;
+}
+.lc-nav a:hover{background:var(--bg2); color:var(--text0); text-decoration:none;}
+.lc-nav a .num{color:var(--accent-hi); font-variant-numeric:tabular-nums; margin-right:8px; font-size:12px;}
+.lc-nav .sep{margin:12px 12px 6px; padding-top:12px; border-top:1px solid var(--line-soft);
+  font-size:10.5px; letter-spacing:1.4px; text-transform:uppercase; color:#6f6593;}
+
+/* ---------- Layout ---------- */
+.lc-main{margin-left:var(--sidebar-w); padding:0;}
+.lc-header{
+  position:sticky; top:0; z-index:10;
+  background:rgba(14,11,22,.82); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line); padding:18px 48px;
+}
+.lc-header h1{margin:0; font-size:22px; font-weight:700; letter-spacing:.2px;}
+.lc-header .tag{margin:5px 0 0; color:var(--text1); font-size:14px;}
+.lc-header .pill{
+  display:inline-block; margin-top:0; margin-left:10px; vertical-align:middle;
+  font-size:11px; font-weight:600; color:var(--glow2);
+  border:1px solid rgba(34,211,238,.35); background:rgba(34,211,238,.08);
+  padding:2px 9px; border-radius:999px; letter-spacing:.3px;
+}
+.lc-content{max-width:920px; padding:8px 48px 80px;}
+section{padding-top:26px; scroll-margin-top:84px;}
+
+/* ---------- Typography ---------- */
+h2{
+  font-size:27px; font-weight:700; margin:34px 0 14px; letter-spacing:.1px;
+  padding-bottom:12px; border-bottom:1px solid var(--line);
+}
+h2:after{content:""; display:block; width:56px; height:3px; margin-top:12px;
+  background:linear-gradient(90deg,var(--accent),var(--glow2)); border-radius:2px;}
+h3{font-size:18.5px; font-weight:650; margin:30px 0 10px; color:var(--text0);}
+p{margin:13px 0;}
+strong{color:var(--text0); font-weight:650;}
+em{color:var(--accent-hi); font-style:italic;}
+ul,ol{padding-left:22px;}
+li{margin:6px 0;}
+
+/* ---------- Inline code ---------- */
+code{
+  font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  font-size:13px; background:var(--bg2); color:#d9cffb;
+  padding:1.5px 6px; border-radius:5px; border:1px solid var(--line-soft);
+}
+
+/* ---------- Code blocks ---------- */
+pre.lc-code{
+  background:var(--code-bg); border:1px solid var(--line);
+  border-left:3px solid var(--accent); border-radius:10px;
+  padding:16px 18px; overflow-x:auto; margin:16px 0; line-height:1.55;
+  box-shadow:0 8px 24px rgba(0,0,0,.28);
+}
+pre.lc-code code{
+  background:none; border:none; padding:0; color:#cfc6ea; font-size:13px;
+  white-space:pre;
+}
+
+/* ---------- Callout ---------- */
+.lc-note{
+  background:linear-gradient(90deg,rgba(124,58,237,.12),rgba(34,211,238,.05));
+  border:1px solid var(--line); border-left:3px solid var(--glow2);
+  border-radius:10px; padding:13px 18px; margin:18px 0; color:var(--text0);
+  font-size:14.5px;
+}
+.lc-note strong:first-child{color:var(--glow2);}
+
+/* ---------- Win lists ---------- */
+ul.lc-win{list-style:none; padding-left:4px; margin:18px 0;}
+ul.lc-win li{
+  position:relative; padding:8px 8px 8px 34px; margin:7px 0;
+  background:var(--bg1); border:1px solid var(--line-soft); border-radius:9px;
+  font-size:14.5px;
+}
+ul.lc-win li:before{
+  content:"\2713"; position:absolute; left:11px; top:8px;
+  color:var(--bg0); background:linear-gradient(135deg,var(--accent),var(--glow2));
+  width:17px; height:17px; border-radius:5px; font-size:11px; font-weight:800;
+  display:flex; align-items:center; justify-content:center; line-height:1;
+  box-shadow:0 0 10px rgba(124,58,237,.45);
+}
+
+/* ---------- Tables ---------- */
+table{border-collapse:collapse; width:100%; margin:18px 0; font-size:14px;
+  background:var(--bg1); border:1px solid var(--line); border-radius:10px; overflow:hidden;}
+thead th{
+  background:var(--bg2); color:var(--accent-hi); text-align:left;
+  padding:10px 14px; font-weight:650; border-bottom:1px solid var(--line);
+}
+tbody td{padding:9px 14px; border-bottom:1px solid var(--line-soft); color:var(--text0);}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:rgba(124,58,237,.06);}
+
+/* ---------- API index ---------- */
+.lc-api-group{margin:22px 0;}
+.lc-api-group h3{
+  display:flex; align-items:center; gap:10px; margin-bottom:8px;
+}
+.lc-api-group h3 .badge{
+  font-size:11px; font-weight:600; color:var(--text1);
+  border:1px solid var(--line); border-radius:999px; padding:1px 9px;
+}
+.lc-syms{display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 0; padding:0; list-style:none;}
+.lc-syms li{margin:0;}
+.lc-syms code{
+  font-size:12px; background:var(--bg1); border:1px solid var(--line);
+  color:#cdbff7; padding:3px 8px; border-radius:6px; display:inline-block;
+}
+
+/* ---------- Footer ---------- */
+.lc-footer{
+  border-top:1px solid var(--line); margin-top:40px; padding:26px 48px 60px;
+  color:var(--text1); font-size:13.5px; margin-left:0;
+}
+.lc-footer a{font-weight:600;}
+.lc-footer .meta{margin-top:8px; font-size:12.5px; color:#6f6593;}
+
+/* ---------- Responsive ---------- */
+@media (max-width:900px){
+  :root{--sidebar-w:0px;}
+  .lc-sidebar{position:static; width:100%; height:auto; border-right:none;
+    border-bottom:1px solid var(--line); padding-bottom:18px;}
+  .lc-main{margin-left:0;}
+  .lc-nav{columns:2; column-gap:8px;}
+  .lc-header,.lc-content,.lc-footer{padding-left:20px; padding-right:20px;}
+  h2{font-size:23px;}
+}
 </style>
 </head>
 <body>
-<header><div class="wrap">
-  <h1>Lumina <span>Glass UI</span></h1>
-  <p class="tag">Liquid glass, background blur &amp; procedural UI effects for Unity uGUI.</p>
-  <div style="margin-top:14px">
-    <span class="pill">Unity 6000.0.62f1+</span><span class="pill">URP</span><span class="pill">uGUI</span>
-    <span class="pill">100% procedural</span><span class="pill">IL2CPP / WebGL</span>
+<nav class="lc-sidebar">
+  <div class="lc-brand">
+    <div class="logo"><span class="dot"></span><span class="name">Lumina Glass UI</span></div>
+    <div class="ver">Frosted glass, blur, glow &amp; shadow for uGUI<br>v0.1.0 &middot; Unity <code>6000.0.62f1</code>+</div>
   </div>
-</div></header>
-<main class="wrap">
+  <ul class="lc-nav">
+    <li><a href="#overview"><span class="num">1</span>Overview</a></li>
+    <li><a href="#install"><span class="num">2</span>Installation &amp; Requirements</a></li>
+    <li><a href="#blur-setup"><span class="num">3</span>Blur Setup (URP)</a></li>
+    <li><a href="#blur-panel"><span class="num">4</span>Blur Panel</a></li>
+    <li><a href="#glass"><span class="num">5</span>Liquid Glass</a></li>
+    <li><a href="#shadow"><span class="num">6</span>Drop Shadow</a></li>
+    <li><a href="#glow"><span class="num">7</span>Glow</a></li>
+    <li><a href="#outline"><span class="num">8</span>Outline</a></li>
+    <li><a href="#neumorphism"><span class="num">9</span>Neumorphism &amp; Inner Shadow</a></li>
+    <li><a href="#stacking"><span class="num">10</span>Stacking &amp; Layers</a></li>
+    <li><a href="#theming"><span class="num">11</span>Theme Tokens</a></li>
+    <li><a href="#builtin"><span class="num">12</span>Built-in RP Fallback</a></li>
+    <li><a href="#editor-tools"><span class="num">13</span>Editor Tools</a></li>
+    <li><a href="#perf"><span class="num">14</span>Performance</a></li>
+    <li><a href="#compat"><span class="num">15</span>Compatibility</a></li>
+    <li><a href="#faq"><span class="num">16</span>FAQ &amp; Troubleshooting</a></li>
+    <li class="sep">Reference</li>
+    <li><a href="#api-index"><span class="num">&sect;</span>API Index</a></li>
+  </ul>
+</nav>
+<div class="lc-main">
+  <header class="lc-header">
+    <h1>Lumina Glass UI <span class="pill">Unity 6000.0.62f1+</span></h1>
+    <p class="tag">GPU frosted panels, refractive glass, and six composable geometry effects on ordinary uGUI elements.</p>
+  </header>
+  <main class="lc-content">
 
-<h2>1. Overview</h2>
-<p>Lumina Glass UI renders real-time <strong>liquid glass, background blur, drop shadow, glow, outline and
-pressed-panel</strong> effects directly on uGUI elements. Everything is procedural — no sprites, no
-<code>.mat</code> files — so it stays crisp at any resolution and composes into a single mesh per element.
-The blur-behind and liquid-glass effects use a URP renderer feature that installs itself automatically; a
-Built-in Render Pipeline CommandBuffer fallback is also included.</p>
+<section id="overview">
+<h2>Overview</h2>
 
-<h2>2. Requirements</h2>
-<ul>
-  <li>Unity <strong>6000.0.62f1</strong> or newer.</li>
-  <li><strong>Universal Render Pipeline (URP)</strong> for blur / liquid glass — package
-    <code>com.unity.render-pipelines.universal</code>. (Built-in RP works via the CommandBuffer fallback.)</li>
-  <li><code>com.unity.ugui</code> — present in every Unity project.</li>
+<p><strong>Lumina Glass UI</strong> brings the frosted-glass panel and the soft-shadow/glow vocabulary of modern OS interfaces to Unity's uGUI, without render textures, without a second camera, and without pre-baked shadow sprites.</p>
+
+<ul class="lc-win">
+<li><strong>Blur panel</strong> &mdash; a real GPU backdrop blur with vibrancy, tint, grain and four quality levels.</li>
+<li><strong>Liquid glass</strong> &mdash; refraction, chromatic aberration, edge glint, gloss and a bevel with a controllable light angle.</li>
+<li><strong>Drop shadow</strong> &mdash; offset, blur and spread cast from the element's real silhouette.</li>
+<li><strong>Glow</strong> &mdash; uniform or per-side reach, additive blending, four named presets and an animated pulse.</li>
+<li><strong>Outline</strong> &mdash; inner/center/outer alignment, drawn above or below the glow.</li>
+<li><strong>Neumorphism &amp; inner shadow</strong> &mdash; the paired light/dark cast, and inset depth.</li>
+<li><strong>URP auto-installer</strong> &mdash; one menu command wires the blur renderer feature into every active renderer.</li>
+<li><strong>Built-in RP fallback</strong> &mdash; a CommandBuffer path so blur is not URP-only.</li>
 </ul>
 
-<h2>3. Installation</h2>
-<ol>
-  <li>Import <code>Lumina Glass UI.unitypackage</code> (<em>Assets ▸ Import Package ▸ Custom Package…</em>).</li>
-  <li>On first import the URP blur renderer feature is auto-installed. You can re-run it any time:</li>
-</ol>
-<div class="path">Tools ▸ Lucent UI ▸ Install Blur Renderer Feature</div>
-<div class="note">The installer is <strong>idempotent</strong> — running it twice never adds a duplicate
-feature. It edits the active URP renderer exactly the way Unity's own “+ Add Renderer Feature” button does.</div>
+<h3>Silhouette-accurate, not box-accurate</h3>
 
-<h2>4. Quick start</h2>
-<ol>
-  <li>Create an effect from the menu (a Canvas + EventSystem are created automatically if absent):</li>
-</ol>
-<div class="path">GameObject ▸ Lucent UI ▸ Effects ▸ Liquid Glass Card</div>
-<ol start="2">
-  <li>Place a colorful image or 3D scene <em>behind</em> the card in the hierarchy.</li>
-  <li>Press <strong>Play</strong> — the background is blurred and refracted through the glass in real time.</li>
-</ol>
-<div class="note warn">If the blur looks like a flat tint, run <em>Tools ▸ Lucent UI ▸ Install Blur Renderer
-Feature</em> once, then re-enter Play. This means the URP renderer feature wasn’t registered yet.</div>
+<p>Every effect is cast from the element's actual outline via <code>ILcSilhouetteSource</code>, not from its bounding box. A shadow under a circle is round; a glow around a star has points. This is the difference from Unity's built-in <code>Shadow</code> and <code>Outline</code> components, which duplicate the mesh at an offset and cannot soften or spread.</p>
 
-<h2>5. Effects reference</h2>
-<p>Each menu item drops a pre-configured <code>LcShape</code> with the matching effect component(s).</p>
+<div class="lc-note"><strong>Scope.</strong> Lumina Glass UI is the effects pack. It bundles the Lucent render spine, shape generators, motion engine and theme runtime because the effects depend on them &mdash; so procedural shapes are included and usable. It does not include the full shape authoring tooling of <em>Lumina Shapes</em>, the Theme Designer of <em>Lumina Theme</em>, or any widgets, charts or scroll views.</div>
+</section>
+
+<section id="install">
+<h2>Installation &amp; Requirements</h2>
+
 <table>
-  <tr><th>Menu (GameObject ▸ Lucent UI ▸ Effects ▸ …)</th><th>Component</th><th>Key spec fields</th></tr>
-  <tr><td>Shadowed Panel</td><td><code>LcShadow</code></td><td><code>Spec.Color</code>, <code>Offset</code>, <code>Blur</code>, <code>Spread</code></td></tr>
-  <tr><td>Glowing Card</td><td><code>LcGlow</code></td><td><code>Spec.Color</code>, <code>Radius</code>, <code>Intensity</code></td></tr>
-  <tr><td>Outlined Shape</td><td><code>LcOutline</code></td><td><code>Spec.Color</code>, <code>Width</code>, <code>Align</code>, <code>OnTop</code></td></tr>
-  <tr><td>Pressed Panel</td><td><code>LcInnerShadow</code></td><td><code>Spec.Color</code>, <code>Offset</code>, <code>Blur</code></td></tr>
-  <tr><td>Blur Panel</td><td><code>LcBlurPanel</code></td><td><code>Spec.Quality</code>, <code>CornerRadius</code>, <code>Tint</code></td></tr>
-  <tr><td>Liquid Glass Card</td><td><code>LcGlass</code></td><td><code>Spec</code> (+ <code>Squircle</code>, <code>Vibrancy</code>), <code>GlassSpec.NativeShadow</code></td></tr>
+<thead><tr><th>Requirement</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td>Unity</td><td><code>6000.0.62f1</code> or newer</td></tr>
+<tr><td>Mandatory dependency</td><td><code>com.unity.ugui</code></td></tr>
+<tr><td>For blur &amp; glass</td><td><strong>URP</strong> (<code>com.unity.render-pipelines.universal</code>), or the Built-in RP fallback</td></tr>
+<tr><td>Geometry effects</td><td>No pipeline dependency &mdash; shadow, glow, outline, neumorphism and inner shadow work everywhere</td></tr>
+<tr><td>Scripting backend</td><td>Mono and IL2CPP</td></tr>
+<tr><td>Install path</td><td><code>Assets/Lucent/</code></td></tr>
+<tr><td>Assemblies</td><td>11 &mdash; core, render (+UGui), shapes, effects (+URP, +Built-in), motion, theme, editor</td></tr>
+<tr><td>Namespaces</td><td><code>Lucent.Effects</code>, <code>Lucent.Shapes</code>, <code>Lucent.Render</code>, <code>Lucent.Theme</code></td></tr>
+<tr><td>Shaders</td><td>4 shaders + 1 compute + 1 cginc</td></tr>
+</tbody>
 </table>
-<p>To add an effect manually: put an <code>LcShape</code> on a Canvas child, then <em>Add Component</em> and
-type the effect name (e.g. <code>Lc Glow</code>). Blur/glass panels also want an <code>LcBlurManager</code> in
-the scene — it is auto-created at runtime, or add one for an authored scene.</p>
 
-<h2>6. Scripting</h2>
-<h3>Add a soft shadow in code</h3>
-<pre><code>using Lucent.Shapes;
-using Lucent.Effects;
-using Lucent.Render;
-using UnityEngine;
+<div class="lc-note"><strong>HDRP.</strong> The HDRP blur variant is deliberately excluded. Shipping it would make the package depend on the HDRP package, which would break every URP-only project that imports it. The geometry effects still work under HDRP; the GPU blur path does not.</div>
 
-var go = new GameObject("Card", typeof(RectTransform));
-go.transform.SetParent(canvas.transform, false);
+<div class="lc-note"><strong>Multi-pack projects.</strong> Every Lumina pack installs under <code>Assets/Lucent</code> and shares its core files with identical GUIDs, so importing several packs is an idempotent overwrite &mdash; never duplicate assemblies.</div>
+</section>
 
-var shape = go.AddComponent&lt;LcShape&gt;();
-shape.ShapeKind = LcShapeKind.RoundedRect;
-shape.SetUniformRadius(20f);
-shape.SetFillColor(new Color32(24, 28, 36, 255));
+<section id="blur-setup">
+<h2>Blur Setup (URP)</h2>
+
+<p>The blur reads the scene colour behind the panel, which under URP requires a renderer feature. One menu command installs it into every active renderer:</p>
+
+<pre class="lc-code"><code>Tools &rarr; Lucent UI &rarr; Install Blur Renderer Feature</code></pre>
+
+<p>The command is validated &mdash; it greys out when the project has no URP target &mdash; and it is idempotent, so running it twice does not produce two features.</p>
+
+<pre class="lc-code"><code>using Lucent.Effects;   // editor assembly
+
+bool installed = LcBlurAutoInstaller.IsFeatureInstalled();
+bool hasUrp    = LcBlurAutoInstaller.HasUrpTarget();
+
+int count = LcBlurAutoInstaller.InstallIntoActiveRenderers(silent: true);
+</code></pre>
+
+<p>Query support at runtime before promising a frosted look:</p>
+
+<pre class="lc-code"><code>if (blurPanel.IsSupported) { /* real backdrop blur */ }
+else                       { /* fall back to a plain translucent fill */ }
+
+// Underlying capability flags
+LcPipeline pipeline = LcCapabilities.ActivePipeline;   // BuiltIn | Urp | Hdrp | Unknown
+bool grab           = LcCapabilities.SupportsSceneColorGrab;
+bool compute        = LcCapabilities.SupportsCompute;
+</code></pre>
+
+<div class="lc-note"><strong>WebGL and shader stripping.</strong> Blur shaders must survive the build. Keep them reachable &mdash; the package places them under a <code>Resources</code> folder for exactly this reason &mdash; or add them to <em>Always Included Shaders</em>. A panel that blurs in the editor and renders flat in a WebGL build is almost always a stripped shader.</div>
+</section>
+
+<section id="blur-panel">
+<h2>Blur Panel</h2>
+
+<p><code>LcBlurPanel</code> is the frosted surface. <strong>Add it:</strong> <code>Add Component &rarr; Lucent UI &rarr; Effects &rarr; Lc Blur Panel</code>, or create one ready-made with <code>GameObject &rarr; Lucent UI &rarr; Effects &rarr; Blur Panel</code>.</p>
+
+<pre class="lc-code"><code>using Lucent.Effects;
+
+var panel = go.AddComponent&lt;LcBlurPanel&gt;();
+
+var spec = panel.Spec;
+spec.Radius       = 24f;
+spec.Vibrancy     = 1.2f;
+spec.Tint         = new Color32(255, 255, 255, 24);
+spec.Opacity      = 0.9f;
+spec.Quality      = LcBlurQuality.High;
+spec.CornerRadius = 20f;
+spec.Squircle     = true;
+panel.Spec = spec;          // assigning re-applies
+
+panel.Apply();              // or force a refresh explicitly
+</code></pre>
+
+<table>
+<thead><tr><th><code>LcBlurPanelSpec</code></th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>Radius</code></td><td>Blur radius in pixels &mdash; the main cost driver.</td></tr>
+<tr><td><code>Vibrancy</code></td><td>Saturation boost on the blurred backdrop, as in a translucent OS panel.</td></tr>
+<tr><td><code>Brightness</code></td><td>Lightens or darkens the backdrop.</td></tr>
+<tr><td><code>Tint</code></td><td>Colour wash over the blur; alpha is its strength.</td></tr>
+<tr><td><code>Grain</code></td><td>0&ndash;1 film grain &mdash; hides banding on large soft gradients.</td></tr>
+<tr><td><code>Opacity</code></td><td>0&ndash;1 overall panel opacity.</td></tr>
+<tr><td><code>Quality</code></td><td><code>Low</code>, <code>Medium</code>, <code>High</code>, <code>Ultra</code>.</td></tr>
+<tr><td><code>CornerRadius</code></td><td>Rounded corners on the panel itself.</td></tr>
+<tr><td><code>Squircle</code></td><td>Continuous-curvature corners instead of circular.</td></tr>
+<tr><td><code>SuperellipseExponent</code></td><td>Squircle sharpness (minimum <code>2</code>).</td></tr>
+<tr><td><code>BlurUiBehind</code></td><td>Also blur UI drawn behind the panel, not just the scene.</td></tr>
+</tbody>
+</table>
+
+<h3>Quality</h3>
+
+<table>
+<thead><tr><th><code>LcBlurQuality</code></th><th>Use for</th></tr></thead>
+<tbody>
+<tr><td><code>Low</code></td><td>Low-end mobile, or many simultaneous panels.</td></tr>
+<tr><td><code>Medium</code></td><td>General mobile default.</td></tr>
+<tr><td><code>High</code></td><td>Desktop and console default.</td></tr>
+<tr><td><code>Ultra</code></td><td>Hero surfaces, large radii, marketing shots.</td></tr>
+</tbody>
+</table>
+
+<p><code>Grain</code> is the cheap fix for banding: a large radius over a smooth gradient will band on 8-bit displays, and a small amount of grain dithers it away far more cheaply than raising quality.</p>
+</section>
+
+<section id="glass">
+<h2>Liquid Glass</h2>
+
+<p><code>LcGlass</code> extends <code>LcBlurPanel</code>, so it has every blur setting <em>plus</em> the optical layer that makes a surface read as glass rather than as frosted plastic.</p>
+
+<p><strong>Add it:</strong> <code>Add Component &rarr; Lucent UI &rarr; Effects &rarr; Lc Glass</code>, or <code>GameObject &rarr; Lucent UI &rarr; Effects &rarr; Liquid Glass Card</code>.</p>
+
+<pre class="lc-code"><code>using Lucent.Effects;
+
+var glass = go.AddComponent&lt;LcGlass&gt;();
+
+var g = glass.GlassSpec;
+g.Refraction          = 0.04f;
+g.ChromaticAberration = 0.01f;
+g.EdgeGlint           = 0.8f;
+g.Gloss               = 0.35f;
+g.BevelWidth          = 6f;
+g.LightAngle          = 135f;
+g.NativeShadow        = true;
+glass.GlassSpec = g;
+</code></pre>
+
+<table>
+<thead><tr><th><code>LcGlassSpec</code></th><th>Range</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>Refraction</code></td><td>&ge; 0</td><td>How much the backdrop bends through the panel.</td></tr>
+<tr><td><code>ChromaticAberration</code></td><td>&ge; 0</td><td>Per-channel refraction split &mdash; the colour fringe at the edge.</td></tr>
+<tr><td><code>EdgeGlint</code></td><td>0&ndash;2</td><td>Bright specular catch along the rim.</td></tr>
+<tr><td><code>Gloss</code></td><td>0&ndash;1</td><td>Surface sheen &mdash; matte at 0, polished at 1.</td></tr>
+<tr><td><code>BevelWidth</code></td><td>&ge; 0</td><td>Width of the shaped edge that catches light.</td></tr>
+<tr><td><code>LightAngle</code></td><td>0&ndash;360</td><td>Direction of the virtual light, in degrees.</td></tr>
+<tr><td><code>NativeShadow</code></td><td>bool</td><td>Enable the built-in drop shadow (<code>glass.Shadow</code>).</td></tr>
+</tbody>
+</table>
+
+<div class="lc-note"><strong>Keep one light angle.</strong> <code>LightAngle</code> is per-panel, which means it is possible &mdash; and always wrong &mdash; to light two glass cards from different directions in the same screen. Pick one angle for the project and set it everywhere; inconsistent lighting is the single biggest tell that a glass UI is fake.</div>
+
+<p>Start subtle. <code>Refraction</code> around <code>0.02</code>&ndash;<code>0.05</code> reads as real glass; much more and text behind the panel becomes unreadable, which is a legibility problem, not a style.</p>
+</section>
+
+<section id="shadow">
+<h2>Drop Shadow</h2>
+
+<p><code>LcShadow</code> casts a soft shadow from the element's real silhouette.</p>
+
+<p><strong>Add it:</strong> <code>Add Component &rarr; Lucent UI &rarr; Effects &rarr; Lc Shadow</code>, or <code>GameObject &rarr; Lucent UI &rarr; Effects &rarr; Shadowed Panel</code>.</p>
+
+<pre class="lc-code"><code>using Lucent.Effects;
 
 var shadow = go.AddComponent&lt;LcShadow&gt;();
-shadow.Spec.Color  = new Color32(0, 0, 0, 110);
-shadow.Spec.Offset = new Vector2(0f, -8f);
-shadow.Spec.Blur   = 16f;
-shadow.Spec.Spread = 1f;</code></pre>
 
-<h3>Configure a liquid-glass card</h3>
-<pre><code>var glass = go.AddComponent&lt;LcGlass&gt;();
+shadow.Spec.Color  = new Color32(0, 0, 0, 90);   // alpha is the strength
+shadow.Spec.Offset = new Vector2(0f, -4f);       // y down = light from above
+shadow.Spec.Blur   = 12f;
+shadow.Spec.Spread = 2f;
+</code></pre>
 
-var spec = LcBlurPanelSpec.CreateDefault();
-spec.Quality             = LcBlurQuality.High;
-spec.Squircle            = true;
-spec.SuperellipseExponent= 4f;
-spec.CornerRadius        = 28f;
-spec.Vibrancy            = 1.25f;
-spec.Tint                = new Color32(255, 255, 255, 26);
-glass.Spec = spec;
-
-var gspec = LcGlassSpec.CreateDefault();
-gspec.NativeShadow = true;
-glass.GlassSpec = gspec;</code></pre>
-
-<h2>7. Troubleshooting</h2>
 <table>
-  <tr><th>Symptom</th><th>Fix</th></tr>
-  <tr><td>Blur shows a flat tint, no blur</td><td>Run <em>Tools ▸ Lucent UI ▸ Install Blur Renderer Feature</em>; confirm the project uses URP.</td></tr>
-  <tr><td>Effect invisible in a build</td><td>Shaders live under <code>Runtime/Shaders/Resources</code> and are Resources-referenced so they survive stripping — keep that folder intact.</td></tr>
-  <tr><td>Nothing renders</td><td>The element must be under a <code>Canvas</code>. Use the GameObject menu (it wires the Canvas for you).</td></tr>
+<thead><tr><th><code>LcDropShadowEffect</code></th><th>Default</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>Color</code></td><td>35% black</td><td>Tint; alpha is overall strength.</td></tr>
+<tr><td><code>ColorToken</code></td><td><code>""</code></td><td>Theme colour token; overrides <code>Color</code> when a theme is bound.</td></tr>
+<tr><td><code>Offset</code></td><td><code>(0, -4)</code></td><td>Surface-local pixels; x right, y up.</td></tr>
+<tr><td><code>Blur</code></td><td><code>8</code></td><td>Soft falloff radius in pixels.</td></tr>
+<tr><td><code>Spread</code></td><td><code>0</code></td><td>Dilate the silhouette <em>before</em> blurring.</td></tr>
+<tr><td><code>Blend</code></td><td><code>Normal</code></td><td>Compositing mode for the pass.</td></tr>
+<tr><td><code>CustomMaterial</code></td><td>&mdash;</td><td>Override the pass material entirely.</td></tr>
+</tbody>
 </table>
 
-<footer>
-  <strong>Lumina Glass UI</strong> · v1.0 · Unity 6000.0.62f1 · URP<br>
-  Support: <a href="mailto:szekipapa77@gmail.com">szekipapa77@gmail.com</a>
-</footer>
-</main>
+<p><strong><code>Spread</code> vs <code>Blur</code>.</strong> <code>Spread</code> grows the silhouette before the blur, so the shadow gets bigger while staying equally sharp. <code>Blur</code> softens without growing. A tight, deep shadow is high spread with low blur; an ambient occlusion look is low spread with high blur.</p>
+</section>
+
+<section id="glow">
+<h2>Glow</h2>
+
+<p><code>LcGlow</code> radiates colour outward from the silhouette. <strong>Add it:</strong> <code>Add Component &rarr; Lucent UI &rarr; Effects &rarr; Lc Glow</code>, or <code>GameObject &rarr; Lucent UI &rarr; Effects &rarr; Glowing Card</code>.</p>
+
+<pre class="lc-code"><code>using Lucent.Effects;
+
+var glow = go.AddComponent&lt;LcGlow&gt;();
+
+glow.Spec.Color     = new Color32(64, 224, 255, 255);
+glow.Spec.Radius    = 16f;
+glow.Spec.Intensity = 1f;
+glow.Spec.Blend     = LcBlendMode.Additive;   // true light-adding bloom
+</code></pre>
+
+<table>
+<thead><tr><th><code>LcGlowEffect</code></th><th>Default</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>Color</code></td><td>cyan</td><td>Glow colour.</td></tr>
+<tr><td><code>ColorToken</code></td><td><code>""</code></td><td>Theme token override.</td></tr>
+<tr><td><code>Radius</code></td><td><code>12</code></td><td>Outward reach in pixels.</td></tr>
+<tr><td><code>Intensity</code></td><td><code>1</code></td><td>Strength multiplier on the edge alpha.</td></tr>
+<tr><td><code>Blend</code></td><td><code>Normal</code></td><td><code>Additive</code> gives a real bloom.</td></tr>
+<tr><td><code>PerSide</code></td><td><code>false</code></td><td>Use <code>SideWidths</code> instead of one uniform radius.</td></tr>
+<tr><td><code>SideWidths</code></td><td>uniform 12</td><td><code>LcSideWidths</code> &mdash; Top, Right, Bottom, Left.</td></tr>
+</tbody>
+</table>
+
+<h3>Per-side glow</h3>
+
+<pre class="lc-code"><code>glow.Spec.PerSide    = true;
+glow.Spec.SideWidths = new LcSideWidths(top: 24f, right: 4f, bottom: 4f, left: 4f);
+
+var even = LcSideWidths.Uniform(12f);
+bool any = even.AnyPositive;
+</code></pre>
+
+<p>Per-side reach is how you suggest a light source above a control, or emphasise the leading edge of a selected item, without rotating anything.</p>
+
+<h3>Presets and pulsing</h3>
+
+<p><code>LcGlowPresetId</code> provides four named looks: <code>Soft</code>, <code>Neon</code>, <code>Ember</code> and <code>Aura</code> (plus <code>None</code>). <code>LcGlowPulse</code> animates a glow &mdash; add it for a breathing highlight on a focused or "new" element.</p>
+
+<pre class="lc-code"><code>Add Component &rarr; Lucent UI &rarr; Effects &rarr; Lc Glow Pulse</code></pre>
+
+<p>Reusable looks can be saved as assets: <code>Assets &rarr; Create &rarr; Lucent UI &rarr; Effects &rarr; Glow Style</code>, or <code>&hellip; &rarr; Animated Glow Preset</code> for the animated form.</p>
+</section>
+
+<section id="outline">
+<h2>Outline</h2>
+
+<p><code>LcOutline</code> strokes the silhouette. Unlike Unity's built-in <code>Outline</code>, which offsets duplicate copies of the mesh, this follows the real outline at a true width.</p>
+
+<pre class="lc-code"><code>using Lucent.Effects;
+using Lucent.Render;
+
+var outline = go.AddComponent&lt;LcOutline&gt;();
+
+outline.Spec.Color  = Color.white;
+outline.Spec.Width  = 2f;
+outline.Spec.Align  = LcStrokeAlign.Inner;   // Inner | Center | Outer
+outline.Spec.OnTop  = true;                  // paint above any glow
+</code></pre>
+
+<table>
+<thead><tr><th><code>LcOutlineEffect</code></th><th>Default</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>Color</code> / <code>ColorToken</code></td><td>white</td><td>Stroke colour, or a theme token.</td></tr>
+<tr><td><code>Width</code></td><td><code>2</code></td><td>Thickness in pixels.</td></tr>
+<tr><td><code>Align</code></td><td><code>Center</code></td><td>Inner keeps the footprint; Outer grows it.</td></tr>
+<tr><td><code>OnTop</code></td><td><code>true</code></td><td>Paint in the Overlay layer (above glow) rather than the Stroke layer.</td></tr>
+<tr><td><code>Blend</code></td><td><code>Normal</code></td><td>Compositing mode.</td></tr>
+</tbody>
+</table>
+
+<p>For a focus ring, <code>Inner</code> alignment is usually correct &mdash; the element keeps its exact layout footprint whether or not it is focused, so nothing reflows when focus moves.</p>
+</section>
+
+<section id="neumorphism">
+<h2>Neumorphism &amp; Inner Shadow</h2>
+
+<h3>Neumorphism</h3>
+
+<p><code>LcNeumorphism</code> casts the paired light and dark shadows of the soft-UI style in a single pass. <strong>Add it:</strong> <code>Add Component &rarr; Lucent UI &rarr; Effects &rarr; Lc Neumorphism</code>.</p>
+
+<pre class="lc-code"><code>var neu = go.AddComponent&lt;LcNeumorphism&gt;();
+
+neu.Spec.LightColor = new Color32(255, 255, 255, 140);
+neu.Spec.DarkColor  = new Color32(0, 0, 0, 120);
+neu.Spec.Offset     = new Vector2(6f, -6f);   // dark shadow; light mirrors it
+neu.Spec.Blur       = 10f;
+neu.Spec.Spread     = 0f;
+</code></pre>
+
+<p><code>Offset</code> is the cast for the <em>dark</em> shadow; the light shadow is mirrored automatically, so the pair stays consistent and you only set one direction.</p>
+
+<div class="lc-note"><strong>Accessibility.</strong> Neumorphism works by very low contrast between an element and its background &mdash; which is precisely what WCAG contrast minimums forbid. If you use it for interactive controls, carry the affordance in something else too: a border, a label, or a focus outline. <em>Lumina Theme</em> ships <code>LcContrast</code> for checking this.</div>
+
+<h3>Inner shadow</h3>
+
+<p><code>LcInnerShadow</code> casts depth <em>inward</em> from the edge &mdash; the pressed, inset or recessed look.</p>
+
+<pre class="lc-code"><code>var inner = go.AddComponent&lt;LcInnerShadow&gt;();
+
+inner.Spec.Color  = new Color32(0, 0, 0, 102);
+inner.Spec.Offset = new Vector2(0f, -4f);   // direction the light comes FROM
+inner.Spec.Blur   = 8f;
+</code></pre>
+
+<p><code>GameObject &rarr; Lucent UI &rarr; Effects &rarr; Pressed Panel</code> creates one configured. Note that inner shadow renders in the <code>Overlay</code> layer, above the fill &mdash; that is what makes it read as inset rather than as a shadow behind the element.</p>
+</section>
+
+<section id="stacking">
+<h2>Stacking &amp; Layers</h2>
+
+<p>Effects compose. Each declares the layer it paints into, and the layers always composite in a fixed order &mdash; so a shadow can never accidentally land on top of a fill.</p>
+
+<table>
+<thead><tr><th><code>LcDrawLayer</code></th><th>Order</th><th>Effects that target it</th></tr></thead>
+<tbody>
+<tr><td><code>Shadow</code></td><td>0 (back)</td><td><code>LcDropShadowEffect</code>, <code>LcNeumorphismEffect</code></td></tr>
+<tr><td><code>Fill</code></td><td>1</td><td>The element itself</td></tr>
+<tr><td><code>Stroke</code></td><td>2</td><td><code>LcOutlineEffect</code> when <code>OnTop</code> is false</td></tr>
+<tr><td><code>Glow</code></td><td>3</td><td><code>LcGlowEffect</code></td></tr>
+<tr><td><code>Overlay</code></td><td>4 (front)</td><td><code>LcInnerShadowEffect</code>, <code>LcOutlineEffect</code> when <code>OnTop</code> is true</td></tr>
+</tbody>
+</table>
+
+<h3>Blend modes</h3>
+
+<table>
+<thead><tr><th><code>LcBlendMode</code></th><th>Use for</th></tr></thead>
+<tbody>
+<tr><td><code>Normal</code></td><td>Default. Batches into the host mesh.</td></tr>
+<tr><td><code>Additive</code></td><td>True light-adding glow / bloom.</td></tr>
+<tr><td><code>Screen</code></td><td>Softer lightening than additive.</td></tr>
+<tr><td><code>Multiply</code></td><td>Darkening passes.</td></tr>
+</tbody>
+</table>
+
+<p><code>Normal</code> is the only mode that batches into the host mesh; the others need their own pass. Prefer <code>Normal</code> unless the look genuinely requires light addition.</p>
+
+<h3>Effect layers and motion</h3>
+
+<table>
+<thead><tr><th>Component</th><th>Role</th></tr></thead>
+<tbody>
+<tr><td><code>LcEffectLayer</code></td><td>Composites several effect sources into one surface. Add via <code>Lucent UI &rarr; Effects &rarr; Lc Effect Layer</code>.</td></tr>
+<tr><td><code>LcEffectMotion</code></td><td>Animates effect parameters over time.</td></tr>
+<tr><td><code>LcGraphicEffect</code></td><td>Applies an effect to any uGUI <code>Graphic</code>, not just Lucent shapes.</td></tr>
+</tbody>
+</table>
+
+<p><code>LcGraphicEffect</code> is the bridge for existing UI: point it at a stock <code>Image</code> or <code>Text</code> and it derives a silhouette through <code>LcSpriteSilhouette</code>, so you can shadow or glow UI you did not author with this package.</p>
+
+<h3>Writing a custom effect</h3>
+
+<p>Implement <code>ILcEffect</code>: declare a stable <code>LcTypeId</code>, a <code>TargetLayer</code>, whether you need the backbuffer, and an <code>Apply(LcEffectContext)</code>. Your effect then stacks with the built-in ones under the same rules.</p>
+</section>
+
+<section id="theming">
+<h2>Theme Tokens</h2>
+
+<p>Every colour-bearing effect accepts a <code>ColorToken</code> alongside its literal <code>Color</code>. When a theme is bound, the token wins &mdash; so a theme switch restyles shadows, glows and outlines along with everything else.</p>
+
+<pre class="lc-code"><code>using Lucent.Theme;
+
+glow.Spec.ColorToken   = LcColorKeys.Accent;
+shadow.Spec.ColorToken = LcColorKeys.Border;
+</code></pre>
+
+<p>Leave <code>ColorToken</code> empty (the default) to use the literal colour. The theme runtime is bundled with this pack; the Theme Designer, palette import and WCAG helpers are part of <em>Lumina Theme</em>.</p>
+</section>
+
+<section id="builtin">
+<h2>Built-in RP Fallback</h2>
+
+<p>Under the Built-in render pipeline the blur runs through a <code>CommandBuffer</code> path instead of a URP renderer feature. It is provided so a Built-in project is not locked out of frosted panels.</p>
+
+<table>
+<thead><tr><th>Type</th><th>Role</th></tr></thead>
+<tbody>
+<tr><td><code>LcBlurBuiltInManager</code></td><td>Owns the Built-in blur lifecycle.</td></tr>
+<tr><td><code>LcBlurCommandBuffer</code></td><td>The CommandBuffer grab-and-blur path.</td></tr>
+<tr><td><code>LcBlurFeature</code></td><td>The URP renderer feature (installed by the Tools menu command).</td></tr>
+<tr><td><code>LcBlurManager</code></td><td>Pipeline-neutral entry point used by panels.</td></tr>
+<tr><td><code>LcBlurPingPong</code>, <code>LcBlurRequest</code></td><td>Ping-pong targets and the per-panel request.</td></tr>
+</tbody>
+</table>
+
+<p><code>LcCapabilities.BuiltInSceneColorGrabActive</code> reports whether the grab is currently running, and <code>SupportsSceneColorGrab</code> is the single flag both paths answer through &mdash; which is what <code>LcBlurPanel.IsSupported</code> reads. Write your fallback against <code>IsSupported</code>, not against a pipeline check, and it stays correct on every target.</p>
+</section>
+
+<section id="editor-tools">
+<h2>Editor Tools</h2>
+
+<h3>Effect inspectors</h3>
+
+<p>Every effect has a custom inspector with a live preview, so a change to blur radius or light angle is visible without entering play mode. The blur panel inspector additionally reports whether the URP renderer feature is installed and offers the fix inline, rather than leaving you to discover a flat panel at runtime.</p>
+
+<h3>GameObject menu</h3>
+
+<table>
+<thead><tr><th>Command</th><th>Creates</th></tr></thead>
+<tbody>
+<tr><td><code>GameObject &rarr; Lucent UI &rarr; Effects &rarr; Shadowed Panel</code></td><td>Panel with a drop shadow.</td></tr>
+<tr><td><code>GameObject &rarr; Lucent UI &rarr; Effects &rarr; Glowing Card</code></td><td>Card with a glow.</td></tr>
+<tr><td><code>GameObject &rarr; Lucent UI &rarr; Effects &rarr; Outlined Shape</code></td><td>Shape with an outline.</td></tr>
+<tr><td><code>GameObject &rarr; Lucent UI &rarr; Effects &rarr; Pressed Panel</code></td><td>Inner-shadow inset panel.</td></tr>
+<tr><td><code>GameObject &rarr; Lucent UI &rarr; Effects &rarr; Blur Panel</code></td><td>Frosted blur panel.</td></tr>
+<tr><td><code>GameObject &rarr; Lucent UI &rarr; Effects &rarr; Liquid Glass Card</code></td><td>Full glass card.</td></tr>
+</tbody>
+</table>
+
+<h3>Component and asset menus</h3>
+
+<table>
+<thead><tr><th>Path</th><th>Result</th></tr></thead>
+<tbody>
+<tr><td><code>Add Component &rarr; Lucent UI &rarr; Effects &rarr; Lc Blur Panel / Lc Glass</code></td><td>Blur or glass surface.</td></tr>
+<tr><td><code>&hellip; &rarr; Lc Shadow / Lc Glow / Lc Outline</code></td><td>Geometry effects.</td></tr>
+<tr><td><code>&hellip; &rarr; Lc Inner Shadow / Lc Neumorphism</code></td><td>Inset and soft-UI effects.</td></tr>
+<tr><td><code>&hellip; &rarr; Lc Glow Pulse / Lc Effect Motion</code></td><td>Animated effects.</td></tr>
+<tr><td><code>&hellip; &rarr; Lc Effect Layer / Lc Graphic Effect</code></td><td>Compositing and third-party graphics.</td></tr>
+<tr><td><code>Assets &rarr; Create &rarr; Lucent UI &rarr; Effects &rarr; Glow Style</code></td><td>Reusable glow asset.</td></tr>
+<tr><td><code>&hellip; &rarr; Outline Style / Shadow Style</code></td><td>Reusable outline / shadow assets.</td></tr>
+<tr><td><code>&hellip; &rarr; Animated Glow Preset</code></td><td>Reusable animated glow.</td></tr>
+<tr><td><code>Tools &rarr; Lucent UI &rarr; Install Blur Renderer Feature</code></td><td>URP blur setup.</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="perf">
+<h2>Performance</h2>
+
+<h3>Blur is the expensive part</h3>
+
+<p>Geometry effects &mdash; shadow, glow, outline, neumorphism, inner shadow &mdash; are mesh work and cost roughly what an extra graphic costs. Blur and glass sample the backbuffer and cost real GPU time that scales with <code>Radius</code> and <code>Quality</code>.</p>
+
+<ul>
+<li><strong>Prefer fewer, larger blur panels</strong> to many small ones &mdash; each is a separate grab.</li>
+<li><strong>Drop <code>Quality</code> before dropping <code>Radius</code></strong> on mobile; quality is much cheaper to lose than the look.</li>
+<li><strong>Use <code>Grain</code> instead of <code>Ultra</code></strong> when the artefact you are fighting is banding rather than blockiness.</li>
+<li><strong><code>BlurUiBehind</code> costs extra</strong> &mdash; leave it off unless you genuinely need UI behind the panel blurred.</li>
+<li><strong>Keep <code>Blend</code> at <code>Normal</code></strong> where possible; it is the mode that batches into the host mesh.</li>
+</ul>
+
+<h3>Caching</h3>
+
+<p><code>LcShadowCache</code> reuses blurred silhouettes across frames, and effects invalidate against <code>ILcSilhouetteSource.SilhouetteVersion</code> &mdash; so a static shadow is generated once and a shadow only rebuilds when the shape underneath actually changes. An element that animates position but not shape does not regenerate its shadow.</p>
+</section>
+
+<section id="compat">
+<h2>Compatibility</h2>
+
+<table>
+<thead><tr><th>Area</th><th>Support</th></tr></thead>
+<tbody>
+<tr><td>Geometry effects</td><td>Built-in, URP, HDRP &mdash; no pipeline dependency</td></tr>
+<tr><td>Blur &amp; glass</td><td>URP (renderer feature) or Built-in (CommandBuffer). HDRP not supported</td></tr>
+<tr><td>Platforms</td><td>All Unity targets. Blur requires scene-colour grab support &mdash; check <code>IsSupported</code></td></tr>
+<tr><td>Scripting backend</td><td>Mono, IL2CPP</td></tr>
+<tr><td>Canvas modes</td><td>Screen Space Overlay, Screen Space Camera, World Space</td></tr>
+<tr><td>Source</td><td>Full C# source included (124 scripts, 11 assemblies)</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="faq">
+<h2>FAQ &amp; Troubleshooting</h2>
+
+<h3>My blur panel renders flat / does nothing.</h3>
+<p>Under URP, run <code>Tools &rarr; Lucent UI &rarr; Install Blur Renderer Feature</code>. Then check <code>panel.IsSupported</code> at runtime. If it is true in the editor but false in a build, the blur shader was stripped &mdash; keep it under <code>Resources</code> or add it to <em>Always Included Shaders</em>.</p>
+
+<h3>It works in the editor but not in WebGL.</h3>
+<p>Almost always shader stripping. See above. Confirm the shader is in the build, then re-check.</p>
+
+<h3>Can I use blur with HDRP?</h3>
+<p>No. The HDRP blur variant is deliberately excluded so the package does not force an HDRP dependency on URP-only projects. The geometry effects work fine under HDRP.</p>
+
+<h3>The glass looks like plastic.</h3>
+<p>Raise <code>Gloss</code> and <code>EdgeGlint</code>, and give it a real <code>BevelWidth</code>. Flat glass with no bevel has no edge to catch light, which is what reads as plastic. Then confirm <code>LightAngle</code> matches your other panels.</p>
+
+<h3>Text behind the glass is unreadable.</h3>
+<p>Lower <code>Refraction</code>. Values above roughly <code>0.05</code> distort enough to hurt legibility. <code>ChromaticAberration</code> compounds it &mdash; keep it around <code>0.01</code>.</p>
+
+<h3>My shadow is a rectangle, not the shape.</h3>
+<p>The effect needs a silhouette source. Lucent shapes provide one natively; for a stock uGUI <code>Image</code>, use <code>LcGraphicEffect</code>, which derives the silhouette from the sprite.</p>
+
+<h3>Shadow gets bigger when I increase blur.</h3>
+<p>Blur softens outward from the edge, so a large blur reads as a bigger shadow. If you want size without softness, use <code>Spread</code>.</p>
+
+<h3>Glow is washed out.</h3>
+<p>Set <code>Blend</code> to <code>Additive</code>. Normal blending composites over the backdrop; additive adds light, which is what a glow physically does.</p>
+
+<h3>How many blur panels can I have on screen?</h3>
+<p>It depends on radius, quality and GPU. Profile on your lowest target. If several panels are adjacent, one larger panel is usually both cheaper and better-looking than several small ones.</p>
+
+<h3>Does this need Lumina Shapes?</h3>
+<p>No. The shape generators this pack needs are bundled. Lumina Shapes adds the full shape authoring tooling &mdash; style presets, the shape inspector, silhouette masking.</p>
+</section>
+
+<section id="api-index">
+<h2>API Index</h2>
+
+<div class="lc-api-group">
+<h3>Surfaces <span class="badge">Lucent.Effects</span></h3>
+<ul class="lc-syms">
+<li><code>LcBlurPanel</code></li>
+<li><code>LcBlurPanelSpec</code></li>
+<li><code>LcGlass</code></li>
+<li><code>LcGlassSpec</code></li>
+<li><code>LcBlurQuality</code></li>
+<li><code>LcBlurPanel.Apply</code></li>
+<li><code>LcBlurPanel.IsSupported</code></li>
+<li><code>LcBlurPanel.Spec</code></li>
+<li><code>LcGlass.GlassSpec</code></li>
+<li><code>LcGlass.Shadow</code></li>
+</ul>
+</div>
+
+<div class="lc-api-group">
+<h3>Effect components <span class="badge">MonoBehaviour</span></h3>
+<ul class="lc-syms">
+<li><code>LcShadow</code></li>
+<li><code>LcGlow</code></li>
+<li><code>LcOutline</code></li>
+<li><code>LcNeumorphism</code></li>
+<li><code>LcInnerShadow</code></li>
+<li><code>LcGlowPulse</code></li>
+<li><code>LcEffectMotion</code></li>
+<li><code>LcEffectLayer</code></li>
+<li><code>LcGraphicEffect</code></li>
+<li><code>LcGraphicEffectRenderer</code></li>
+<li><code>LcEffectBehaviour</code></li>
+</ul>
+</div>
+
+<div class="lc-api-group">
+<h3>Effect specs <span class="badge">ILcEffect</span></h3>
+<ul class="lc-syms">
+<li><code>LcDropShadowEffect</code></li>
+<li><code>LcGlowEffect</code></li>
+<li><code>LcOutlineEffect</code></li>
+<li><code>LcNeumorphismEffect</code></li>
+<li><code>LcInnerShadowEffect</code></li>
+<li><code>ILcEffect</code></li>
+<li><code>LcEffectContext</code></li>
+<li><code>LcEffectGeometry</code></li>
+<li><code>LcEffectBlend</code></li>
+<li><code>LcEffectBlendSurface</code></li>
+<li><code>LcEffectMaterial</code></li>
+<li><code>LcBlendMode</code></li>
+<li><code>LcDrawLayer</code></li>
+<li><code>LcSideWidths</code></li>
+<li><code>LcSpriteSilhouette</code></li>
+<li><code>LcShadowCache</code></li>
+</ul>
+</div>
+
+<div class="lc-api-group">
+<h3>Style assets <span class="badge">ScriptableObject</span></h3>
+<ul class="lc-syms">
+<li><code>LcGlowStyle</code></li>
+<li><code>LcOutlineStyle</code></li>
+<li><code>LcShadowStyle</code></li>
+<li><code>LcAnimatedGlowPreset</code></li>
+<li><code>LcGlowPresetId</code></li>
+</ul>
+</div>
+
+<div class="lc-api-group">
+<h3>Blur pipeline <span class="badge">URP / Built-in</span></h3>
+<ul class="lc-syms">
+<li><code>LcBlurManager</code></li>
+<li><code>LcBlurFeature</code></li>
+<li><code>LcBlurBuiltInManager</code></li>
+<li><code>LcBlurCommandBuffer</code></li>
+<li><code>LcBlurPingPong</code></li>
+<li><code>LcBlurRequest</code></li>
+<li><code>LcBlurAutoInstaller.IsFeatureInstalled</code></li>
+<li><code>LcBlurAutoInstaller.HasUrpTarget</code></li>
+<li><code>LcBlurAutoInstaller.InstallIntoActiveRenderers</code></li>
+<li><code>LcCapabilities.ActivePipeline</code></li>
+<li><code>LcCapabilities.SupportsSceneColorGrab</code></li>
+<li><code>LcCapabilities.SupportsCompute</code></li>
+<li><code>LcPipeline</code></li>
+</ul>
+</div>
+
+<div class="lc-api-group">
+<h3>Shapes &amp; spine <span class="badge">bundled</span></h3>
+<ul class="lc-syms">
+<li><code>LcShape</code></li>
+<li><code>LcShapeKind</code></li>
+<li><code>LcShapeStyle</code></li>
+<li><code>LcCorners</code></li>
+<li><code>LcStrokeAlign</code></li>
+<li><code>ILcSilhouetteSource</code></li>
+<li><code>LcDrawList</code></li>
+<li><code>LcUGuiSurface</code></li>
+<li><code>LcCaptureSurface</code></li>
+</ul>
+</div>
+</section>
+
+  </main>
+  <footer class="lc-footer">
+    <p><strong>Lumina Glass UI</strong> 0.1.0 &mdash; GPU frosted panels, refractive glass and six composable silhouette effects for uGUI. Targets Unity 6000.0.62f1+ &middot; <code>com.unity.ugui</code> &middot; URP required for blur (Built-in CommandBuffer fallback included).</p>
+    <p>Questions, bug reports, or feature requests &mdash; include your Unity version and active render pipeline: <a href="mailto:szekipapa77@gmail.com">szekipapa77@gmail.com</a></p>
+    <p class="meta">&copy; 2026 Lumina Glass UI. Documentation generated as a single self-contained file &mdash; works offline and on GitHub Pages.</p>
+  </footer>
+</div>
 </body>
 </html>
