@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dungeon Generator Documentation</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b0f0d;
+      --panel: #121915;
+      --panel-2: #18211c;
+      --text: #eef4ef;
+      --muted: #b5c1b8;
+      --line: #2e4035;
+      --green: #54d685;
+      --gold: #e5bd58;
+      --code: #08100b;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at 80% -10%, #173524 0, transparent 34rem), var(--bg);
+      color: var(--text);
+      font: 16px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    a { color: var(--green); }
+    header {
+      border-bottom: 1px solid var(--line);
+      background: rgba(8, 14, 10, .92);
+      padding: 3rem 1.5rem;
+    }
+    header div, main { width: min(1120px, 100%); margin: auto; }
+    h1 { margin: 0 0 .4rem; font-size: clamp(2.2rem, 6vw, 4.2rem); line-height: 1.05; }
+    h2 { margin: 3.2rem 0 1rem; padding-bottom: .45rem; border-bottom: 1px solid var(--line); }
+    h3 { margin-top: 1.8rem; color: var(--green); }
+    p { max-width: 82ch; }
+    .lead { color: var(--muted); font-size: 1.18rem; max-width: 72ch; }
+    .badge {
+      display: inline-block; margin: .9rem .35rem 0 0; padding: .24rem .65rem;
+      border: 1px solid #397b52; border-radius: 999px; color: #baf2cd; background: #102319;
+    }
+    main { padding: 1.5rem 1.5rem 5rem; }
+    nav {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: .55rem;
+      margin: 1rem 0 2.4rem; padding: 1rem; border: 1px solid var(--line); background: var(--panel);
+    }
+    nav a { text-decoration: none; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+    .card { padding: 1rem 1.1rem; border: 1px solid var(--line); background: var(--panel); }
+    .card h3 { margin-top: 0; }
+    code { color: #c9f6d7; background: var(--code); padding: .12rem .3rem; }
+    pre {
+      overflow-x: auto; padding: 1rem; border: 1px solid var(--line); background: var(--code);
+      color: #d8f2e0; white-space: pre;
+    }
+    pre code { padding: 0; }
+    .note { padding: .9rem 1rem; border-left: 4px solid var(--gold); background: #211c0d; }
+    table { width: 100%; border-collapse: collapse; background: var(--panel); }
+    th, td { padding: .7rem; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: var(--panel-2); }
+    footer { margin-top: 4rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 1.2rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Dungeon Generator</h1>
+      <p class="lead">Wave-function-collapse dungeon generation for Unity 6 URP, with runtime building, live painting, six themes, stacked floors, gameplay hooks, NavMesh agents, editor tools, and a complete interactive demo.</p>
+      <span class="badge">Version 1.6.1</span>
+      <span class="badge">Unity 6</span>
+      <span class="badge">URP 17</span>
+      <span class="badge">Full C# source</span>
+    </div>
+  </header>
+
+  <main>
+    <nav aria-label="Documentation sections">
+      <a href="#install">Installation</a>
+      <a href="#quick-start">Quick start</a>
+      <a href="#features">Features</a>
+      <a href="#workflow">Demo workflow</a>
+      <a href="#api">Runtime API</a>
+      <a href="#customize">Customization</a>
+      <a href="#compatibility">Compatibility</a>
+      <a href="#troubleshooting">Troubleshooting</a>
+      <a href="#support">Support</a>
+    </nav>
+
+    <section id="overview">
+      <h2>Overview</h2>
+      <p>Dungeon Generator creates connected, playable, isometric-style stone dungeons from a deterministic seed. Its pure-C# WFC core solves tile adjacency and carving, while the Unity runtime builds modular floors, walls, doors, canals, cave rims, graveyards, props, lighting, gameplay elements, and navigation.</p>
+      <p>The generated result remains editable. Paint terrain families, stamp exact tiles, restyle individual walls, swap themes and models, tune weights, undo changes, serialize a complete dungeon code, or query the solved plan from your own systems.</p>
+    </section>
+
+    <section id="install">
+      <h2>Installation and requirements</h2>
+      <ol>
+        <li>Import the package into a Unity 6 project.</li>
+        <li>Install or enable the Universal Render Pipeline package. The bundled materials target URP 17.</li>
+        <li>Keep uGUI installed if you want to use the included interactive demo. The core generator does not depend on the demo UI.</li>
+        <li>Open <code>Assets/DungeonKit/Demo/Scenes/DungeonKitDemo.unity</code> to explore the complete feature set.</li>
+      </ol>
+      <p class="note"><strong>Starting from a non-URP project?</strong> Use <code>Tools &gt; Dungeon Kit &gt; Setup URP</code>. The tool lists the project settings it proposes to change and waits for confirmation.</p>
+    </section>
+
+    <section id="quick-start">
+      <h2>Quick start</h2>
+      <ol>
+        <li>Choose <code>GameObject &gt; Dungeon Kit &gt; Dungeon Generator</code>.</li>
+        <li>The included <code>StoneKitLibrary</code> is located and assigned automatically.</li>
+        <li>Select the new object and press <strong>Generate</strong> in its Inspector.</li>
+        <li>Change the seed, grid size, outline, carving, decoration, or theme settings and generate again.</li>
+      </ol>
+      <p>The art kit is already baked under <code>Assets/DungeonKit/Art</code>. <code>Tools &gt; Dungeon Kit &gt; Build Demo Assets</code> is an authoring command that rebuilds and overwrites those generated art assets; use it only when intentionally changing the art-generation code.</p>
+    </section>
+
+    <section id="features">
+      <h2>Feature guide</h2>
+      <div class="grid">
+        <article class="card"><h3>Generation</h3><p>Deterministic weighted WFC with propagation and backtracking, rectangle/ellipse/diamond/cross footprints, connectivity repair, entrances, exits, guaranteed treasure, and reproducible seeds.</p></article>
+        <article class="card"><h3>Terrain and painting</h3><p>Cave, graveyard, void, and canal carving; cell painting and erasing; local perturbation; exact wall/door/corner/canal stamps; local re-solving; and undo.</p></article>
+        <article class="card"><h3>Floors and progression</h3><p>One to three independently solved floors joined by stairwells, optional terraces and basements, critical-path key/lock progression, room purposes, and furnished spaces.</p></article>
+        <article class="card"><h3>Art direction</h3><p>Stone, Crypt, Moss, Blocks, Rough, and Sewer themes; wall variants; modular prefab replacement; density-controlled props; atmosphere, torch, light, and audio controls.</p></article>
+        <article class="card"><h3>Gameplay</h3><p>Interactive chests, spike traps, collectible keys, opening gates, event callbacks, click-to-move player, runtime navigation, zombie agents, and deterministic spawn rules for your prefabs.</p></article>
+        <article class="card"><h3>Tools and sharing</h3><p>Dungeon Designer window, minimap, validation and region overlays, 2D raster export, PNG export in the demo, dungeon codes, URL seed/code loading in WebGL, and OBJ model swaps.</p></article>
+      </div>
+    </section>
+
+    <section id="workflow">
+      <h2>Interactive demo workflow</h2>
+      <p>The demo intentionally exposes the generator’s major systems in one place. A useful evaluation path is:</p>
+      <ol>
+        <li>Set the seed, width, height, animation speed, and footprint shape, then generate.</li>
+        <li>Try presets, cave bites, void bites, graveyards, canals, stacked floors, terraces, basements, and key-lock progression.</li>
+        <li>Switch to Paint to add or erase terrain, perturb a cell, toggle torches, or stamp an exact structural tile.</li>
+        <li>Switch among all six themes and adjust atmosphere, sun, clutter, torch density, flicker, and tile weights.</li>
+        <li>Build the NavMesh, spawn the player and zombie population, enable path display, and click the dungeon to move.</li>
+        <li>Use Models &amp; Swaps to select a bundled variation or import an OBJ for a supported slot.</li>
+        <li>Copy a dungeon code, reload it, export a PNG, or supply <code>?seed=</code> / <code>?code=</code> to a hosted WebGL demo URL.</li>
+      </ol>
+    </section>
+
+    <section id="api">
+      <h2>Runtime API</h2>
+      <h3>Generate, edit, and query</h3>
+      <pre><code>using DungeonKit;
+using DungeonKit.Core;
+
+var gen = GetComponent&lt;DungeonGenerator&gt;();
+gen.settings.width = 16;
+gen.settings.height = 12;
+gen.settings.seed = 12345;
+gen.settings.caveBites = true;
+gen.settings.forceCanal = true;
+gen.Generate();
+
+gen.PaintCell(4, 5, PaintKind.Cave, autoSolve: true);
+gen.PerturbCell(7, 3);
+gen.EraseCell(4, 5, autoSolve: true);
+gen.Undo();
+
+bool walkable = gen.IsWalkable(x, y);
+bool passable = gen.IsPassable(x, y, dir); // 0=N, 1=E, 2=S, 3=W
+Vector3 world = gen.CellToWorld(x, y);
+DungeonPlan plan = gen.Plan;</code></pre>
+
+      <h3>Depth, sharing, agents, and events</h3>
+      <pre><code>DungeonQuery query = gen.Query;
+int depth = query.DepthFromEntrance(cell);
+float normalized = query.NormalizedDepth(cell);
+bool onCriticalPath = query.IsOnCriticalPath(cell);
+
+string code = gen.SaveCode();
+if (!gen.LoadCode(code, out string error))
+    Debug.LogError(error);
+
+var player = GetComponent&lt;DungeonPlayerSpawner&gt;().Spawn();
+player.MoveTo(worldPoint);
+GetComponent&lt;DungeonNpcSpawner&gt;().SetPopulation(12);
+
+DungeonEvents.ChestOpened += position =&gt; DropLoot(position);
+DungeonEvents.TrapTriggered += position =&gt; DamagePlayerNear(position);
+DungeonEvents.GateUnlocked += lockIndex =&gt; Fanfare();</code></pre>
+
+      <h3>Pure-C# generation</h3>
+      <pre><code>var settings = new GenerationSettings { width = 20, height = 14, seed = 7 };
+var model = new DungeonModel(settings);
+model.Generate();
+DungeonPlan plan = model.Plan;</code></pre>
+    </section>
+
+    <section id="customize">
+      <h2>Customization</h2>
+      <h3>Replace the art</h3>
+      <p>Open <code>Assets/DungeonKit/Art/StoneKitLibrary.asset</code>. Each module is a prefab slot. Walls and edge strips are authored along the north edge of a 4 × 4 metre tile and rotated by the builder. Replace compatible slots with your own prefabs and use <code>tileSize</code> to rescale the grid.</p>
+      <h3>Tune generation</h3>
+      <p><code>GenerationSettings.weights</code> exposes wall density, canal amount and curvature, cave/void/grave prevalence, open-space boost, and related weights. <code>Generate()</code> rebuilds the logical tile catalog before solving. If you change weights and immediately perform a local edit without regenerating, call <code>RebuildCatalog()</code> first.</p>
+      <h3>Spawn your own content</h3>
+      <p>Add rules to <code>DungeonSpawnRules</code> to scatter project prefabs by depth band, terrain family, chance, cap, and wall alignment. Placement is deterministic for a given dungeon seed.</p>
+    </section>
+
+    <section id="performance">
+      <h2>Performance guidance</h2>
+      <ul>
+        <li>Generation is deterministic and bounded to grid sizes from 3 × 3 through 50 × 50.</li>
+        <li>On large maps, GameObject instantiation and decoration typically cost more than the pure solver. Reduce clutter for faster rebuilds.</li>
+        <li>Lower torch density or disable dynamic lights when many realtime point lights affect the same objects.</li>
+        <li>Use <code>DungeonCulling</code> with a player or other focus transform for large runtime dungeons.</li>
+        <li>The included test suites cover the solver, adjacency, connectivity, painting, progression, stacked-floor reachability, demo interaction, and runtime systems.</li>
+      </ul>
+    </section>
+
+    <section id="compatibility">
+      <h2>Compatibility</h2>
+      <table>
+        <tr><th>Unity</th><td>Built with Unity 6000.0.62f1. Unity 6 (6000.0) or newer is required.</td></tr>
+        <tr><th>Rendering</th><td>Universal Render Pipeline required for the bundled materials; the project uses URP 17.0.4.</td></tr>
+        <tr><th>UI</th><td>uGUI is used by the demo. The generation runtime remains separate from the demo assembly.</td></tr>
+        <tr><th>Input</th><td>The demo supports old, new, or both input-backend settings. The Input System package is optional and is only needed when the project selects the new backend.</td></tr>
+        <tr><th>Platforms</th><td>Windows 64-bit and WebGL demo builds have been produced from this project. Other targets have not been claimed as verified.</td></tr>
+        <tr><th>Colour space</th><td>The bundled art is authored for Linear colour space.</td></tr>
+      </table>
+    </section>
+
+    <section id="troubleshooting">
+      <h2>Troubleshooting</h2>
+      <h3>Materials are magenta</h3>
+      <p>The project is not using URP or the package is missing. Install URP and use <code>Tools &gt; Dungeon Kit &gt; Setup URP</code>, or assign your own materials and prefabs in the tile library.</p>
+      <h3>The demo UI does not receive clicks</h3>
+      <p>If Active Input Handling is set to Input System (New), install <code>com.unity.inputsystem</code>. The demo creates the matching EventSystem module at runtime.</p>
+      <h3>Painting does not reflect newly changed tile weights</h3>
+      <p>Generate once after changing weights, or call <code>RebuildCatalog()</code> before a paint, perturb, erase, or stamp operation.</p>
+      <h3>A large dungeon rebuild is slow</h3>
+      <p>Reduce clutter and torch density, avoid rebuilding every frame, and enable runtime culling. Build once and use the query/event APIs for gameplay whenever possible.</p>
+      <h3>Imported OBJ scale or pivot is unsuitable</h3>
+      <p>The runtime importer normalizes supported model slots to their expected footprint and pivots geometry to its base. For exact production control, prepare and assign a Unity prefab directly in the tile library.</p>
+    </section>
+
+    <section id="release-notes">
+      <h2>Version 1.6.1 highlights</h2>
+      <ul>
+        <li>Added model swapping for structural, prop, and character slots, including bundled variants and runtime OBJ import.</li>
+        <li>Windows standalone builds can use the native open-file dialog; other supported contexts retain the in-game or browser file picker.</li>
+        <li>Improved the in-game model browser layout and same-frame demo UI rebuild safety.</li>
+        <li>Expanded the demo and runtime systems across stacked floors, NavMesh visualization, agents, gameplay events, sharing, and editor tooling.</li>
+      </ul>
+    </section>
+
+    <section id="license">
+      <h2>License and attribution</h2>
+      <p>Use of this package is governed by the license under which it was acquired through the Unity Asset Store. Unity packages referenced as project dependencies remain governed by their respective Unity terms. No separate third-party content notice is included with this asset.</p>
+    </section>
+
+    <section id="support">
+      <h2>Support</h2>
+      <p>For questions, bug reports, or feature requests, contact <a href="mailto:szekipapa77@gmail.com">szekipapa77@gmail.com</a>. Include your Unity version, target platform, a short reproduction description, and relevant Console output or screenshots.</p>
+    </section>
+
+    <footer>Dungeon Generator 1.6.1 · Documentation included with the package.</footer>
+  </main>
+</body>
+</html>
