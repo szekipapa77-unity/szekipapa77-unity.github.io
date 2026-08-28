@@ -238,7 +238,7 @@
             <span class="badge">Universal Render Pipeline 17.0.4</span>
             <span class="badge">Input System 1.11.2</span>
             <span class="badge">uGUI + TextMesh Pro</span>
-            <span class="badge">Windows x64 build tool</span>
+            <span class="badge">Windows, Android &amp; WebGL build tools</span>
           </div>
         </div>
       </header>
@@ -613,6 +613,8 @@ ProjectSettings/               <span class="muted">Rendering, input, player/buil
               <tr><td><strong>Prepare Generated Art</strong></td><td>Reimports production-art textures with the package policy.</td><td>Applies to the CozyCrate Art folder.</td></tr>
               <tr><td><strong>Build Windows x64</strong></td><td>Release build to <code>Builds/Windows/CozyCrate.exe</code>.</td><td>Uses enabled Build Settings scenes.</td></tr>
               <tr><td><strong>Build Windows x64 (Development + PlaytestBot)</strong></td><td>Development player prepared for automated UI smoke testing.</td><td>Launch with <code>-playtest</code>.</td></tr>
+              <tr><td><strong>Build Android APK (Landscape)</strong></td><td>Universal ARMv7/ARM64 APK at <code>Builds/Android/CozyCrate.apk</code>.</td><td>Sets landscape-only autorotation, IL2CPP, and the CozyCrate application identifier.</td></tr>
+              <tr><td><strong>Build WebGL</strong></td><td>Browser build at <code>Builds/WebGL</code>.</td><td>Uses uncompressed files for straightforward static hosting.</td></tr>
             </tbody>
           </table></div>
         </section>
@@ -640,7 +642,7 @@ ProjectSettings/               <span class="muted">Rendering, input, player/buil
           <p>Build with the development command, then launch <code>CozyCrate.exe -playtest</code>. The bot operates the real UI and writes screenshots and a PASS/FAIL log beneath <code>Application.persistentDataPath/playtest/</code>. Treat it as a smoke test, not a replacement for the full Test Runner or human UX review.</p>
         </section>
 
-        <section id="build" data-search="build windows export publish asset store release exe package unity version metadata">
+        <section id="build" data-search="build windows android apk landscape webgl browser export publish asset store release exe package unity version metadata">
           <p class="section-kicker">18 &middot; Delivery</p>
           <h2>Build and export</h2>
           <h3>Windows player</h3>
@@ -650,6 +652,20 @@ ProjectSettings/               <span class="muted">Rendering, input, player/buil
             <li>Review Company Name, Product Name, version, icons, default resolution, and URP quality.</li>
             <li>Choose <code>CozyCrate &gt; Build Windows x64</code>.</li>
             <li>Run <code>Builds/Windows/CozyCrate.exe</code> on a clean machine/profile and test save creation.</li>
+          </ol>
+          <h3>Android landscape APK</h3>
+          <ol class="steps">
+            <li>Install Android Build Support, SDK/NDK Tools, and OpenJDK for Unity 6000.0.62f1.</li>
+            <li>Review Android icons, package identifier, minimum API level, and signing before a store release.</li>
+            <li>Choose <code>CozyCrate &gt; Build Android APK (Landscape)</code>.</li>
+            <li>Install <code>Builds/Android/CozyCrate.apk</code> on representative landscape phones and tablets and verify touch targets.</li>
+          </ol>
+          <h3>WebGL player</h3>
+          <ol class="steps">
+            <li>Install WebGL Build Support for Unity 6000.0.62f1.</li>
+            <li>Choose <code>CozyCrate &gt; Build WebGL</code>.</li>
+            <li>Serve the complete <code>Builds/WebGL</code> directory over HTTP(S); opening <code>index.html</code> directly from disk is unsupported.</li>
+            <li>Verify loading, pointer input, audio activation, saving, fullscreen behavior, and responsive scaling in current desktop browsers.</li>
           </ol>
           <h3>Unity Asset Store package hygiene</h3>
           <ul class="check">
