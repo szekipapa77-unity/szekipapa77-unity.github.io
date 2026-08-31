@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DataLoom Pro — Documentation</title>
+<style>
+  :root{--bg:#0e0e12;--panel:#16161d;--text:#e2e2ea;--dim:#8888a0;--accent:#4a9ff5;--teal:#00cec9;--border:#2a2a38}
+  body{background:var(--bg);color:var(--text);font-family:system-ui,Segoe UI,sans-serif;max-width:900px;margin:0 auto;padding:32px;line-height:1.55}
+  h1{color:var(--accent);font-size:30px} h2{color:#74b9ff;border-bottom:1px solid var(--border);padding-bottom:6px;margin-top:34px}
+  h3{color:var(--teal)} code,pre{background:#1a1a24;border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:13px}
+  pre{padding:12px;overflow:auto} td,th{border:1px solid var(--border);padding:6px 10px;text-align:left} table{border-collapse:collapse;margin:10px 0}
+  .dim{color:var(--dim)} .pill{background:#1b3a5c;color:#74b9ff;border-radius:999px;padding:2px 10px;font-size:12px;margin-left:6px}
+</style>
+</head>
+<body>
+<h1>DataLoom Pro <span class="pill">2.1</span></h1>
+<p class="dim">Edit every ScriptableObject of a type in one spreadsheet — with validation, formulas, bulk pipelines, snapshots, relational navigation, Google Sheets sync, an AI copilot and headless CI. Editor-only by default: the optional Loom Runtime module is the one part that can ship, and only if you use it.</p>
+
+<h2>What's new in 2.1</h2>
+<ul>
+<li><b>Polymorphic columns</b> — a single <code>[SerializeReference]</code> field is an editable variant column; pick the concrete type inline, then <code>▸</code> to edit that variant's own fields. Re-selecting the variant a row already has keeps its values.</li>
+<li><b>Asset handles</b> — Addressables-style handles (anything storing an asset GUID) edit like a normal object field. Detected by shape, so the Addressables package stays entirely optional.</li>
+<li><b>Collection tables</b> — <b>Tools ▸ DataLoom Pro ▸ Element Tables (Lists &amp; Maps)</b> explodes one list field across every asset into a flat row table: tune ten crate sizes over two hundred goods without opening any of them.</li>
+<li><b>Map tables</b> — serialized dictionaries as rows, with multi-object editing, filtering by key or value, and <code>[SerializeReference]</code> values. Renaming a key to one already on that asset is refused, because a duplicate key makes an entry unreachable.</li>
+<li><b>Prefab-component sheets</b> — MonoBehaviours living on prefabs are rows too; pick them under <b>Prefab Components</b> in the type menu.</li>
+<li><b>Cross-table formulas</b> — <code>=[trophy.power] * 2</code> follows a reference into another table, aggregates included. Reading through an <i>unset</i> reference is reported rather than silently treated as zero.</li>
+<li><b>Saved searches</b> — keep a query by name, just for you or committed with the project for the whole team (the ★ button beside the search box).</li>
+<li><b>Scale benchmark</b> — <b>Tools ▸ DataLoom Pro ▸ Run Scale Benchmark</b> measures load, search, sort, group, export, import and validation on 10,000 generated assets and writes <code>Docs/BENCHMARK.md</code>. Run it on your own hardware rather than trusting a marketing number.</li>
+</ul>
+
+<h2>What's new in 2.0</h2>
+<ul>
+<li><b>Grid 2.0</b> — virtual scrolling for huge tables (paging still available in Settings), frozen name pane, rectangular ranges with live count/sum/avg, drag-fill series handle, header drag-reorder with per-type persisted layouts, group-by column with collapsible bands, and OR + parentheses in search (<code>tier=Boss OR (health&gt;500 rarity=Epic)</code>, plus <code>@flagged</code>).</li>
+<li><b>Conditional formatting v2</b> — color scales, data bars and icon rules alongside match-based tint/text/bold styling.</li>
+<li><b>LoomGen + Loom Runtime</b> — deterministic type-safe code generation (<code>Loom.Monster.Keys.*</code>, enums from columns, drift check for CI) and a player-side read API (<code>LoomDb.Table&lt;T&gt;()</code>) with delta save files that survive shipped-data rebalances. Your SOs stay plain assets — no lock-in.</li>
+<li><b>Team &amp; VCS</b> — semantic 3-way <b>merge</b> for .asset files (auto-resolves non-overlapping edits, per-field conflict picks), review window for before/after folder states, committable row flags ⚑ and notes, designer mode with protected columns.</li>
+<li><b>Automation</b> — named pipeline assets runnable from the palette/CLI/MCP, import mapping presets keyed by header signature, watch folders with dry-run confirm, scheduled Sheets pulls with a conflict gate, service-account (CI) Sheets auth, and an MCP catalog grown to 12 confirmation-gated tools.</li>
+<li><b>Insights</b> — header sparklines, a balance dashboard (distribution, top/bottom N, scatter, PNG export), snapshot trend graphs, and a what-if sandbox that runs a pipeline on a shadow copy with proof that real assets were untouched. The sandbox is its own window and does <b>not</b> pick up whatever is open in the Pipeline drawer — give it a pipeline you saved as an asset (drawer ▸ <b>Save…</b>, then choose it from the sandbox's dropdown) or paste a spec JSON.</li>
+<li><b>Guided tour</b> — <b>Tools ▸ DataLoom Pro ▸ Guided Tour</b> spotlights the real workbench in 10 interactive stops.</li>
+</ul>
+
+<h2>Quick start</h2>
+<ol>
+<li>Open the workbench: <b>Tools ▸ DataLoom Pro ▸ Workbench</b> (Ctrl+Shift+L).</li>
+<li>Pick a type in the toolbar dropdown. Every asset of that type becomes a row; every serialized field becomes a column, up to the <b>Max Visible Columns</b> limit in Settings (30 by default, adjustable to 100) — the <b>Columns</b> menu tells you when a type has more than that. Vector fields expand into per-axis columns (the whole-vector column stays available under <b>Columns</b>).</li>
+<li>Click a cell and type to edit. Enter commits and moves down, Tab moves right, Escape cancels, F2 edits, double-click edits. Rejected values turn red with the reason as a tooltip — nothing is silently coerced.</li>
+<li>Try the sample data: <b>Tools ▸ DataLoom Pro ▸ Create Sample Data</b> ships three themed types with deliberate outliers and broken rows so validation, formatting and anomaly scanning light up immediately.</li>
+</ol>
+
+<h2>The grid</h2>
+<ul>
+<li><b>Search</b> — bare words match any cell or the asset name. Column terms: <code>health&gt;=50</code>, <code>tier=Boss</code>, <code>name~sword</code> (ops: <code>&gt; &lt; &gt;= &lt;= = != ~</code>); terms AND together. <code>@issues</code> filters to rows with validation issues.</li>
+<li><b>Sort</b> — click a header (numeric-aware, toggles direction). <b>Resize</b> — drag a header edge. <b>Right-click a header</b> for sort, validators, formatting, hide/show, width reset and read-only lock.</li>
+<li><b>Selection</b> — click, Shift-click for ranges, Ctrl-click to toggle, Ctrl+A for all. Editing one cell with many rows selected offers <i>Apply to selected rows</i> — one undo for the whole batch.</li>
+<li><b>Clipboard</b> — Ctrl+C copies the selection as TSV (paste straight into Excel/Google Sheets); Ctrl+V pastes a block starting at the active cell, one undo.</li>
+<li><b>Deep data</b> — lists, dictionaries, nested objects and polymorphic references show as chips (<code>List (3) ▸</code>) that open the detail pane, where the full native inspector works: add/remove/reorder, custom drawers, and a confirmed single-undo polymorphic type swap.</li>
+<li><b>Follow references</b> — reference cells to other data types get a <code>→</code> button that jumps to that asset's own table. The detail pane's <b>References</b> section answers "points to" and "who points here?" project-wide.</li>
+</ul>
+
+<h2>Formulas <span class="pill">= …</span></h2>
+<p>Any numeric cell accepts a formula: start with <code>=</code>. Reference other columns of the same row with square brackets — <code>=[Base Damage] * [Attack Rate]</code>. Functions: <code>ABS MIN MAX CLAMP ROUND FLOOR CEIL LERP IF CONCAT LEN UPPER LOWER</code>; aggregates over the whole column: <code>SUM AVG MEDIAN COUNT MINOF MAXOF</code> (e.g. <code>=[Level] / SUM([Level]) * 100</code>). Operators <code>+ - * / ^</code> and comparisons. Formulas are stored per cell (keyed by asset GUID, so renames are safe), recomputed when committed, and errors show an <code>ERR</code> badge with the message on hover.</p>
+
+<h2>Validation &amp; Data Health</h2>
+<p>Right-click a column ▸ <b>Validators…</b> Rules: <b>Required</b> (text/reference), <b>Range</b> (independent min/max, seeded from [Range]/[Min] attributes or observed data), <b>Unique</b> (whole asset set), <b>Regex</b> (multiple allowed). Rules persist per type as a project asset your team can commit. Issues tint cells by severity, the toolbar chip counts them, and clicking it filters to <code>@issues</code>.</p>
+<p><b>Data Health</b> (toolbar ▸ Health) opens empty: press <b>Scan Project</b> to run it. The scan covers
+every type with the same rules plus referential integrity (broken references are always errors) and
+scores the project 0–100. <b>Apply N Fixes (1 Undo)</b> then applies every auto-fix as one undo, and <b>Save Report…</b>
+writes JSON, JUnit (<code>.xml</code>) or SARIF for CI, chosen by the extension you type.</p>
+
+<p class="dim"><b>Severity decides whether CI fails.</b> Range and Regex rules are created as
+<i>Warnings</i>, and warnings never make the report unhealthy or change the CLI's exit code — the gate
+stays green. If a rule must block a build, set its severity to <b>Error</b> in the validator popup.
+Required and Unique default to Error already.</p>
+
+<h2>Bulk pipelines &amp; Smart Fill</h2>
+<p>Toolbar ▸ <b>Pipeline</b>. Chain steps — Set, Add, Multiply, Clamp, Sequence, Random (deterministic), Find/Replace, Regex — over one column. By default the pipeline targets every row currently matching your search — the filter result, regardless of paging or how far you have scrolled — and the single <b>Selected rows only</b> checkbox narrows it to your selection instead. <b>Preview Diff</b> shows the exact red→green change list without writing anything; <b>Apply</b> commits as one undo with an automatic file backup. <b>Smart Fill ↓</b> detects constant/linear/geometric/numbered-name series from your selected seed rows and fills downward, previewed first.</p>
+
+<h2>Snapshots &amp; patch notes</h2>
+<p>Toolbar ▸ <b>Snapshots ▸ Capture</b> before a balance pass; later, <b>Diff vs …</b> shows every changed cell (plus added/removed assets) and exports PR-ready Markdown or CSV patch notes.</p>
+<p><b>Snapshots last for the editor session only.</b> They live in memory and are cleared by any domain
+reload — recompiling a script or entering play mode discards them — and the list shows only snapshots
+of the type you currently have open. Capture and diff within one sitting. For a comparison that has to
+survive a restart, or to compare against a shipped version, export the sheet to CSV and diff the files,
+or use the review window against two folder states.</p>
+
+<h2>Import / Export</h2>
+<p>Toolbar ▸ <b>Data</b>. CSV, TSV, JSON and XLSX (no external dependency) round-trip losslessly. Delimited exports carry two reserved lead columns: <code>__id</code> (the asset GUID — leave it alone in spreadsheets; it lets a renamed row still update the right asset) and <code>__asset</code> (the name). Rows with no match create new assets (confirmed first); ambiguous or duplicate rows are skipped, never guessed. Everything imports as one undoable batch.</p>
+
+<h2>Google Sheets sync</h2>
+<p>Settings ▸ Google Sheets. Bring your own Google Cloud credentials (see the bundled <i>Sheets Setup</i> guide); DataLoom requests only the per-file Drive scope. One spreadsheet per project, one tab per type; <b>Push</b> replaces the tab with the grid, <b>Pull</b> applies sheet edits back (identity-matched, confirmed, undoable).</p>
+
+<h2>AI copilot &amp; assistant server</h2>
+<p>Toolbar ▸ AI. Describe an edit in plain language; the model can only emit a declarative plan that is validated against your real schema, previewed as a diff, and applied only when <i>you</i> click Apply (one undo + backup). Anthropic or any OpenAI-compatible endpoint (set a base URL for a fully local model). Keys live in the encrypted per-machine store, never in project files.</p>
+<p>The <b>assistant server</b> (Tools ▸ DataLoom Pro ▸ Assistant Server) exposes the same read/preview/apply-with-confirmation tools over MCP at <code>http://127.0.0.1:8471/</code> — loopback only.</p>
+
+<h2>Headless CI</h2>
+<pre>Unity -batchmode -quit -projectPath &lt;project&gt; -executeMethod DataLoom.Editor.LoomCli.Run -- --mode validate --report health.json --junit health.xml --sarif health.sarif
+  # exit 0 = clean, 2 = violations/failure, 3 = bad arguments
+--mode export   --type MonsterProfile --out monsters.xlsx
+--mode import   --type MonsterProfile --in monsters.csv [--apply] [--create]
+--mode pipeline --spec buff.json [--apply]   # dry-run by default
+--mode pipeline --name "Tier Buff"  [--apply]   # a pipeline saved in the editor, by its name
+--mode codegen                                 # regenerate the typed accessors
+--mode codegen  --check                        # CI drift check: exit 2 if generated code is stale
+  # --apply/--create/--check read their VALUE: bare means true, and "--apply false" means false</pre>
+<p>Pipeline spec format:</p>
+<pre>{ "type": "MonsterProfile", "column": "health",
+  "filter": { "column": "tier", "op": "==", "value": "Dire" },
+  "steps": [ { "op": "multiply", "factor": 1.15 }, { "op": "clamp", "min": 0, "max": 999 } ] }</pre>
+
+<h2>Smaller things worth knowing</h2>
+<p class="dim">Features that exist but are easy to miss — a traceability audit found these shipping with no documentation at all.</p>
+<ul>
+<li><b>Light theme</b> — Settings ▸ Theme switches between the dark brand palette and a light one.</li>
+<li><b>Saved views</b> — the <b>Views</b> toolbar menu stores a type + search + sort together, separately from saved searches (which store a query alone).</li>
+<li><b>Add a single row</b> — <code>+ Add Row</code> in the grid footer, or <b>Insert New Asset</b> in a row's right-click menu. Batch Create is for many at once.</li>
+<li><b>Per-group totals</b> — when rows are grouped, each band shows that group's <code>sum</code> and <code>avg</code> for the sorted numeric column.</li>
+<li><b>Star a row</b> — the row context menu marks a row with a gutter star, a lightweight personal marker distinct from the committed ⚑ review flag.</li>
+<li><b>Runtime save slots</b> — the Loom Runtime module exposes <code>LoomSave.SaveSlot/LoadSlot/SlotExists/DeleteSlot</code> and <code>ResetToBaseline</code>, plus a <code>Version</code> field and a <code>Migrate</code> hook so a shipped save can be upgraded when your data changes. <i>Known limit:</i> <code>[SerializeReference]</code> fields are skipped by Unity's JSON layer and so are not captured in a delta.</li>
+<li><b>In-game data panel</b> — add <b>DataLoom ▸ Loom Data Panel</b> to a GameObject; in development builds F8 toggles an overlay to inspect and tweak loaded data, save/load slot 0, or reset to the shipped values. It is inert in release builds.</li>
+<li><b>Authoring menu items</b> — <b>Export .unitypackage</b>, <b>Demo ▸ Rebuild Demo Scene</b> and <b>Demo ▸ Configure Full-HD Player Settings</b> exist for packaging the tool and its demo. The last one changes your project's Player Settings, so avoid it unless that is what you want.</li>
+</ul>
+
+<h2>Safety model</h2>
+<p><b>One thing undo cannot do.</b> Every value change is a single undo step with a backup. But Unity's
+undo system cannot delete a file it created on disk, so if an import <i>creates</i> assets, Ctrl+Z takes
+back the value changes and the new asset files remain. DataLoom therefore asks straight after such an
+import whether to remove them, and takes a backup before it does. Nothing is ever removed silently.</p>
+<ul>
+<li>Every mutation flows through one transactional path: one undo step, one history batch, automatic raw-file backups before destructive operations (<b>Restore Last Backup</b> in the command palette / Tools menu), full rollback on mid-batch failure.</li>
+<li>The <b>Change History</b> window lists every edit (who/when/old→new) and reverts single edits or whole batches; reverts are themselves recorded.</li>
+<li>Machine-driven writes (CLI/MCP/AI) are schema-validated, always previewable, and refuse to apply without explicit confirmation.</li>
+</ul>
+
+<h2>Extending DataLoom</h2>
+<ul>
+<li><b>Value operations</b> — subclass <code>DataLoom.Core.ValueOp</code> and <code>OpRegistry.Register("mykeyword", () =&gt; new MyOp())</code>; it appears in the pipeline drawer, specs, CLI and AI automatically.</li>
+<li><b>Validation rules</b> — subclass <code>DataLoom.Editor.ValidationRule</code> and register in <code>ValidationRuleRegistry</code>.</li>
+<li><b>Health rules</b> — subclass <code>HealthRule</code> and add to <code>DataHealth.Registry</code> (whole-set/relational checks with optional auto-fixes).</li>
+<li><b>Palette commands</b> — <code>CommandPalette.Register("Category", "Name", action)</code>.</li>
+<li><b>Adapter seams (2.0)</b> — <code>LoomAdapters.RegisterRowAction(label, (table,row) =&gt; …)</code> adds entries to every row's context menu, <code>RegisterPaletteCommand</code> feeds the palette, <code>RegisterExportFilter</code> rewrites outgoing export grids. Register from any <code>[InitializeOnLoad]</code> class; DataLoom never references the registrant. Rows are also draggable straight into scene/Inspector object fields.</li>
+<li><b>Localization seam (2.0)</b> — <code>LocalizationSeam.BuildTranslatorCsv</code> exports every string field with per-locale columns for translators; <code>ReadTranslations</code> turns a filled sheet back into ChangeRecords for the Transactor. When <code>com.unity.localization</code> is installed the <code>LOOM_HAS_LOCALIZATION</code> define lights up for the 2.x string-table bridge.</li>
+<li><b>Read-only analytics</b> — <code>LoomSchema</code>, <code>ColumnProjection</code>, <code>LoomTable</code>, <code>ReferenceIndex</code>, <code>SnapshotService</code>, <code>Workbook</code> (XLSX), <code>SeriesEngine</code>, <code>ExprEvaluator</code> are all public and never mutate assets.</li>
+</ul>
+
+<h2 id="google-sheets-setup">Google Sheets setup</h2>
+<p class="dim">DataLoom ships no Google keys — you create a free Google Cloud project once and your whole team shares it (the four identifiers are committed with the project; secrets stay per machine). Sync only ever requests the per-file Drive scope, so it can touch only spreadsheets you explicitly pick.</p>
+
+<h3>1 · Create the Cloud project &amp; enable APIs</h3>
+<ol>
+<li>Go to <code>console.cloud.google.com</code> ▸ create a project (any name).</li>
+<li><b>APIs &amp; Services ▸ Library</b>: enable <b>Google Sheets API</b>, <b>Google Drive API</b> and <b>Google Picker API</b>.</li>
+</ol>
+
+<h3>2 · Consent screen</h3>
+<ol>
+<li><b>APIs &amp; Services ▸ OAuth consent screen</b> ▸ External ▸ fill the two required fields.</li>
+<li><b>Testing</b> mode is enough — add each teammate's Google account under <b>Test users</b>.</li>
+</ol>
+
+<h3>3 · Create the two OAuth clients + API key</h3>
+<ol>
+<li><b>Credentials ▸ Create credentials ▸ OAuth client ID ▸ Desktop app</b> → this is the <b>Desktop OAuth Client ID</b> (used by Connect). If Google shows a client secret, keep it — some desktop clients need it: paste it into DataLoom's <i>Desktop OAuth Client Secret</i> field on each machine (it is stored encrypted, per machine, never committed).</li>
+<li><b>Create credentials ▸ OAuth client ID ▸ Web application</b> → this is the <b>Picker Web Client ID</b>. Under <b>Authorized JavaScript origins</b> add exactly: <code>http://localhost:8472</code></li>
+<li><b>Create credentials ▸ API key</b> → the <b>Browser Picker API Key</b>. Restrict it to the Google Picker API.</li>
+<li>The <b>Picker App ID</b> is your Cloud project's <i>project number</i> (Dashboard ▸ Project info — the numeric one, not the project id).</li>
+</ol>
+
+<h3>4 · In Unity</h3>
+<ol>
+<li><b>Tools ▸ DataLoom Pro ▸ Settings ▸ Google Sheets</b>: paste the four values (they save to <code>ProjectSettings/DataLoomSheets.json</code> — commit it).</li>
+<li><b>Connect</b> — a browser opens; sign in with a test-user account. The refresh token is stored encrypted on this machine only.</li>
+<li><b>Bind Spreadsheet</b> — a local page (<code>http://localhost:8472</code>) opens the Google Picker; pick (or first create in Drive) one spreadsheet for the project.</li>
+<li>Open a type in the workbench ▸ <b>Data ▸ Google Sheets ▸ Push</b>. Each type syncs to its own tab (auto-created). Designers edit in Sheets; <b>Pull</b> applies their edits back — matched by the hidden <code>__id</code> column, confirmed, undoable.</li>
+</ol>
+
+<h3>Common errors</h3>
+<ul>
+<li><b>"Missing client secret" at token exchange</b> — paste the desktop client's secret into Settings and press <i>Save Local Secret</i>, then Connect again.</li>
+<li><b>Picker shows "origin not allowed"</b> — the web client is missing <code>http://localhost:8472</code> as an authorized JavaScript origin (no trailing slash, http not https).</li>
+<li><b>"Invalid API key" / picker never loads</b> — the key is restricted to the wrong API or the Picker API isn't enabled.</li>
+<li><b>"Invalid app id"</b> — you pasted the project <i>id</i> (text); use the project <i>number</i> (digits).</li>
+<li><b>Browser never returns to Unity</b> — use <i>Reopen Browser</i> in Settings, or <i>Cancel Pending Browser</i> and retry; corporate proxies sometimes block the loopback redirect.</li>
+<li><b>"unverified app" warning</b> — expected in Testing mode; click <i>Continue</i> (your account must be listed as a test user).</li>
+<li><b>Access revoked at myaccount.google.com</b> — DataLoom reports 403s; Disconnect, Connect again, and rebind.</li>
+</ul>
+
+<h2 id="ai-assistants">Instructions for AI assistants</h2>
+<p class="dim">This section is also what to paste into <b>Project Settings ▸ Assistant Preferences ▸ Custom Instructions</b> so Unity AI (or any coding agent) drives DataLoom correctly.</p>
+
+<p>Assign this file in <b>Project Settings ▸ Assistant Preferences ▸ Custom Instructions</b> so Unity AI (and any agent reading it) knows how to drive DataLoom correctly. It is also the fastest orientation for a coding agent working in a project that has DataLoom installed.</p>
+<h3>What DataLoom is</h3>
+<p>An editor tool that presents every ScriptableObject of a type — and every MonoBehaviour on prefabs — as one editable spreadsheet. The assets stay plain <code>.asset</code> / <code>.prefab</code> files; DataLoom never moves data into a database of its own.</p>
+<h3>The rule that matters most</h3>
+<p><b>Every write goes through the Transactor.</b> Do not call <code>SerializedObject.ApplyModifiedProperties</code> on data assets directly when a DataLoom path exists. Going through the Transactor is what gives the user one undo step, an automatic file backup, and a revertible history entry. A write that bypasses it is invisible to all three.</p>
+<h3>Preferred entry points</h3>
+<table>
+<tr><th>Task</th><th>Use</th></tr>
+<tr><td>Bulk-edit a column</td><td><code>PipelineRunner.RunSpec(specJson, apply)</code> — always preview with <code>apply:false</code> first</td></tr>
+<tr><td>Read a sheet</td><td><code>new LoomTable()</code> + <code>Load(type)</code>, then <code>GetCell</code> / <code>GetCellExport</code></td></tr>
+<tr><td>Values for export or comparison</td><td><code>GetCellExport</code> — full precision and stable reference identity</td></tr>
+<tr><td>Values shown to a person</td><td><code>GetCell</code> — the display form</td></tr>
+<tr><td>Validate</td><td><code>ValidationState.ValidateAll(table)</code> or <code>DataHealth.Scan()</code></td></tr>
+<tr><td>Check data in CI</td><td>the CLI: <code>-executeMethod DataLoom.Editor.LoomCli.Run --mode validate</code> (exit 2 = issues)</td></tr>
+</table>
+<h3>Working with the assistant server</h3>
+<p>DataLoom exposes a loopback MCP server (Tools ▸ DataLoom Pro ▸ Assistant Server ▸ Start). It prints a config block containing a <b>per-session bearer token</b> — requests without it are rejected, as are requests carrying an <code>Origin</code> header. Write tools require <code>confirm: true</code>; that gate exists so a model cannot mutate a project's data without the user's explicit step. Do not attempt to work around it, and do not ask the user to disable it.</p>
+<h3>Things that will bite you</h3>
+<ul>
+<li><b>Identity is a GUID, never an instance id.</b> Reference cells export <code>guid:&lt;guid&gt;:&lt;localFileId&gt;</code>; instance ids are session-local and change every launch.</li>
+<li><b>Display values are rounded</b> to five decimals for readability. Anything comparing, exporting or aggregating must use the export/raw accessors, or numbers silently lose precision.</li>
+<li><b>Numbers are invariant-culture everywhere.</b> Never format or parse a value with the current culture — on a comma-decimal machine that produces <code>2,5</code>, which then fails to parse.</li>
+<li><b>An unset reference in a formula is an error, not zero.</b> That is deliberate: a silent zero is how a 0-damage weapon ships. Use <code>IF</code> to opt into a default.</li>
+<li><b>Don't touch <code>Assets/</code> during a batch run.</b> It aborts the run.</li>
+</ul>
+<h3>Suggesting data changes</h3>
+<p>Prefer proposing a pipeline spec the user can preview as a diff over editing assets one by one. If you are unsure whether a change is safe, run it through the What-If Sandbox (Tools ▸ DataLoom Pro ▸ What-If Sandbox), which applies the pipeline to a shadow copy and proves the real assets were untouched.</p>
+
+<p class="dim">Support: szekipapa77@gmail.com · DataLoom Pro is editor-only and adds nothing to your builds.</p>
+</body>
+</html>
