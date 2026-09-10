@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>City Generator - Documentation</title>
+<style>
+  :root{--bg:#242424;--panel:#2e3036;--text:#fafafa;--dim:#c6cad4;--accent:#5dbaff;--border:#4e525e}
+  body{background:var(--bg);color:var(--text);font-family:system-ui,"Segoe UI",sans-serif;
+       max-width:900px;margin:0 auto;padding:32px;line-height:1.6}
+  h1{font-weight:300;font-size:34px;margin:0 0 4px}
+  h2{color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:6px;
+     margin-top:36px;font-weight:400}
+  h3{margin:22px 0 4px;font-size:19px}
+  h4{margin:16px 0 4px;font-size:16px;color:var(--dim)}
+  code{background:#1b1d22;border:1px solid var(--border);border-radius:4px;
+       padding:1px 6px;font-size:13px}
+  pre{background:#1b1d22;border:1px solid var(--border);border-radius:6px;
+      padding:12px 14px;overflow-x:auto}
+  pre code{background:none;border:none;padding:0}
+  table{border-collapse:collapse;margin:12px 0;width:100%;display:block;overflow-x:auto}
+  td,th{border:1px solid var(--border);padding:7px 10px;text-align:left;font-size:14px}
+  th{background:var(--panel)}
+  a{color:var(--accent)}
+  hr{border:none;border-top:1px solid var(--border);margin:28px 0}
+  blockquote{border-left:3px solid var(--accent);margin:12px 0;padding:4px 14px;color:var(--dim)}
+</style>
+</head>
+<body>
+<h1>Pocket Numbers — five number puzzle templates</h1>
+<h2>Requirements and import</h2>
+<p>Tested with Unity 6000.0.62f1, Universal Render Pipeline 17.0.4 and Unity UI (com.unity.ugui) 2.0.0. Use a new Unity 6 Universal 3D project. Built-in RP and HDRP are not supported. Install URP and Unity UI from Package Manager before importing. No paid Asset Store dependencies are required.</p>
+<ol><li>Import PocketNumbers-5Games-20Themes.unitypackage in full (Assets &gt; Import Package &gt; Custom Package).</li></ol>
+<ol><li>Choose Pocket Numbers &gt; Setup Imported Template. This explicit setup assigns the provided URP asset, enables the legacy Input Manager, sets Linear color and Full HD, configures the uncompressed WebGL template and adds the five scenes to Build Settings. Use a new project: this command intentionally changes project settings and replaces the build scene list.</li></ol>
+<ol><li>Restart Unity if the input-backend change requests it. Active Input Handling must be Input Manager (Old), or Both.</li></ol>
+<ol><li>Open Games/Pair/Scenes/PairTutorial and press Play. The other four game folders contain their own saved scenes and prefabs. Open each scene to test that game in the Editor.</li></ol>
+<ol><li>Install Windows or WebGL Build Support in Unity Hub for the corresponding build target. Choose the desired target in Build Profiles and build the included five scenes, in their setup order.</li></ol>
+<p>The package does not overwrite your Packages/manifest.json or ProjectSettings during import. Setup is explicit. The only dependency packages needed beyond core Unity modules are URP 17.0.4 and Unity UI 2.0.0. See the root submission folder's Dependencies.json.txt for a minimal example.</p>
+<h2>Content and gameplay</h2>
+<p>PAIR: remove equal pairs or pairs totaling ten, including supported empty-cell lines and row wrapping; Add extends the board.</p>
+<p>DOUBLE: merge adjacent equal groups, with gravity, refill and increasing value milestones.</p>
+<p>TEN: drag rectangles whose nonempty values total ten.</p>
+<p>CHAIN: drag adjacent numbers following equal/doubling rules, then merge their total into a power of two.</p>
+<p>THIRTEEN: connect at least three equal tokens to increment their value; build toward thirteen.</p>
+<p>Each game includes an interactive tutorial. PAIR and TEN each have six authored challenge boards. DOUBLE, CHAIN and THIRTEEN each have six selectable checkpoints with ongoing gravity/refill and milestone progression. These are 30 challenge/checkpoint entries, not 30 separate scene files. Supported caps are 1M for DOUBLE/CHAIN and thirteen for THIRTEEN.</p>
+<h2>Controls and player flow</h2>
+<p>Mouse/touch: tap pairs or groups; drag regions and chains. Follow the animated tutorial pointer. Continue becomes available after the required tutorial action. R restarts the current challenge. Escape pauses/closes the current panel. F2 cycles the twenty visual themes; the theme button opens the picker. Windows players can switch games with Left/Right arrows. That shortcut is deliberately disabled in WebGL and the Editor. The standalone submission web page has its own game selector outside the game canvas.</p>
+<p>Boosters activate on one click. Targeted boosters highlight valid hovered tiles and can be canceled by clicking their button again. Empty inventory exposes the coin price. Purchases use earned local currency. Hints highlight a move; Magic Wand resolves one where provided. There is no real-money store, advertising SDK, analytics service or server dependency.</p>
+<h2>Editing the template</h2>
+<p>Each Games/&lt;Game&gt; folder holds Levels, Prefabs, Scenes, Scripts and Settings. Edit the saved prefab to reposition UI or change effects. Boards and tile objects are authored in the prefab; gameplay changes their values and state. Tutorial01 is a PuzzleLevel ScriptableObject: change page instructions, starting values, action type, target and demonstration indices. Campaign assets contain the challenge/checkpoint entries; retain array lengths compatible with the game's grid and play-test any edited layout.</p>
+<p>Shared/Settings/ThemeLibrary contains Jelly Pop plus 19 ExtraStyle entries. Edit a style's sprites, illustrations, font, colors and backdrop. Sprites have sliced rectangles and UI borders already authored. Jelly Pop is the default. Soft Pop is not a selectable theme. Some legacy fallback art fields remain for compatibility.</p>
+<p>Shared/Scripts contains the economy, progression, tutorial, feedback, theme, UI and verification source. Game-specific rules live in each Games/&lt;Game&gt;/Scripts folder. Tune booster costs/rewards in the economy and progression source, collection thresholds in CollectionRewards, and combo windows/bonuses in PuzzleScoring.cs. Search the named symbols before editing; balance changes affect existing saves.</p>
+<p>Shared/Audio contains 21 synthesized clips including interaction feedback and a music loop; SoundBank holds the clip mapping and mute behavior. Shared/Art includes the generated visual assets and licensed fonts. Individual game Settings folders contain post-processing profiles. Shared/Settings contains the URP renderer and pipeline assets. The paper-confetti atlas contains sixteen sprites; each saved game prefab has a bounded celebration particle system using its dedicated material.</p>
+<h2>Rendering and WebGL</h2>
+<p>The supplied demo renders a fixed 1920x1080 buffer, maintaining 16:9 with CSS letterboxing at other window sizes. It does not turn into portrait UI. URP post-processing, high-quality SMAA, color adjustments, vignette and restrained bloom are retained. The source also contains responsive UI for projects that choose to use other resolutions.</p>
+<p>The supplied web demo has raw .wasm, .js and .data files: no Brotli, Gzip, Unity decompression fallback or Content-Encoding header is required. This increases transfer size compared with a compressed build. Serve over HTTP(S), using application/wasm for .wasm, application/javascript for .js and application/octet-stream for .data. Opening index.html through file:// is not supported by browsers. A local Python launcher is provided alongside the demo, outside the unitypackage. The build uses IL2CPP size optimization, high managed stripping, GPU texture compression and reduced audio sample rate. Texture/audio compression inside game assets is independent of HTTP encoding.</p>
+<h2>Saves and extension points</h2>
+<p>Progress, coin balance, stock, collections, style choice and current runs persist locally through PlayerPrefs, with browser persistence handled by Unity. There is no cross-device cloud save. Clear the game's PlayerPrefs only when deliberately resetting progress; never use DeleteAll in a shared project. Local QA profiles are isolated using command-line arguments. ReleaseVerifier and BuildSmokeRunner are opt-in native verification helpers; they remain idle in ordinary players. No verification service is contacted.</p>
+<h2>Scope</h2>
+<p>Desktop Windows and desktop WebGL have been tested. Mobile-shaped browser layouts were checked, but physical Android/iOS builds, subjective audio review and cross-browser certification are not included. This is a customizable source template, with no monetization, store upload, publisher support infrastructure or release approval bundled. No source reference-game artwork or videos are included.</p>
+<p>See Third-Party Notices.txt and AI Content Disclosure.txt for provenance. For reproducible import verification use -executeMethod PocketNumbers.Editor.PackageSetup.ValidateImported in Unity batch mode.</p>
+
+<h2>Support</h2>
+<p>Questions, bug reports and feature requests: <a href="mailto:szekipapa77@gmail.com">szekipapa77@gmail.com</a><br>Please include your Unity version, render pipeline and the city seed or CITY CODE that reproduces the problem.</p>
+
+</body>
+</html>

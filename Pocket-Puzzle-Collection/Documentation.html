@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>City Generator - Documentation</title>
+<style>
+  :root{--bg:#242424;--panel:#2e3036;--text:#fafafa;--dim:#c6cad4;--accent:#5dbaff;--border:#4e525e}
+  body{background:var(--bg);color:var(--text);font-family:system-ui,"Segoe UI",sans-serif;
+       max-width:900px;margin:0 auto;padding:32px;line-height:1.6}
+  h1{font-weight:300;font-size:34px;margin:0 0 4px}
+  h2{color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:6px;
+     margin-top:36px;font-weight:400}
+  h3{margin:22px 0 4px;font-size:19px}
+  h4{margin:16px 0 4px;font-size:16px;color:var(--dim)}
+  code{background:#1b1d22;border:1px solid var(--border);border-radius:4px;
+       padding:1px 6px;font-size:13px}
+  pre{background:#1b1d22;border:1px solid var(--border);border-radius:6px;
+      padding:12px 14px;overflow-x:auto}
+  pre code{background:none;border:none;padding:0}
+  table{border-collapse:collapse;margin:12px 0;width:100%;display:block;overflow-x:auto}
+  td,th{border:1px solid var(--border);padding:7px 10px;text-align:left;font-size:14px}
+  th{background:var(--panel)}
+  a{color:var(--accent)}
+  hr{border:none;border-top:1px solid var(--border);margin:28px 0}
+  blockquote{border-left:3px solid var(--accent);margin:12px 0;padding:4px 14px;color:var(--dim)}
+</style>
+</head>
+<body>
+<h1>Pocket Puzzle Collection — setup and customization</h1>
+<h2>Requirements and first import</h2>
+<p>Use Unity 6000.0.62f1 (Unity 6.0), preferably a new Universal 3D project. Install Universal RP 17.0.4, Unity UI 2.0.0 and 2D Sprite 1.0.0 through Package Manager before importing. The included scene materials require URP. No paid Asset Store package, account, server SDK or API key is needed.</p>
+<ol><li>Import PocketPuzzleCollection_1.0.0.unitypackage using Assets &gt; Import Package &gt; Custom Package.</li><li>Select Pocket Puzzles &gt; Package &gt; Set up demo project. This explicit action assigns the supplied URP asset to all quality levels, adds the 18 scenes to Build Settings, selects Linear color space and legacy Input Manager, and sets 1920 x 1080 defaults. It replaces the current build scene list: use a fresh project for evaluation. Import alone does not modify settings.</li><li>Restart Unity if it asks to apply the input setting. The runtime uses UnityEngine.Input, not an Input System actions asset.</li><li>Run Pocket Puzzles &gt; Package &gt; Validate imported scenes. The Console should report 18 valid scenes with 20 themes.</li><li>Open Assets/Pocket/Triple/Scenes/TripleTutorial.unity and enter Play mode. Open the other game folders' scenes to evaluate them in the Editor.</li></ol>
+<p>If materials are pink, verify URP 17.0.4 is installed and rerun the setup menu. Keep the supplied UniversalRendererData, pipeline assets and post-processing profiles. Built-in/HDRP materials are not included.</p>
+<h2>Included content and folders</h2>
+<ul><li>Triple: Triple Garden, four finite levels.</li><li>Pairs: Pair Parade, four finite levels with a timer.</li><li>Merge: Number Bloom, one tutorial level and one rising-row endless scene.</li><li>Link: Little Links, four finite levels.</li><li>Stretch: Stretchy, four room-filling levels.</li><li>Each game has Scenes, Prefabs, Scripts and Settings. Shared contains presentation art, font, audio, game systems, theme settings, web wrapper and common UI.</li><li>Editor contains package setup, import validation, pipeline validation and an uncompressed WebGL demo builder. Development regeneration tools and obsolete Soft Pop assets are intentionally not exported.</li><li>BuildSmoke is a dormant opt-in development component referenced by authored roots; it does not run during normal play. Do not launch shipping games with its legacy -qa argument.</li></ul>
+<h2>Controls and gameplay</h2>
+<p>Click/tap tiles to select. Drag tiles in Number Bloom and drag groups in Pair Parade. Stretchy accepts a pointer swipe, W/A/S/D or its direction buttons. F2 cycles themes; Shift+F2 cycles backward. Escape closes a dialog/cancels a target action or pauses. R restarts. Windows players additionally allow left/right arrow game switching; Editor and normal WebGL builds do not.</p>
+<p>Triple Garden clears exposed trios into a seven-slot tray. Pair Parade matches straight unobstructed pairs and uses pushes to rearrange paths. Little Links allows routes with at most two turns, including the outside border. Number Bloom merges equal blocks, constrains dragging against occupied blocks and exposes Swap/Hammer targets. Stretchy extends until blocked and loses if no legal direction remains with empty cells. Stretchy gives exactly 10 score/collection points on a complete room, none for movement or losing.</p>
+<p>Boosters differ by game: Triple: Hint / Undo / Shuffle. Pairs and Links: Hint / Shuffle / Magic Wand. Merge: Hint / Undo / Swap / Hammer. Stretch: Hint / Undo / free Restart. A stocked booster acts immediately. Click an armed target booster again to cancel. Hint demonstrates a move; Magic Wand executes an assisted match. Empty stock uses local coins at the shown price. This is a local game economy, not real-money purchasing.</p>
+<h2>Changing a theme or replacing art</h2>
+<p>PuzzleSkin ScriptableObjects live in Shared/Settings. Duplicate an existing skin rather than editing its stable asset identity after release. displayName changes the visible name; the asset name is used for saved selection. The existing BoldPop.asset is displayed as Jelly Pop for save compatibility. Soft Pop is not included/selectable.</p>
+<p>Each skin has a 16-sprite symbols array, backdrop, UI palette, number colors, corner/shade settings and Stretchy body colors. Preserve the slot mapping when replacing an atlas: fruit/shape symbols 0–7, animal faces 8–11, extra symbol 12, Stretchy face 13, remaining utility slots 14–15. Inspect the existing sheet and a game scene before changing kinds. Use symbolOffsets to adjust visual centering where appropriate.</p>
+<p>SkinController on each game root contains the ordered skins and matching Volume profiles. Keep these arrays the same length. The existing theme picker and collections are authored for 20 looks; adding beyond 20 requires extending the picker/collection UI and catalog code. Switching UI themes does not replace an independently equipped collectible piece/body skin. Follow theme in My Collection restores linked theme/piece selection.</p>
+<p>Stretchy head artwork uses a circular stencil mask inside the head surface. Preserve the Themed head mask, centered Generated character Image and originalHeadParts references when replacing faces. Collection previews combine a shape mask with a bottom-up reveal.</p>
+<h2>Editing or adding levels</h2>
+<p>Work on a duplicate of an existing scene and its level prefab. Edit the authored hierarchy in Unity; gameplay objects must exist before Play. Do not delete serialized references from the game root.</p>
+<p>For grid games, keep each PuzzleTile id unique and consistent with its index in the game's tiles array, set kind/column/row to match the intended cell, and position the UI RectTransform consistently with the board spacing. Triple boards also depend on visual layering/overlap for which tiles are exposed; retain traySlots and validate a solvable sequence. Pairs/Links require even matching groups and a solvable route/push layout. PairsGame.seconds controls the starting timer.</p>
+<p>For Number Bloom, retain the drag colliders, columns/rows/pitch/offset and tile ownership; goal defines the target number exponent in the tutorial. endless, rowSeeds and RowDuration control rising rows. Test a new board with actual drags and adjacency merges.</p>
+<p>For Stretchy, edit the authored StretchCell walkable flags and positions, start cell and depth/body references together. Keep cells unique and use StretchGame.Solution() during development to check that a winning route exists; a changed obstacle map must still match its visual wall/depth geometry.</p>
+<p>When increasing the supplied level count, update LevelCatalog.Count/Scene/Name in Shared/Scripts/ProfileStore.cs and the related scene names. PackageSetup.ScenePaths derives its list from that catalog. Duplicate and resize the authored level-selection buttons and per-game save arrays as required for a larger campaign. The current package is not a standalone visual level editor.</p>
+<h2>Tuning feedback, rewards and audio</h2>
+<p>Game root references connect BoosterEffects, ScoreCelebration, AudioPalette and RewardCollection. Effects use authored pools; do not remove referenced coin/trail/fragment/score slots without updating the corresponding arrays/code. WinParticles uses ConfettiPaper.mat and a shared 2 x 2 atlas imported at 256 x 256; preserve Texture Sheet Animation's fixed random start frame so sprites do not morph as they fall.</p>
+<p>GameShell defines booster names; ProfileStore defines inventory prices/quantity, wallet rewards and local save data. CollectionProgress defines the increasing collection targets and migration. Do not lower targets or reorder reward identities in a shipped game without a save migration. Each game's RewardCollection.rewards array controls its unlock order. Existing starting collection goals: Triple 240, Pairs 140, Merge 40, Links 140, Stretch 72. Stretchy needs eight successful clears from zero for its first reward.</p>
+<p>AudioPalette references the supplied clips. Replace clips while retaining event names/references, and keep WebGL importer overrides efficient. SFX were synthesized from code, with source WAVs included. Music and SFX toggles are separate.</p>
+<h2>Saves and use in another product</h2>
+<p>ProfileStore uses a versioned PlayerPrefs record; UI skin identity uses VisualStyleId. Equipment and progression are per game. For a separate released product, change the product/company settings and audit the PlayerPrefs keys. Browser saves depend on the browser/site and are not a backend or tamper-resistant economy. QA flags use separate profile keys.</p>
+<h2>Builds</h2>
+<p>Windows: run setup, choose Windows x86_64 in Build Profiles, retain all desired scenes, then build to an empty folder. Distribute the executable together with its Data folder, UnityPlayer.dll and runtime dependencies.</p>
+<p>WebGL: install Unity Web Build Support. Use Pocket Puzzles &gt; Package &gt; Build uncompressed Full HD WebGL demo. The builder writes Submission/PocketPuzzleCollection_1.0.0/WebGLDemo by default (or the POCKET_SUBMISSION_DIR environment path). It uses the supplied browser URP pipeline, high stripping, size-optimized IL2CPP, fixed 1920 x 1080 rendering and plain runtime files. It restores the native URP assignment and prior compression preference afterward. The external five-game selector is compiled only for this demo using POCKET_SUBMISSION_DEMO.</p>
+<p>Serve WebGLDemo over HTTP(S). Opening index.html directly through file:// is not supported. No Brotli/gzip or Content-Encoding configuration is needed. The supplied Python preview server is a local convenience, not a hosting service. Keep the canvas drawing buffer at 1920 x 1080: matchWebGLToCanvasSize is false, and resize changes CSS dimensions only. Smaller screens receive proportional scaling/letterboxing rather than portrait layout. This fixed-resolution demo prioritizes presentation quality; actual frame rate depends on GPU/browser.</p>
+<p>The ordinary source supports adaptive UI, while this submission demo deliberately locks its rendering resolution. Runtime texture importer caps and the supplied Web URP pipeline reduce memory/work; the uncompressed demo is larger on disk/transfer than the separate Brotli release.</p>
+<h2>Verification and limitations</h2>
+<p>The submission is tested in Unity 6000.0.62f1, Windows x86_64 and a desktop WebGL2 browser. Native Android/iOS binaries, ad/IAP SDKs, analytics, online accounts, cloud saves and multiplayer are not included. Scene validation catches missing references but does not prove that a custom level is solvable: play through every new board and test its boosters, lose/replay path and resized UI.</p>
+<p>See AI-Disclosure.txt and ../Third-Party Notices.txt for content provenance and the Nunito OFL license. No screenshots or videos from reference games are bundled.</p>
+
+<h2>Support</h2>
+<p>Questions, bug reports and feature requests: <a href="mailto:szekipapa77@gmail.com">szekipapa77@gmail.com</a><br>Please include your Unity version, render pipeline and the city seed or CITY CODE that reproduces the problem.</p>
+
+</body>
+</html>
