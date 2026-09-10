@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>City Generator - Documentation</title>
+<style>
+  :root{--bg:#242424;--panel:#2e3036;--text:#fafafa;--dim:#c6cad4;--accent:#5dbaff;--border:#4e525e}
+  body{background:var(--bg);color:var(--text);font-family:system-ui,"Segoe UI",sans-serif;
+       max-width:900px;margin:0 auto;padding:32px;line-height:1.6}
+  h1{font-weight:300;font-size:34px;margin:0 0 4px}
+  h2{color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:6px;
+     margin-top:36px;font-weight:400}
+  h3{margin:22px 0 4px;font-size:19px}
+  h4{margin:16px 0 4px;font-size:16px;color:var(--dim)}
+  code{background:#1b1d22;border:1px solid var(--border);border-radius:4px;
+       padding:1px 6px;font-size:13px}
+  pre{background:#1b1d22;border:1px solid var(--border);border-radius:6px;
+      padding:12px 14px;overflow-x:auto}
+  pre code{background:none;border:none;padding:0}
+  table{border-collapse:collapse;margin:12px 0;width:100%;display:block;overflow-x:auto}
+  td,th{border:1px solid var(--border);padding:7px 10px;text-align:left;font-size:14px}
+  th{background:var(--panel)}
+  a{color:var(--accent)}
+  hr{border:none;border-top:1px solid var(--border);margin:28px 0}
+  blockquote{border-left:3px solid var(--accent);margin:12px 0;padding:4px 14px;color:var(--dim)}
+</style>
+</head>
+<body>
+<h1>City Kit</h1>
+<p>A whole city, generated: streets that go somewhere, traffic that obeys its own signals, people who only cross at crossings, a river with bridges, a railway with level crossings, weather, a day and a night.</p>
+<p>Everything here is procedural. There are no meshes, no textures and no audio files in this package — the kit builds all of it from the seed you give it, so a city is a number you can put in a text field and a colleague can type the same number and see the same place.</p>
+<hr>
+<h2>Quick start</h2>
+<ol><li><b>Tools &gt; City Kit &gt; City Designer.</b></li><li>Press <b>Create a City</b>. That is the whole setup.</li><li>Press a preset, or drag anything. The city rebuilds as you go.</li></ol>
+<p>To play in it, open <code>Assets/CityKit/Demo/Scenes/CityDemo.unity</code> and press Play. Keys <code>1</code>, <code>2</code>, <code>3</code> frame the city; <code>4</code> walks; <code>5</code> drives; <code>6</code> walks in third person, as one of the city's own people; <code>F1</code> hides the panels. Nothing but those keys, the view buttons and the mouse moves the camera — changing a setting, pasting a code or pressing Rebuild leaves the viewpoint exactly where it was, so you can see what the change did.</p>
+<p><b>The demo scene reads the legacy Input Manager.</b> If your project's <i>Project Settings &gt; Player &gt; Active Input Handling</i> is set to <b>Input System Package (New)</b>, the demo's keys and mouse do nothing — the city still generates and still runs, but you cannot fly, walk or drive in it. Set it to <b>Both</b> and the demo works alongside your own input code. Nothing outside <code>Demo</code> touches input at all, so if you delete the Demo folder this does not apply to you.</p>
+<hr>
+<h2>The designer window</h2>
+<p>Everything the kit can do is reachable from <b>Tools &gt; City Kit &gt; City Designer</b>:</p>
+<table><tr><th></th><th></th></tr><tr><td><b>Presets</b></td><td>14 starting points, from <code>Manhattan</code> to <code>Farmland</code>.</td></tr><tr><td><b>Seed</b></td><td>The whole city is a function of this number.</td></tr><tr><td><b>Code</b></td><td>The whole city as one line of text. Paste one in and press Load.</td></tr><tr><td><b>Sliders</b></td><td>Every setting, each held to a range the generator actually honours.</td></tr><tr><td><b>Features</b></td><td>River, railway, coast.</td></tr><tr><td><b>Asset library</b></td><td>Your own prefabs (see <i>Using your own art</i>).</td></tr><tr><td><b>Export map PNG</b></td><td>A flat map of the city, written beside the project.</td></tr><tr><td><b>Save prefab</b></td><td>Keep the city you like.</td></tr><tr><td><b>Validation</b></td><td>What, if anything, is wrong with this city.</td></tr></table>
+<p>A rebuild takes about 100 ms for a 96-cell city, 260 ms at 160 and 690 ms at 220, so the window waits for a drag to settle before rebuilding — never less than a quarter of a second, never more than a second and a half, and otherwise about as long as the last rebuild took. Turn off <b>Rebuild while dragging</b> if you would rather press the button yourself.</p>
+<hr>
+<h2>From script</h2>
+<p>One component makes the whole city.</p>
+<pre><code>// One component makes the whole city.
+var city = gameObject.AddComponent&lt;CityView&gt;();
+// Required. Without it the city is drawn with a stand-in material and,
+// in a built player, comes out flat white.
+city.surfaceMaterial = surfaceMaterial;
+city.settings.seed = 20260901;
+city.settings.width = 96;
+city.settings.height = 96;
+city.Generate();</code></pre>
+<p>Change anything and generate again.</p>
+<pre><code>// Change anything and generate again. The old city is destroyed for
+// you — there is no partial state to clean up.
+view.settings.parkShare = 0.3f;
+view.settings.maxFloors = 40;
+view.Generate();</code></pre>
+<p><code>CityView</code> also gives you <code>Plan</code>, <code>Issues</code>, <code>PlanMs</code>, <code>BuildMs</code>, <code>Traffic</code>, <code>Pedestrians</code>, <code>Nav</code> and <code>Built</code>. Set <code>spawnTraffic</code>, <code>spawnPedestrians</code> or <code>bakeNavMesh</code> to false before generating if you do not want them.</p>
+<hr>
+<h2>Reading the city</h2>
+<p>The plan is the city as data, and it is engine-free — you can generate and inspect one with no scene open.</p>
+<pre><code>// The plan is the city as data: every cell, road, lane and building.
+CityPlan plan = view.Plan;
+
+int parks = plan.CountKind(CellKind.Park);
+Debug.Log(plan.Lots.Count + " buildings, " + parks + " park cells");
+
+// Where is cell (10, 20) in world metres?
+float wx, wz;
+plan.CellToWorld(10, 20, out wx, out wz);
+
+// Can a person stand here? Can a car drive here?
+int cell = plan.Index(10, 20);
+bool walkable = plan.IsWalkable(cell);
+bool driveable = plan.IsDriveable(cell);</code></pre>
+<p>The ground plane is a partition: every cell has exactly one <code>CellKind</code>, one of <code>Empty</code>, <code>Roadway</code>, <code>Sidewalk</code>, <code>Crosswalk</code>, <code>Lot</code>, <code>Park</code>, <code>Plaza</code>, <code>Water</code>, <code>Meadow</code> — green land sealed off by the river, the railway or the map edge, which nothing can walk on — or <code>Rail</code>. Over it sit the graphs — <code>Corridors</code> (roads as centrelines), <code>Intersections</code>, <code>Lanes</code>, <code>LaneLinks</code>, <code>Crossings</code>, <code>Signals</code>, <code>Blocks</code> and <code>Lots</code>.</p>
+<hr>
+<h2>Putting your own things in it</h2>
+<p><code>CityMovement</code> answers "can something stand here" against the same cell rules the crowd and the navmesh use, so asking it means your object obeys the rule they do.</p>
+<pre><code>// Drop something on a pavement cell. CityMovement answers the same
+// question for you that it answers for the crowd and the navmesh.
+var plan = view.Plan;
+var rng = new CityRng(plan.Seed);
+for (int tries = 0; tries &lt; 200; tries++)
+{
+    int x = rng.Range(plan.Width), y = rng.Range(plan.Height);
+    if (!plan.IsWalkable(x, y)) continue;
+
+    float wx, wz;
+    plan.CellToWorld(x, y, out wx, out wz);
+    Instantiate(prefab, new Vector3(wx, CityMovement.GroundHeight(plan, x, y), wz),
+        Quaternion.identity);
+    break;
+}</code></pre>
+<hr>
+<h2>Share codes</h2>
+<pre><code>// A whole city as one line of text, safe to paste anywhere.
+string code = CityCode.Encode(view.settings);
+
+CitySettings loaded;
+string error;
+if (CityCode.TryDecode(code, out loaded, out error))
+{
+    view.settings = loaded;
+    view.Generate();
+}
+else
+{
+    Debug.LogWarning("That code is damaged: " + error);
+}</code></pre>
+<p>A code is quantised on purpose — a code you cannot paste is a code nobody shares — so <code>CityCode.Snap</code> tells you the settings a code will actually reproduce. A damaged code is either refused or reproduces exactly the same city — what it will never do is quietly open a different one.</p>
+<hr>
+<h2>Is the city any good?</h2>
+<p>The kit checks its own work. A city that generates is not the same as a city that works, so the validator asks the questions a player would notice:</p>
+<pre><code>// Is this city actually a place? Every building fronting a street,
+// the pavement one connected network, every lane reachable.
+foreach (CityIssue issue in view.Issues)
+    Debug.Log(issue);
+
+if (!CityValidation.IsUsable(view.Plan))
+    Debug.LogWarning("This seed produced a city with real problems.");</code></pre>
+<p>It reports if a building has no street to front onto, if the pavement is not one connected network, if a lane cannot be driven to, if a signal would give both axes green, or if a road crosses water with no bridge.</p>
+<hr>
+<h2>Settings</h2>
+<p>Every setting is held to a range, and the same table drives both the sliders and the generator — so a control can never offer a value that is silently replaced.</p>
+<pre><code>// What may a setting be? One table answers, and the generator reads
+// the same one — so a slider built from this can never offer a value
+// that is silently replaced.
+foreach (SettingRange range in CitySettingsRange.All())
+    Debug.Log(range.Label + " (" + range.Group + "): "
+        + range.Min + " to " + range.Max);
+
+// Some ranges depend on the others.
+float min, max;
+CitySettingsRange.Effective(view.settings, "blockSpacingJitter", out min, out max);</code></pre>
+<table><tr><th>Setting</th><th>Range</th><th>What it does</th></tr><tr><td><code>width</code>, <code>height</code></td><td>40 – 220</td><td>Cells across and down.</td></tr><tr><td><code>cellSize</code></td><td>2 – 8</td><td>Metres per cell. 4 m is one realistic lane.</td></tr><tr><td><code>blockSpacing</code></td><td>8 – 30</td><td>Cells between streets.</td></tr><tr><td><code>blockSpacingJitter</code></td><td>0 – 22</td><td>How much that may vary. Capped by the room the spacing leaves.</td></tr><tr><td><code>arterialEvery</code></td><td>2 – 8</td><td>Every Nth road gets two lanes each way.</td></tr><tr><td><code>boulevardShare</code></td><td>0 – 1</td><td>Share of arterials given wide tree-lined pavements.</td></tr><tr><td><code>riverWidth</code></td><td>3 – 16</td><td>Cells across the river.</td></tr><tr><td><code>downtownRadius</code></td><td>0 – 1</td><td>Fraction of the map radius that builds towers.</td></tr><tr><td><code>parkShare</code></td><td>0 – 1</td><td>Share of non-downtown blocks turned into parks.</td></tr><tr><td><code>commercialShare</code></td><td>0 – 1</td><td>Of the rest, how much is shops rather than homes.</td></tr><tr><td><code>maxFloors</code></td><td>4 – 60</td><td>Storeys for the tallest downtown tower.</td></tr><tr><td><code>lotSetback</code></td><td>0 – 2</td><td>Cells from the pavement to the building line. Front gardens.</td></tr><tr><td><code>maxLotSize</code></td><td>2 – 10</td><td>Largest footprint edge before a block is subdivided.</td></tr><tr><td><code>carDensity</code></td><td>0 – 40</td><td>Cars per 100 roadway cells.</td></tr><tr><td><code>pedestrianDensity</code></td><td>0 – 40</td><td>Pedestrians per 100 pavement cells.</td></tr><tr><td><code>signalGreenSeconds</code></td><td>3 – 30</td><td>How long each axis holds green. The bottom of this range moves with the cell size: a walker has the green plus the all-red to cross four carriageway cells, so a bigger cell needs a longer green and the slider stops offering the ones that would strand somebody in the road.</td></tr><tr><td><code>signalClearSeconds</code></td><td>1 – 6</td><td>The all-red gap where the junction empties.</td></tr></table>
+<h3>Switches</h3>
+<p>Thirteen things a city can be told not to contain. They are listed once in <code>CityContentToggles</code>, which is what the designer window draws and what the generator reads, and every one of them travels in a share code.</p>
+<table><tr><th>Switch</th><th>Group</th><th>What it does</th></tr><tr><td><code>river</code></td><td>Landscape</td><td>A river across the map, with bridges where roads cross it.</td></tr><tr><td><code>railway</code></td><td>Landscape</td><td>A railway line with level crossings and a train.</td></tr><tr><td><code>coast</code></td><td>Landscape</td><td>Open water along one edge, with a beach.</td></tr><tr><td><code>trees</code></td><td>Streets</td><td>Street trees, park trees and the avenues along boulevards.</td></tr><tr><td><code>lamps</code></td><td>Streets</td><td>Lamps down every kerb, and the haze around them after dark.</td></tr><tr><td><code>streetFurniture</code></td><td>Streets</td><td>Benches, bins, hydrants, planters, post boxes, racks and signs — and the square's statue, flag poles and margin furniture.</td></tr><tr><td><code>parkFeatures</code></td><td>Streets</td><td>Ponds, fountains, playgrounds and kiosks inside parks.</td></tr><tr><td><code>busStops</code></td><td>Streets</td><td>Bus shelters. Without them there are no routes for buses to run.</td></tr><tr><td><code>shopfronts</code></td><td>Streets</td><td>Lit shop windows on the ground floor of commercial buildings.</td></tr><tr><td><code>hospital</code></td><td>Places</td><td>A hospital on a central block, with an ambulance bay.</td></tr><tr><td><code>policeStation</code></td><td>Places</td><td>A police station out from the centre, with a yard of patrol cars.</td></tr><tr><td><code>carParks</code></td><td>Places</td><td>Flat parking out of town and stacked decks downtown.</td></tr><tr><td><code>citySquare</code></td><td>Places</td><td>A paved main square: a tiered fountain, a statue, a ring of flag poles, and a furnished margin of planters, benches, racks and lamps.</td></tr><tr><td><code>footballPitch</code></td><td>Places</td><td>A marked pitch with goals, on the largest park that will hold one.</td></tr><tr><td><code>beach</code></td><td>Places</td><td>Parasols, loungers and a lifeguard hut along the sand. Needs a coast.</td></tr><tr><td><code>gardens</code></td><td>Places</td><td>Fences, hedges, sheds, greenhouses and pools behind low-rise homes.</td></tr><tr><td><code>farms</code></td><td>Places</td><td>Fields on the outskirts, with bales and a grain silo.</td></tr><tr><td><code>buses</code></td><td>Life</td><td>Buses running routes, stopping, and carrying people. Needs bus stops.</td></tr><tr><td><code>twoWheelers</code></td><td>Life</td><td>Bicycles, motorcycles and scooters in the traffic.</td></tr><tr><td><code>birds</code></td><td>Life</td><td>Flocks of birds over the city.</td></tr><tr><td><code>groundAnimals</code></td><td>Life</td><td>Dogs walked on leads, and stray cats.</td></tr></table>
+<p>Some of these change the city and some only add to it, and it is worth knowing which. The three landscape switches rebuild the map: with no river, the land it ran through becomes buildable and the blocks fall differently, so you get a different city rather than the same one minus a river. The <b>Places</b> switches change what stands on a block — with no hospital, that block goes back to shops.</p>
+<p>The prop switches are the ones you can flick while looking at a city: placement is deterministic in the cell, so turning the benches off leaves every tree exactly where it was. What it will not promise is that no other number moves at all — a pond blocks cells, so removing the park features frees them and a couple more cats find somewhere to sit.</p>
+<p>Turning <code>twoWheelers</code> off does not thin the traffic: a bicycle becomes the car it most resembles, so the same number of vehicles use the same roads.</p>
+<hr>
+<h2>Using your own art</h2>
+<p>Create a <code>CityAssetLibrary</code> (<b>Assets &gt; Create &gt; City Kit &gt; Asset Library</b>) and drop it on the <code>CityView</code>. Every slot is optional: an empty one keeps the kit's own mesh, so you can re-skin a city one piece at a time and never have a half-finished city. Anything the library covers is instantiated as your prefab; anything it does not is merged into the kit's geometry as before.</p>
+<p>Buildings are scaled to their lot and set on the ground, so a prefab does not have to be authored at any particular size.</p>
+<p>The kit ships one library of its own: <code>CityAssetLibraryHD</code> under <code>CityKit/ModelsHD</code>, a high-detail set built with real cylinders, bevels and joinery — the street and park furniture, the square's statue and flag poles, the farm (tractor, silo, cows, scarecrow, bales, harrow), the four vehicle bodies in several paint colours each, all seven tree species, and the four building archetypes (houses, terraces, mid-rise blocks and towers, scaled to their lots). It ships assigned, so the demo opens in the HD look; the demo panel's <b>Models &gt; HD models</b> toggle swaps back to the classic flat-shaded style, and in your own scene you assign it (or clear it) on the <code>CityView</code> the same way as any other library.</p>
+<p>Trees have their own slots, one per species, because the planner chooses species by rule — willows only near water, maples for autumn — and a slot keyed only on "tree" would erase that. A library tree is placed with the kit's own per-spot size and stand, so the obstacle map stays honest.</p>
+<p>Prefab conventions for your own models are the ones the HD set follows: +Z forward, feet on y = 0, an identity root rotation, and vertex colour with the alpha channel as the emissive mask. Fences, hedges and crops stay procedural in either mode — their geometry stretches with the cell size, which no fixed prefab can do.</p>
+<p>People CAN be replaced, and keep the kit's animation when they are: a pedestrian prefab whose children are named <code>LegL</code>, <code>LegR</code>, <code>KneeL</code> and <code>KneeR</code> — legs pivoted at the hips (y = 0.86), knees at y = 0.46 — is walked, run, and sat on benches by the kit exactly like its own figures. The HD set's people are built this way. A prefab without those names is moved and turned as one object, for art with its own Animator.</p>
+<p>The demo's drive mode has its own <code>playerCar</code> slot — a single prefab, +Z forward with wheels on y = 0, used as the car the player sits in; empty, the procedural player car returns.</p>
+<p>Wildlife follows the same rule with its own part names. A bird prefab with children named <code>WingL</code> and <code>WingR</code> (pivoted at the shoulders) flaps in flight and folds its wings on the ground; a dog or cat prefab with <code>LegFL</code>, <code>LegFR</code>, <code>LegBL</code>, <code>LegBR</code> (pivoted at the hips) and <code>Tail</code> trots in diagonal pairs and wags. The library's <code>birds</code>, <code>dogs</code> and <code>cats</code> slots take any number of variants; leave a slot empty and that kind stays procedural — drawn as one live mesh in several coats, exactly as before.</p>
+<hr>
+<h2>The map</h2>
+<p>The minimap in the demo panel and the exported PNG are drawn by one rule, so they always agree.</p>
+<pre><code>// A flat PNG of the city, drawn by the same rule as the minimap.
+string error;
+string path = CityMapTexture.WritePng(view.Plan, 8,
+    Application.persistentDataPath + "/city.png", out error);
+if (path == null) Debug.LogWarning("No map: " + error);</code></pre>
+<p>Every <code>CellKind</code> has a colour, bridges and level crossings are drawn over the road they sit on, and building footprints are shaded by district. The colours are held at least 64 apart on some channel, because <i>distinct</i> and <i>legible</i> are not the same thing.</p>
+<hr>
+<h2>Sound</h2>
+<p><code>CityAudio</code> mixes eight looping beds — city, traffic, rain, wind, birds, water, the level-crossing bell and a passing train — by where the listener is standing. Nothing is audible where its source is not: no park, no birds; no cars, no traffic; barriers up, no bell. The clips are generated, not shipped.</p>
+<hr>
+<h2>The crowd</h2>
+<p>Pedestrians are simulated in <code>CityCrowd</code>, which has no Unity in it at all — <code>CityPedestrians</code> only draws what it decides. That split is why the crowd can be tested outside the engine.</p>
+<p><b>People are not interchangeable.</b> Each one has a build (slim, average, heavy), an age (adult or elderly), one of twelve faces, a walking speed that follows from those, and their own cadence and stride length. Some wear a hat, some carry a bag. A heavy person is a wider silhouette rather than a scaled-up slim one.</p>
+<p>Speeds run from 1.25 m/s to about 1.9. <b>The slowest figure is load-bearing</b>: the signals must give that person long enough to cross the widest road in the city, so lowering it would lengthen the all-red at every junction. Elderly walkers are the slowest; everyone else is faster than them, rather than them being slower than everyone else.</p>
+<p><b>Nobody just walks.</b> Roughly a third of the time a person is doing something else, chosen from what is actually next to them:</p>
+<table><tr><th>Activity</th><th>Where</th><th>Roughly</th></tr><tr><td>Stop and look</td><td>anywhere</td><td>2–6 s</td></tr><tr><td>Sit / read</td><td>beside a bench</td><td>14–40 s</td></tr><tr><td>Lie down / yoga</td><td>on grass</td><td>20–60 s</td></tr><tr><td>Wait for a bus</td><td>beside a bus stop</td><td>12–32 s</td></tr><tr><td>Window-shop</td><td>beside a newsstand or cafe</td><td>6–16 s</td></tr><tr><td>Jog</td><td>anywhere</td><td>15–55 s, at 1.55x speed</td></tr></table>
+<p>Nobody stops on a crossing, and anyone caught out there when the phase ends <b>runs</b> for the far kerb at 1.75x speed rather than strolling.</p>
+<h2>Traffic lights</h2>
+<p>Vehicle heads and pedestrian heads are different objects showing different things. A vehicle head has three lenses — red, amber, green — with one lit. A pedestrian head is shorter, at eye level, and shows a red standing figure or a green walking one; during the all-red after the walk phase it shows the green man dimmed, which means <i>finish crossing but do not start</i>.</p>
+<p>Both are placed by <code>CitySignalHeads</code> in Core, so where they stand and which way they face is testable rather than incidental.</p>
+<h2>Places with a job</h2>
+<p>Some blocks get a purpose beyond housing, shops or grass. Which blocks, and which purpose, is decided by <code>CityCivic</code> in Core — deterministically, so a seed always puts the hospital in the same street.</p>
+<table><tr><th>Place</th><th>Where it goes</th></tr><tr><td>City square</td><td>The most central block that will hold one. Banded paving, a tiered fountain, four corner benches, a statue on the long axis, a ring of flag poles, and a margin scattered with planters, benches, bins, racks and lamps.</td></tr><tr><td>Hospital</td><td>The next most central. Five to seven storeys, with a red ambulance apron.</td></tr><tr><td>Police station</td><td>Deliberately out from the centre, where there is room for a yard of patrol cars.</td></tr><tr><td>Car parks</td><td>Roughly one block in nine. Flat out of town; downtown stacks them into a deck.</td></tr><tr><td>Football pitch</td><td>The largest park that will hold one, either way round — parks here are long thin strips and so is a pitch.</td></tr><tr><td>Beach</td><td>Along the sand of the coast apron: parasols, loungers and a lifeguard hut.</td></tr></table>
+<p>A civic block is not subdivided the ordinary way. The hospital, the station and the parking deck are ONE building over the whole block; the square, the pitch and the flat car parks are no building at all, just ground. They are also exempt from the rule that ties storeys to style — a five-storey hospital is a Block whatever the surrounding land is zoned as.</p>
+<p>A block is only given a job if its rectangle is genuinely all its own land. A river or a corner can leave holes in a block, and a hospital half in the water is worse than a hospital one street over.</p>
+<h2>Birds, dogs and cats</h2>
+<p><code>CityWildlife</code> draws everything alive that is not a person or a vehicle. Put it anywhere in the scene:</p>
+<pre><code>var wildlife = new GameObject("Wildlife").AddComponent&lt;CityWildlife&gt;();
+wildlife.view = city;          // falls back to the CityView above it, or the first in the scene
+wildlife.flockSize = 22;       // birds
+wildlife.birds = true;         // and either half can be turned off
+wildlife.animals = true;</code></pre>
+<p>A flock of birds circles the city as boids: keep apart, keep together, go the same way, and a goal that moves every fourteen seconds so the flock actually goes somewhere rather than milling on the spot. They climb over roofs — the skyline is one height per cell from <code>CityBuildingHeights</code>, and a bird looks at what is under where it is ABOUT to be, since at thirteen metres a second it covers most of a cell between frames.</p>
+<p>Dogs belong to somebody. One walker in fourteen has one, and it casts about in front of and beside them on a lead two and a half metres long. The lead is a hard limit, not a target: an owner can turn a corner or break into a run, and a dog four metres away with a lead drawn between them reads as a bug however good the steering was.</p>
+<p>Cats belong to nobody. They pick a spot within seven cells, saunter to it, and pick another — and they bolt when somebody comes within three and a half metres, because a cat that lets people walk through it is a prop.</p>
+<p><code>CityFlock</code> and <code>CityAnimals</code> in Core hold all of it; <code>CityWildlife</code> only draws the answer, as one mesh rebuilt each frame. Like every other per-frame system in the kit it has a public <code>Rebuild(dt)</code> that takes its own timestep, so it works in an editor tool where Unity runs no <code>Update</code> at all.</p>
+<h2>Buses</h2>
+<p>Bus stops are not scenery. Every arterial kerb carries shelters, and the stops along one kerb make a ROUTE — buses drive it, pull up at each stop in turn for six seconds, and carry the people who were waiting there.</p>
+<p>A route is a LANE rather than a path through the city, which is the design decision everything else follows from. A lane already runs the whole length of its corridor and already wraps at the end, so a bus that drives its lane obeys every signal, junction and level-crossing rule the traffic model has, for free, and cannot invent a route the model does not believe in. Stops are staggered between the two kerbs of a road, so the two directions become two routes rather than one route driven backwards. A route with three or more stops gets two buses, started at opposite ends of the round so the gap between them is the gap between arrivals.</p>
+<p>One thing does not come free: every other vehicle rolls for a turn at each junction, so a bus is marked to keep its lane. Without that it drives off its own route and then keeps stopping at positions that belong to the road it has left.</p>
+<p>People waiting at a shelter board the first bus that stops, ride to another stop further along the same route, and get off there. A passenger is off the map while aboard: not drawn, not occupying a cell, and not counted in the census the drivers read — a rider left in it would be an invisible person standing in the road holding up the traffic.</p>
+<p><code>CityBusNetwork</code> in Core decides which stops belong to which lane and in what order; <code>CityBusService</code> runs the buses and moves the passengers. Both are engine-free, and the service has a public <code>Advance(dt, now)</code> like every other per-frame system in the kit. <code>CityTraffic.Buses</code> is the one on your city.</p>
+<p>Buses are long, slow and in the kerb lane, and nothing overtakes in this model, so traffic queues behind one at a stop. That is deliberate — it is what a bus does — but it is the reason a city with buses runs slightly heavier than one without.</p>
+<h2>Vehicles and trees</h2>
+<p>Eleven kinds of vehicle share the roads: saloon, van, bus, hatchback, estate, pickup, taxi, coupe, bicycle, motorcycle and scooter. The mix is one method — <code>CityCarBody.Pick</code> in Core — so the body sizes, the mix and the speeds all have exactly one definition, and the tests measure the same fleet you drive past. Each kind has its own body length, its own width and its own speed relative to the road's limit: a bus is the slowest and the longest, a coupe the quickest, a taxi carries a lit roof sign after dark. A bus is only ever dispatched down an arterial — it would block a one-lane street — and becomes a van anywhere else. A bicycle is the mirror image: it only appears on local streets, and becomes a motorcycle on an arterial, because nothing overtakes in this model and a 6 m/s bicycle in four lanes of through traffic is a rolling roadblock rather than a cyclist.</p>
+<p>The three two-wheelers share the lanes rather than getting a rule of their own. Nothing filters past a queue here — a lane is single file and the collision test is one-dimensional along it — so a two-wheeler that tried to would be drawn inside the car beside it. They are shorter, they accelerate the same way, and a motorcycle is the quickest thing on the road. They also get their own, brighter paint: a two-wheeler is a tenth the bulk of a car and carries a rider tinted by the same colour, and the car palette's blacks turned the whole thing into an unreadable smudge.</p>
+<p>If you want a different mix, <code>CityCarBody.Pick</code> is the one place to change it. Adding a <i>kind</i> means an entry in <code>CityCarBody.HalfLength</code> and <code>HalfWidth</code>, a case in <code>CityMeshes.Car</code>, and a share of the roll; the tests will tell you if you forget any of the three, including whether the kind ever actually reaches the road.</p>
+<p>Seven tree species grow: broadleaf, poplar, conifer, bushy, blossom, willow and maple. The silhouette is the point — at the distance a city reads as a city you tell a poplar from a fir by its outline long before its colour — so each is a different shape rather than a different size. Streets and parks draw from different mixes: an avenue of poplars is a street, and a conifer belongs in a park. Maples carry autumn colour, which is the only warm foliage in the city.</p>
+<p>Willows are the one species placed by the map rather than by a roll: they grow only within three cells of water, so a city with no river or lake grows none at all. They are also the one tree you cannot walk through — the foliage hangs almost to the ground, so the crowd goes around a willow where it walks under a broadleaf.</p>
+<h2>Haze and exhaust</h2>
+<p><code>CityParticles</code> is optional and off unless you add it. Put it beside <code>CityView</code>:</p>
+<pre><code>var particles = city.gameObject.AddComponent&lt;CityParticles&gt;();
+particles.view = city;
+particles.environment = environment;   // without this, the lamp haze never comes on
+particles.viewer = Camera.main;        // falls back to Camera.main when empty</code></pre>
+<p>It draws two things:</p>
+<p><b>Haze around the street lamps</b>, which fades in with <code>CityEnvironment.NightAmount</code> and so is invisible by day. Three layers per lamp — a wide dim halo, a brighter core and a pool of light on the pavement — because a single quad reads as a pale ball rather than as light in the air. It is damped close up: a halo is drawn at a fixed size in metres, so undamped, standing under a lamp fills a third of the screen with wash.</p>
+<p><b>Exhaust from the traffic.</b> Only from cars that are actually moving, and only within <code>exhaustRange</code> of the camera, since nobody can see the rest. Puffs rise, drift with <code>CityEnvironment.WindStrength</code>, grow and thin.</p>
+<p>Everything is one dynamic mesh with one material, so the whole effect is a single draw call however large the city. Nothing here feeds back into the simulation: removing the component changes how the city looks and nothing about how it behaves.</p>
+<table><tr><th>Field</th><th>Default</th><th>What it does</th></tr><tr><td><code>lampRange</code></td><td>170 m</td><td>Lamps further than this get no haze.</td></tr><tr><td><code>maxLamps</code></td><td>110</td><td>Most lamps hazed at once, nearest first.</td></tr><tr><td><code>lampSize</code></td><td>3.6 m</td><td>Diameter of the core halo.</td></tr><tr><td><code>lampStrength</code></td><td>0.55</td><td>How strong the haze is at full night.</td></tr><tr><td><code>exhaustRange</code></td><td>70 m</td><td>Cars further than this do not smoke.</td></tr><tr><td><code>maxPuffs</code></td><td>260</td><td>Ceiling on live puffs.</td></tr><tr><td><code>puffLife</code></td><td>1.8 s</td><td>How long one lasts.</td></tr><tr><td><code>puffEvery</code></td><td>0.20 s</td><td>Gap between puffs from one car.</td></tr><tr><td><code>exhaustStrength</code></td><td>0.42</td><td>How opaque a fresh puff is.</td></tr></table>
+<p><b>In a built player</b> the particle shader has to be included, exactly like the surface shader: either keep a material that uses <code>CityKit/CityParticle</code> in a built scene, or add the shader to <i>Project Settings → Graphics → Always Included Shaders</i>. Without it the component says so once in the console and draws nothing — the city is unaffected otherwise.</p>
+<h2>Performance</h2>
+<p>Measured on a 220 x 220 city, the largest the kit builds:</p>
+<table><tr><th></th><th></th></tr><tr><td>Plan</td><td>~4 ms</td></tr><tr><td>Geometry</td><td>~640 ms</td></tr><tr><td>Vertices</td><td>1.49 M</td></tr><tr><td>Traffic model</td><td>1.9 ms a frame at 900 cars</td></tr></table>
+<p>The static geometry is cut into chunks so the renderer can cull it — merged whole, one mesh's bounds covered the entire map and looking down a single street still submitted every building in the city. Chunks too small on screen for their windows to read drop to plain massing, which is a sixth of the geometry and, at the distance it happens, indistinguishable.</p>
+<p>The crowd and the traffic are capped: 900 cars and 700 people, whatever the density asks for. Both are drawn as ordinary renderers, so the engine culls the ones behind you.</p>
+<hr>
+<h2>What this kit does not do</h2>
+<p>Said plainly, because finding out later is worse:</p>
+<ul><li><b>No roundabouts.</b> Every lane in the traffic model is a closed loop, and a</li></ul>
+<p>roundabout needs lanes that end and hand their traffic on. It is understood and written up, not forgotten.</p>
+<ul><li><b>Maps stop at 220 cells</b> — 880 m at the default cell size.</li><li><b>Roads are a grid.</b> Streets are straight corridors with jitter, not an</li></ul>
+<p>organic medieval tangle.</p>
+<ul><li><b>Buildings are massing, not interiors.</b> There is nothing inside them.</li></ul>
+<hr>
+<h2>Where things live</h2>
+<table><tr><th></th><th></th></tr><tr><td><code>Runtime/Core</code></td><td>The city as data. No Unity in it at all — you can generate and test a city outside the engine.</td></tr><tr><td><code>Runtime/Unity</code></td><td>Everything that turns a plan into a scene: meshes, audio, textures, traffic, crowd.</td></tr><tr><td><code>Runtime/Shaders</code></td><td>Two shaders: the city surface, and the soft particle used for haze and exhaust.</td></tr><tr><td><code>Editor</code></td><td>The designer window.</td></tr><tr><td><code>Demo</code></td><td>The playable scene and its panels. Delete it if you do not want it. Nothing outside this folder references it, and nothing outside it reads input.</td></tr><tr><td><code>Documentation</code></td><td>This file, and the samples in it as compiled code.</td></tr></table>
+<hr>
+<h2>The types worth knowing</h2>
+<p>You will not need most of the kit. These are the ones worth knowing about:</p>
+<table><tr><th>Type</th><th>What it is for</th></tr><tr><td><code>CityView</code></td><td>The one component. Generates and owns everything.</td></tr><tr><td><code>CitySettings</code></td><td>What a city is generated from.</td></tr><tr><td><code>CitySettingsRange</code></td><td>What each setting may be, and the sliders' source of truth.</td></tr><tr><td><code>CityPlan</code></td><td>The finished city as data — cells, roads, lanes, blocks, buildings.</td></tr><tr><td><code>CellKind</code></td><td>What occupies a cell.</td></tr><tr><td><code>CityModel</code></td><td>Generates a plan with no scene and no Unity.</td></tr><tr><td><code>CityPresets</code></td><td>The starting points, by name.</td></tr><tr><td><code>CityCode</code></td><td>Cities as shareable text.</td></tr><tr><td><code>CityValidation</code></td><td>Is this city usable, and if not, why.</td></tr><tr><td><code>CityAssetLibrary</code></td><td>Your prefabs, slot by slot.</td></tr><tr><td><code>CityMovement</code></td><td>Can something stand here — the rule the player, crowd and navmesh share.</td></tr><tr><td><code>CityMapRenderer</code>, <code>CityMapTexture</code></td><td>The map, as data and as a PNG.</td></tr><tr><td><code>CityAudio</code>, <code>CityAudioMix</code></td><td>The soundtrack and the rule behind it.</td></tr><tr><td><code>CityParticles</code></td><td>Haze around the lamps after dark, and exhaust from the traffic.</td></tr><tr><td><code>CityCrowd</code>, <code>CrowdWalker</code>, <code>CrowdActivity</code></td><td>The pedestrians, with no engine in them: who they are, where they step, and what they are doing.</td></tr><tr><td><code>CityObstacles</code>, <code>CityPropFootprint</code></td><td>What is in the way on the pavement, and how much room it takes.</td></tr><tr><td><code>CitySignalHeads</code>, <code>SignalAspect</code></td><td>Where signal heads stand, which way they look, and what each is showing.</td></tr><tr><td><code>CityDecorPlanner</code>, <code>PropKind</code>, <code>TreeShape</code></td><td>What street furniture stands where, and which species a tree is.</td></tr><tr><td><code>CityPopulation</code></td><td>How many cars and people a city gets.</td></tr><tr><td><code>CityLod</code>, <code>CityChunking</code></td><td>What is drawn, and in how much detail.</td></tr><tr><td><code>CityTextureFactory</code>, <code>CitySurface</code></td><td>The surface grain.</td></tr><tr><td><code>CityRng</code></td><td>The deterministic random the whole kit uses.</td></tr></table>
+<hr>
+<h2>Troubleshooting</h2>
+<p><b>The city is grey, or flat white.</b> Grey means the project is not on the Universal Render Pipeline: the shader is URP-only and falls back to a plain unlit material anywhere else. Flat white means no material was assigned — set <code>CityView.surfaceMaterial</code> to <code>Assets/CityKit/Runtime/CityKitSurface.mat</code>. The console says so too, but the city still draws, so it is easy to miss.</p>
+<p><b>Nothing appears when I press Play.</b> <code>CityView.generateOnStart</code> is off.</p>
+<p><b>Pedestrians walk into the road.</b> They cannot — they use the same rule the navmesh does. What you are seeing is a crossing.</p>
+<p><b>A slider seems to be doing nothing.</b> Two cases, and they are different.</p>
+<p>If it stops responding near the top of its travel, that is a limit, and the kit will tell you which one. The river is capped to the map it crosses, so on a 96-cell city the width slider stops at 12 rather than offering four widths that all build the same river. The car and pedestrian densities are capped by a population budget of 900 cars and 700 people; past that point the demo panel reads <i>at ceiling</i>.</p>
+<p>That budget is an absolute total, not a share of the map, so a <b>bigger city does not carry more traffic — it reaches the same ceiling at a lower density</b>. On a 96-cell city the cars slider stops mattering above about 40; on a 220-cell city it stops at about 7, so five sixths of its travel do nothing. If you want more than 900 cars you will need to raise the budget in <code>CityPopulation</code>.</p>
+<p>If it seems to do nothing in the MIDDLE of its travel, that is usually quantisation. Boulevard share decides each arterial by itself, so on a map with six arterials it can only change six times, and small nudges land on the same city.</p>
+<p>Anything else is a defect: a control that stops responding at either end of its travel, with no limit named above, is a bug and worth reporting.</p>
+
+<h2>Support</h2>
+<p>Questions, bug reports and feature requests: <a href="mailto:szekipapa77@gmail.com">szekipapa77@gmail.com</a><br>Please include your Unity version, render pipeline and the city seed or CITY CODE that reproduces the problem.</p>
+
+</body>
+</html>
