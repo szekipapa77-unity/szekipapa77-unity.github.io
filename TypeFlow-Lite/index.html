@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TypeFlow Lite - Documentation</title>
+<style>
+  :root{--bg:#242424;--panel:#2e3036;--text:#fafafa;--dim:#c6cad4;--accent:#5dbaff;--border:#4e525e}
+  body{background:var(--bg);color:var(--text);font-family:system-ui,"Segoe UI",sans-serif;
+       max-width:900px;margin:0 auto;padding:32px;line-height:1.6}
+  h1{font-weight:300;font-size:34px;margin:0 0 4px}
+  h1 span{color:var(--accent)}
+  h2{color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:6px;
+     margin-top:36px;font-weight:400}
+  h3{margin:22px 0 4px;font-size:18px}
+  .dim{color:var(--dim)}
+  code{background:#1b1d22;border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:13px}
+  pre{background:#1b1d22;border:1px solid var(--border);border-radius:6px;padding:12px 14px;overflow-x:auto}
+  pre code{background:none;border:none;padding:0}
+  table{border-collapse:collapse;margin:12px 0;width:100%;display:block;overflow-x:auto}
+  td,th{border:1px solid var(--border);padding:7px 10px;text-align:left;font-size:14px}
+  th{background:var(--panel)}
+  a{color:var(--accent)}
+  .box{background:var(--panel);border:1px solid var(--border);border-left:4px solid var(--accent);
+       border-radius:8px;padding:14px 18px;margin:18px 0}
+</style>
+</head>
+<body>
+
+<h1><span>TypeFlow</span> Lite</h1>
+<p class="dim">Correct Arabic, Hebrew and right-to-left text on the TextMeshPro you already
+use. One component, no migration, no native binaries. This is the free edition of TypeFlow
+Pro - the correctness half, complete.</p>
+
+<h2>Arabic in ten seconds</h2>
+<ol>
+  <li>Import the package. Everything lands under <code>Assets/TypeFlowPro</code>.</li>
+  <li>Select any object with a <code>TextMeshPro</code> or <code>TextMeshProUGUI</code>
+      component.</li>
+  <li>Add <b>TypeFlow Text</b>. Type Arabic - letters join into their contextual forms and
+      the line reads right-to-left.</li>
+</ol>
+<p>Remove the component and you are back to vanilla TextMeshPro. Nothing is rewritten, no
+scene is migrated, and your own text stays your own text.</p>
+
+<div class="box">
+<p>Open <code>Demos/TypeFlowLiteDemo.unity</code> to see it running: each row shows the same
+string with TypeFlow Text on top and plain TextMeshPro below.</p>
+</div>
+
+<h3>Without a component</h3>
+<p>If you already have an "RTL fixer" in your project, one call replaces it:</p>
+<pre><code>using TypeFlowPro;
+
+string visual = TypeFlowRtl.Convert(logicalText);
+// Arabic shaping + lam-alef ligatures + full UAX #9 bidi.
+// Assign to any TextMeshPro, TextMeshProUGUI or UI Text.</code></pre>
+
+<h2>What this edition does</h2>
+<table>
+  <tr><th>Arabic joining</th><td>Initial, medial, final and isolated forms chosen from
+      context, with lam-alef ligatures.</td></tr>
+  <tr><th>Hebrew</th><td>The same bidirectional pass; no separate setup.</td></tr>
+  <tr><th>Bidirectional order</th><td>Full UAX #9, so Latin, numbers and punctuation inside
+      an Arabic paragraph keep their own order.</td></tr>
+  <tr><th>Digit shaping</th><td>ASCII, Arabic-Indic or Persian digits, always or only in
+      Arabic context - four modes on the component.</td></tr>
+  <tr><th>Alignment</th><td>Left and right alignment auto-flip for a right-to-left
+      paragraph.</td></tr>
+  <tr><th>Markdown</th><td>Optional conversion of simple Markdown to TMP rich text.</td></tr>
+  <tr><th>Tags</th><td>TextMeshPro's own rich-text tags pass through untouched, and the
+      animation tags of the full edition are parsed and stripped rather than shown as
+      literal text.</td></tr>
+  <tr><th>Source</th><td>Complete C#, no DLLs, no native binaries, no runtime allocation in
+      the steady state.</td></tr>
+  <tr><th>Tests</th><td>Edit-mode tests covering the RTL pipeline and the processor.</td></tr>
+</table>
+
+<h3>Component settings</h3>
+<table>
+  <tr><th><code>Base Direction</code></th><td>Auto, LTR or RTL. Auto uses the first strong
+      character, per UAX #9.</td></tr>
+  <tr><th><code>Enable Arabic Shaping</code></th><td>Contextual joining. Turn it off for a
+      pure bidi reorder.</td></tr>
+  <tr><th><code>Digits</code></th><td>None, NativeArabic, NativePersian, ContextualArabic or
+      ContextualPersian.</td></tr>
+  <tr><th><code>Markdown</code></th><td>Converts simple Markdown before shaping.</td></tr>
+</table>
+
+<h2>Fonts</h2>
+<p>TypeFlow Lite shapes text; it does not rasterise it. Any TextMeshPro font asset works, as
+long as its atlas actually contains the Arabic presentation forms. The package bundles
+<b>Amiri</b> (SIL Open Font License 1.1) and a ready-made TMP font asset so the demo renders
+out of the box - see <code>Third-Party Notices.txt</code>.</p>
+<p>If Arabic shows as boxes, the font atlas is missing glyphs rather than the shaper being
+wrong. <b>Tools &gt; TypeFlow Lite</b> has an Arabic font diagnostics window that says which
+characters your atlas is missing.</p>
+
+<h2>What the full edition adds</h2>
+<div class="box">
+<p>The features below are <b>not implemented in this package</b> - their scripts are absent
+from the assemblies, so no setting here can switch them on. They stay listed in the inspector
+so the line between the editions is visible from inside the tool.</p>
+</div>
+<ul>
+  <li><b>TypeFlow Animator</b> - an RTL-aware typewriter that reveals in logical reading
+      order, with per-word reveal, pacing and dialogue actions.</li>
+  <li><b>Twenty behaviour tags</b> - wave, shake, rainbow, jitter and the rest, plus per-span
+      entrance and disappearance animations.</li>
+  <li><b>The Kiln engine</b> - a pure-C# OpenType renderer with GSUB/GPOS, variable fonts,
+      colour emoji and SDF/MSDF rasterising, with no TextMeshPro at all.</li>
+  <li><b>Font families, links and inline effects</b> - faux-bold and faux-italic families,
+      clickable link regions, gradients.</li>
+  <li><b>Damage numbers</b> - a pooled combat-text system with style assets and motion
+      curves.</li>
+  <li><b>3D, curved and decal text.</b></li>
+  <li><b>The Unicode segmentation suite</b> - grapheme, line, word and sentence
+      breaking, with the conformance runner.</li>
+</ul>
+<p>Full edition:
+<a href="https://assetstore.unity.com/packages/tools/gui/typeflow-pro-animated-rtl-arabic-text-for-textmeshpro-387242">TypeFlow
+Pro on the Asset Store</a>.</p>
+
+<h2>Requirements</h2>
+<table>
+  <tr><th>Unity</th><td>2021.3 or newer</td></tr>
+  <tr><th>Render pipelines</th><td>Built-in, URP and HDRP. This is text processing - it draws
+      no pipeline-specific content.</td></tr>
+  <tr><th>Required package</th><td><code>com.unity.textmeshpro</code> (or the TextMeshPro
+      inside <code>com.unity.ugui</code> on Unity 6)</td></tr>
+</table>
+
+<h2>Known limits</h2>
+<ul>
+  <li>Tier 1 only: the animator and the Kiln engine are full-edition features.</li>
+  <li>The Unicode segmentation suite - grapheme, line, word and sentence breaking -
+      is a full-edition feature. Bidirectional ordering and Arabic shaping are
+      complete here.</li>
+  <li>Indic reordering, kashida justification and the OpenType shaper are full-edition
+      features. Arabic and Hebrew are complete here.</li>
+  <li>Lite and the full edition install to the same folder and share asset GUIDs. If you
+      upgrade later, delete <code>Assets/TypeFlowPro</code> before importing the full
+      edition.</li>
+</ul>
+
+<h2>Third-party content</h2>
+<p>Amiri (SIL Open Font License 1.1) and C# tables derived from the Unicode Character
+Database. Both are documented in full, with licence text, in
+<code>Third-Party Notices.txt</code> in the package root. No DLLs, no native binaries, no
+third-party audio or images, and no AI-generated content of any kind.</p>
+
+<h2>Support</h2>
+<p>Questions, bug reports and feature requests:
+<a href="mailto:szekipapa77@gmail.com">szekipapa77@gmail.com</a><br>
+Please include your Unity version, the font asset you are using and the exact string.</p>
+
+</body>
+</html>
