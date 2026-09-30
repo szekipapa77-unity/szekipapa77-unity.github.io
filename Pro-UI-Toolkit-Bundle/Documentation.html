@@ -10,94 +10,102 @@
        max-width:900px;margin:0 auto;padding:32px;line-height:1.6}
   h1{font-weight:300;font-size:34px;margin:0 0 4px}
   h1 span{color:var(--accent)}
-  h2{color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:6px;margin-top:36px;font-weight:400}
-  h3{margin:22px 0 4px;font-size:19px}
+  h2{color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:6px;
+     margin-top:36px;font-weight:400}
   .dim{color:var(--dim)}
-  .tool{background:var(--panel);border:1px solid var(--border);border-left:4px solid var(--accent);
-        border-radius:8px;padding:14px 18px;margin:14px 0}
   code{background:#1b1d22;border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:13px}
-  table{border-collapse:collapse;margin:12px 0;width:100%}
-  td,th{border:1px solid var(--border);padding:7px 10px;text-align:left;font-size:14px}
+  table{border-collapse:collapse;margin:12px 0;width:100%;display:block;overflow-x:auto}
+  td,th{border:1px solid var(--border);padding:8px 10px;text-align:left;font-size:14px}
+  th{background:var(--panel)}
   a{color:var(--accent)}
+  ol{padding-left:22px}
+  .box{background:var(--panel);border:1px solid var(--border);border-left:4px solid var(--accent);
+       border-radius:8px;padding:14px 18px;margin:18px 0}
 </style>
 </head>
 <body>
 
-<h1><span>Five</span> production tools</h1>
-<p class="dim">Pro UI &amp; Data Toolkit - 5 Asset Bundle. Each tool is a complete product that is
-also sold on its own; nothing here is a trimmed-down edition.</p>
+<h1><span>Pro UI &amp; Data Toolkit</span> - 5 Asset Bundle</h1>
+<p class="dim">One purchase, five complete tools. This page explains how to claim them.</p>
 
-<h2>Getting started</h2>
+<div class="box">
+<p><b>This package contains no tool content, by design.</b> Each of the five tools is its own
+Asset Store product, and owning the bundle entitles you to every one of them at no extra
+cost. You claim each from its own listing, which means you also get its own version history,
+release notes and updates, exactly as if you had bought it on its own.</p>
+</div>
+
+<h2>How to claim</h2>
 <ol>
-  <li>Import the package. Every tool lands in its own folder under <code>Assets</code>.</li>
-  <li>Open <b>Tools &#9656; Toolkit Pack &#9656; Welcome</b>. It lists the tools that are present,
-      opens each one, opens its documentation, and warns if a required Unity package is missing.</li>
-  <li>Open any tool's own <code>Documentation.html</code> for its full reference.</li>
+  <li>Open a tool's link below while signed in to the Unity account you bought the bundle
+      with.</li>
+  <li>The price shows as <b>0.00</b> because you own the bundle.</li>
+  <li>Add it to your assets, then import it from
+      <b>Window &gt; Package Manager &gt; My Assets</b>.</li>
 </ol>
-<p class="dim">The welcome window also appears once per project on first import.</p>
+<p>Once per tool. After that each one updates on its own.</p>
 
-<h2>What is included</h2>
-
-<div class="tool">
-  <h3>Helix Vizforge</h3>
-  <p class="dim">Charts, dashboards and data visualization. Lines, areas, splines, bars, stacks,
-  waterfalls, radial and statistical views, composed into dashboards for uGUI, UI Toolkit or
-  world space.</p>
-  <p>Docs: <code>Assets/Helix/Documentation/Documentation.html</code></p>
-</div>
-
-<div class="tool">
-  <h3>VeloScroll</h3>
-  <p class="dim">Infinite recycling ScrollView for uGUI. Lists, grids, tables and dashboards at
-  100,000+ rows with recycled cells, no-code setup, CSV/JSON import and sticky sections.</p>
-  <p>Docs: <code>Assets/VeloScroll/Documentation/Documentation.html</code></p>
-</div>
-
-<div class="tool">
-  <h3>TypeFlow Pro</h3>
-  <p class="dim">Animated RTL and Arabic text for TextMeshPro. Correct Arabic shaping and
-  bidirectional layout, plus typewriter and reveal animations that respect it.</p>
-  <p>Docs: <code>Assets/TypeFlowPro/Documentation/Documentation.html</code></p>
-</div>
-
-<div class="tool">
-  <h3>Universal Asset Preview Studio</h3>
-  <p class="dim">Thumbnails, catalogs and asset QA. Browse the project, capture thumbnails,
-  validate quality, compare dependencies and export catalogs from one editor window.
-  Editor-only.</p>
-  <p>Docs: <code>Assets/UniversalAssetPreviewStudio/Documentation/Documentation.html</code></p>
-</div>
-
-<div class="tool">
-  <h3>Astra Web Platform</h3>
-  <p class="dim">Embedded WebView, JS bridge and OAuth. Web views inside Unity with a JavaScript
-  bridge, OAuth/OIDC sign-in, profiles, policies and diagnostics. Check its documentation for the
-  per-platform WebView matrix.</p>
-  <p>Docs: <code>Assets/AstraWebPlatform/Documentation/Documentation.html</code></p>
-</div>
-
-<h2>Removing a tool you do not need</h2>
-<p>Delete its folder under <code>Assets</code>. The five tools do not reference each other, and the
-Toolkit Pack window resolves them by name rather than by assembly reference, so nothing else breaks
-and the project keeps compiling.</p>
-
-<h2>Requirements</h2>
+<h2>The five tools</h2>
 <table>
-  <tr><th>Unity</th><td>6000.0 or newer</td></tr>
-  <tr><th>Render pipelines</th><td>Built-in, URP and HDRP - none of the five draws pipeline-specific scene content</td></tr>
-  <tr><th>Required package</th><td><code>com.unity.ugui</code> (TextMeshPro), used by TypeFlow Pro and VeloScroll</td></tr>
-  <tr><th>Optional packages</th><td><code>com.unity.inputsystem</code>, <code>com.unity.burst</code>,
-      <code>com.unity.collections</code>, <code>com.unity.mathematics</code> - detected automatically
-      and used only where present</td></tr>
+  <tr><th>Tool</th><th>What it does</th></tr>
+  <tr>
+    <td><a href="https://assetstore.unity.com/packages/tools/gui/helix-vizforge-charts-dashboards-data-visualization-389136">Helix
+        Vizforge</a></td>
+    <td>Charts, dashboards and data visualization. Lines, areas, bars, stacks, waterfalls,
+        radial and statistical views, composed into dashboards for uGUI, UI Toolkit or world
+        space.</td>
+  </tr>
+  <tr>
+    <td><a href="https://assetstore.unity.com/packages/tools/gui/veloscroll-infinite-recycling-scrollview-for-ugui-389266">VeloScroll</a></td>
+    <td>Infinite recycling ScrollView for uGUI. Lists, grids, tables and dashboards at
+        100,000+ rows with recycled cells, no-code setup, CSV/JSON import and sticky
+        sections.</td>
+  </tr>
+  <tr>
+    <td><a href="https://assetstore.unity.com/packages/tools/gui/typeflow-pro-animated-rtl-arabic-text-for-textmeshpro-387242">TypeFlow
+        Pro</a></td>
+    <td>Animated RTL and Arabic text for TextMeshPro. Correct shaping and bidirectional
+        layout, plus a typewriter and reveal animations that respect reading order.</td>
+  </tr>
+  <tr>
+    <td><a href="https://assetstore.unity.com/packages/tools/utilities/universal-asset-preview-studio-thumbnails-catalogs-asset-qa-390802">Universal
+        Asset Preview Studio</a></td>
+    <td>Thumbnails, catalogs and asset QA. Browse the project, capture thumbnails, validate
+        quality, compare dependencies and export catalogs from one editor window.</td>
+  </tr>
+  <tr>
+    <td><a href="https://assetstore.unity.com/packages/tools/gui/astra-web-platform-webview-js-bridge-oauth-toolkit-390756">Astra
+        Web Platform</a></td>
+    <td>Embedded WebView, JS bridge and OAuth. Web views inside Unity with a JavaScript
+        bridge, OAuth/OIDC sign-in, profiles, policies and diagnostics.</td>
+  </tr>
 </table>
 
+<h2>If a price is not 0.00</h2>
+<p>Check that you are signed in with the account that bought the bundle, and that the purchase
+has finished processing. If it still does not show as free, email
+<a href="mailto:szekipapa77@gmail.com">szekipapa77@gmail.com</a> with your invoice number.</p>
+
+<h2>What these five are, and are not</h2>
+<p>They are five separate tools, not one framework. They share a visual language and a support
+address, not an API - you can claim and use any subset, and nothing here depends on anything
+else here. They are the parts you end up building anyway for a data-driven app or game UI: a
+way to show numbers, a way to scroll a lot of rows, text that works in every language, a way
+to keep your assets in order, and a way to put the web inside your product.</p>
+
+<h2>Requirements</h2>
+<p>Each tool states its own. Across the five: Unity 6000.0 or newer, Built-in, URP and HDRP
+(none of them draws pipeline-specific scene content), and TextMeshPro
+(<code>com.unity.ugui</code>) for TypeFlow Pro and VeloScroll.</p>
+
 <h2>Third-party content</h2>
-<p>TypeFlow Pro ships the Amiri font under the SIL Open Font License 1.1. Asset uses Amiri under SIL
-Open Font License 1.1; see <code>Third-Party Notices.txt</code> file in package for details. No other
-third-party fonts, images, audio, icons, shaders, DLLs or native binaries are included.</p>
+<p>None in this package. The only third-party content across the five tools is the Amiri font
+(SIL Open Font License 1.1) bundled with TypeFlow Pro, with its licence file. Each tool ships
+its own Third-Party Notices.txt.</p>
 
 <h2>Support</h2>
-<p>szekipapa77@gmail.com</p>
+<p>One address for all five:
+<a href="mailto:szekipapa77@gmail.com">szekipapa77@gmail.com</a></p>
 
 </body>
 </html>
